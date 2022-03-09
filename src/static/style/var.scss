@@ -1,0 +1,56 @@
+$mobile-breakpoint: 750;
+$mobile-font-size-base: 26;
+$pc-font-size-base: 16;
+$ratio: calc($mobile-font-size-base / $pc-font-size-base);
+
+:root {
+  --font-size-base: #{$pc-font-size-base}PX;
+  --font-size-large: #{$pc-font-size-base + 2}PX;
+  --font-size-xlg: #{$pc-font-size-base + 4}PX;
+  --font-size-small: #{$pc-font-size-base - 2}PX;
+  --font-size-mini: #{$pc-font-size-base - 4}PX;
+  --offset-1: 2PX;
+  --offset-2: 5PX;
+  --offset-3: 10PX;
+  --offset-4: 15PX;
+  --offset-5: 20PX;
+  --offset-6: 25PX;
+  --offset-7: 30PX;
+  --opacity-disabled: 0.9;
+  --text-disabled-color: #969696;
+  --page-background-color: #f7f7f7;
+  --border-color: #eee;
+  --gray-color: #999;
+  --text-color: #333;
+  --primary-color: #1890ff;
+  --second-color: #52c41a;
+  --info-color: #a0d911;
+  --success-color: #52c41a;
+  --warning-color: #faad14;
+  --error-color: #f5222d;
+}
+
+html {
+  font-size: var(--font-size-base);
+}
+
+@media (max-width: #{$mobile-breakpoint}PX) {
+  :root {
+    --font-size-base: #{$mobile-font-size-base}px;
+    --font-size-large: #{($pc-font-size-base + 2) * $ratio}px;
+    --font-size-xlg: #{($pc-font-size-base + 4) * $ratio}px;
+    --font-size-small: #{($pc-font-size-base - 2) * $ratio}px;
+    --font-size-mini: #{($pc-font-size-base - 4) * $ratio}px;
+    --offset-1: #{2 * $ratio}px;
+    --offset-2: #{5 * $ratio}px;
+    --offset-3: #{10 * $ratio}px;
+    --offset-4: #{15 * $ratio}px;
+    --offset-5: #{20 * $ratio}px;
+    --offset-6: #{25 * $ratio}px;
+    --offset-7: #{30 * $ratio}px;
+  }
+
+  html {
+    font-size: calc(100vw / $mobile-breakpoint * $mobile-font-size-base);
+  }
+}

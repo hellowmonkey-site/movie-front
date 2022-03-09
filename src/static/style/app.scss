@@ -1,0 +1,64 @@
+@import "~/normalize.css/normalize.css";
+@import "~/reset-css/reset.css";
+@import "~/nprogress/nprogress.css";
+@import "./var.scss";
+@import "./mixin.scss";
+@import "./font.scss";
+@import "./flex.scss";
+@import "./common.scss";
+
+body {
+  background-color: var(--page-background-color);
+}
+
+.app-content {
+  background-color: #fff;
+  min-height: calc(100vh - 100px);
+  position: relative;
+}
+
+.app-drawer {
+  .ant-drawer-wrapper-body {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ant-drawer-body {
+    overflow-y: auto;
+  }
+}
+
+.app-sider {
+  background: #fff;
+  position: fixed;
+  height: 100%;
+
+  .ant-menu {
+    min-height: 100%;
+  }
+
+  .ant-layout-sider-trigger {
+    background: #eee;
+    color: #333;
+  }
+}
+
+.app-router {
+  padding-left: 200px;
+
+  &.collapsed {
+    padding-left: 80px;
+  }
+}
+
+.app-tags-list {
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  .app-tags-item {
+    background-color: #fff;
+    cursor: pointer;
+    padding: 8px 12px;
+  }
+}
