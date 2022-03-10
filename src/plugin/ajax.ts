@@ -3,17 +3,21 @@ import config from "@/config";
 import { filterObject, getType } from "@/helper";
 import { isRealEmpty } from "@/helper/validate";
 import { KeyType } from "@/config/type";
+import { userToken } from "@/service/user";
+import { Modal, notification } from "ant-design-vue";
 
 // request拦截器
 axios.interceptors.request.use((conf: AxiosRequestConfig) => {
   conf.baseURL = config.baseURL;
-  // conf.headers["Content-Type"] = "application/json;charset=UTF-8";
+  conf.headers = {
+    ...conf.headers,
+    "Content-Type": "application/json;charset=UTF-8",
+  };
   conf.timeout = 0;
-  // const { token } = useTokenModel.data;
-  // if (token) {
-  //   // conf.headers.token = token;
-  //   conf.headers = {};
-  // }
+  const token = userToken.value;
+  if (token) {
+    conf.headers["Authorization"] = `Bearer ${token}`;
+  }
   // 参数处理
   if (conf.data && getType(conf.data) === "object") {
     const { __filterEmpty = 1, ...query } = conf.data;
@@ -29,9 +33,12 @@ axios.interceptors.request.use((conf: AxiosRequestConfig) => {
 // respone拦截器
 axios.interceptors.response.use(
   ({ data }) => {
-    const status = Number(data.status);
-    if (status !== config.successCode) {
-      alert(data.message);
+    const code = Number(data.code);
+    if (code !== config.successCode) {
+      notification.error({
+        message: "操作失败",
+        description: data.msg,
+      });
       return Promise.reject(data);
     }
     return data;
@@ -58,7 +65,10 @@ axios.interceptors.response.use(
     if (!message && error.status) {
       message = messages[error.status];
     }
-    alert(message);
+    Modal.error({
+      title: "请求失败",
+      content: message,
+    });
     return Promise.reject(error);
   }
 );

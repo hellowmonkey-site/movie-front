@@ -6,15 +6,123 @@
 @import "./font.scss";
 @import "./flex.scss";
 @import "./common.scss";
+@import "./animate.scss";
+
+@keyframes ani-spin-zoom {
+  0% {
+    transform: scale(0) translate(-200%, -200%);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1) translate(-50%, -50%);
+    opacity: 1;
+  }
+}
 
 body {
   background-color: var(--page-background-color);
+}
+
+.ant-spin-nested-loading {
+  .app-loading {
+    &.ant-spin {
+      position: fixed;
+      width: auto;
+      height: auto;
+      min-width: 100px;
+      min-height: 100px;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      border-radius: 25px;
+      padding: 20px;
+      z-index: 1003;
+      color: var(--text-color);
+      animation: ani-spin-zoom ease-in-out 0.1s;
+      box-sizing: border-box;
+
+      .ant-spin-dot-item {
+        background-color: #fff;
+      }
+
+      .ant-spin-text {
+        padding-top: 10px;
+        text-shadow: none;
+      }
+
+      .ant-spin-text,
+      .ant-spin-dot {
+        position: static;
+      }
+    }
+
+    .loading-spin.ant-spin-dot {
+      position: relative;
+      width: auto;
+      height: auto;
+      margin-top: 0 !important;
+      top: auto;
+      left: auto;
+    }
+  }
+}
+
+.ant-spin-blur {
+  // animation: ani-fade ease-in-out .3s;
+  opacity: 1;
+}
+
+.ant-spin-container::after {
+  background: #000;
+  z-index: 1002;
+
+  // opacity: 0.45;
+}
+
+// 登录页
+.login-page {
+  height: 100vh;
+  padding-bottom: 10vh;
+  background-color: #494a5f;
+
+  .ant-card {
+    width: 90vw;
+    max-width: 500px;
+    border-radius: 10px;
+  }
+
+  .logo {
+    height: 50px;
+  }
+
+  .ant-card-head-title {
+    text-align: center;
+  }
+
+  .ant-card-body {
+    padding: 40px;
+  }
+
+  .ant-card-head {
+    padding: 5px;
+  }
 }
 
 .app-content {
   background-color: #fff;
   min-height: calc(100vh - 100px);
   position: relative;
+}
+
+.app-header {
+  padding-left: var(--offset-5);
+  padding-right: var(--offset-5);
+
+  .app-logo {
+    height: 50%;
+  }
 }
 
 .app-drawer {
@@ -52,13 +160,12 @@ body {
   }
 }
 
-.app-tags-list {
-  overflow-x: auto;
-  overflow-y: hidden;
+.app-tabs {
+  padding-left: var(--offset-5);
+  padding-top: var(--offset-5);
+  padding-right: var(--offset-5);
 
-  .app-tags-item {
-    background-color: #fff;
-    cursor: pointer;
-    padding: 8px 12px;
+  .ant-tabs-bar {
+    margin: 0;
   }
 }

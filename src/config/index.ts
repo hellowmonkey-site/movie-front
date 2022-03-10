@@ -1,4 +1,4 @@
 export default {
-  baseURL: "",
+  baseURL: "http://test.guoyuan.oa.api.cheqianqiu.net/api",
   successCode: 200,
 };

@@ -1,10 +1,13 @@
 import { RouteRecordRaw } from "vue-router";
 
-const route: RouteRecordRaw[] = [
+const userRoutes: RouteRecordRaw[] = [
   {
-    name: "user-index",
-    path: "/user",
-    component: () => import("@/page/user"),
+    name: "login",
+    path: "/login",
+    meta: {
+      title: "登录",
+    },
+    component: () => import("@/page/user/login"),
   },
 ];
-export default route;
+export default userRoutes;

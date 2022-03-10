@@ -5,7 +5,7 @@ module.exports = {
       stage: 0,
     },
     "postcss-pxtorem": {
-      rootValue: 26,
+      rootValue: 16,
       unitPrecision: 5,
       propList: ["*"],
       selectorBlackList: [],

@@ -1,4 +1,4 @@
-import { defaultCompressImageOpts } from "@/store/common";
+import { defaultCompressImageOpts } from "@/service/common";
 import Compressor from "compressorjs";
 
 export const compressImage = (file: File, opts = {}) => {

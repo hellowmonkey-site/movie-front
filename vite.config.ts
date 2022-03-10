@@ -19,7 +19,6 @@ export default defineConfig({
     preprocessorOptions: {
       less: {
         modifyVars: {
-          "primary-color": "#2FAD32",
           "layout-body-background": "#ffffff",
         },
         javascriptEnabled: true,

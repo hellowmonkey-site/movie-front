@@ -2,6 +2,7 @@ $mobile-breakpoint: 750;
 $mobile-font-size-base: 26;
 $pc-font-size-base: 16;
 $ratio: calc($mobile-font-size-base / $pc-font-size-base);
+$animate-time: 0.2s;
 
 :root {
   --font-size-base: #{$pc-font-size-base}PX;

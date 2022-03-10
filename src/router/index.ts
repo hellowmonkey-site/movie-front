@@ -5,6 +5,7 @@ import Index from "@/layout/Index";
 
 import user from "@/router/user";
 import article from "./article";
+import { pushTab } from "@/service/common";
 
 NProgress.inc(0.2);
 NProgress.configure({ easing: "ease", speed: 500, showSpinner: false });
@@ -18,15 +19,19 @@ const router = createRouter({
       component: Index,
       redirect: () => {
         return {
-          name: "user-index",
+          name: "article-index",
         };
       },
-      children: [...user, ...article],
+      children: [...article],
     },
+    ...user,
   ],
 });
 
-router.beforeEach(() => {
+router.beforeEach(to => {
+  if (to.meta.keepAlive) {
+    pushTab(to);
+  }
   NProgress.start();
   return true;
 });
