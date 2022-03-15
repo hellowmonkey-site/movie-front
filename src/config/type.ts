@@ -11,3 +11,12 @@ export type StorageType = {
   url: string;
   md5?: string;
 };
+
+export type NumberBoolean = 0 | 1;
+
+export type TableData = {
+  column: any;
+  index: number;
+  record: any;
+  text: any;
+};

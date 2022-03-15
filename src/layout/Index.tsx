@@ -18,6 +18,7 @@ import {
 import { defineComponent, KeepAlive, ref } from "vue";
 import { RouteLocationNormalizedLoaded, RouterView, useRoute, useRouter } from "vue-router";
 import Logo from "@/static/image/logo.png";
+import { userInfo } from "@/service/user";
 
 export default defineComponent({
   components: {},
@@ -55,7 +56,7 @@ export default defineComponent({
               default: () => (
                 <div class="d-flex align-items-center">
                   <Avatar src={Logo} />
-                  <span class="mar-l-2 font-light mar-r-2">用户名</span>
+                  <span class="mar-l-2 font-light mar-r-2">{userInfo.username}</span>
                   <DownOutlined style="color: #fff" />
                 </div>
               ),
@@ -73,6 +74,7 @@ export default defineComponent({
                     danger
                     onClick={e => {
                       console.log(e);
+                      router.push({ name: "login" });
                     }}
                   >
                     退出登录

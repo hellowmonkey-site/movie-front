@@ -4,7 +4,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Index from "@/layout/Index";
 
 import user from "@/router/user";
-import article from "./article";
+import system from "@/router/system";
 import { pushTab } from "@/service/common";
 
 NProgress.inc(0.2);
@@ -19,12 +19,13 @@ const router = createRouter({
       component: Index,
       redirect: () => {
         return {
-          name: "article-index",
+          name: "system-route",
         };
       },
-      children: [...article],
+      children: [...system],
     },
     ...user,
+    { path: "/:pathMatch(.*)*", name: "NotFound", component: () => import("@/page/error/404") },
   ],
 });
 

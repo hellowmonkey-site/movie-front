@@ -6,11 +6,15 @@ import "@/static/style/app.scss";
 
 import "@/extend";
 import "@/plugin/ajax";
+import { getUserInfo, userToken } from "./service/user";
 
 const app = createApp(App);
 
 app.use(router);
 
-router.isReady().then(e => {
+router.isReady().then(async () => {
+  if (userToken.value) {
+    await getUserInfo();
+  }
   app.mount("#app");
 });

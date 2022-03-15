@@ -1,17 +1,19 @@
-import axios, { AxiosRequestConfig } from "axios";
+import flyio from "flyio";
 import config from "@/config";
 import { filterObject, getType } from "@/helper";
 import { isRealEmpty } from "@/helper/validate";
 import { KeyType } from "@/config/type";
 import { userToken } from "@/service/user";
 import { Modal, notification } from "ant-design-vue";
+import router from "@/router";
 
 // request拦截器
-axios.interceptors.request.use((conf: AxiosRequestConfig) => {
+flyio.interceptors.request.use(conf => {
   conf.baseURL = config.baseURL;
   conf.headers = {
     ...conf.headers,
     "Content-Type": "application/json;charset=UTF-8",
+    appid: 1,
   };
   conf.timeout = 0;
   const token = userToken.value;
@@ -19,19 +21,19 @@ axios.interceptors.request.use((conf: AxiosRequestConfig) => {
     conf.headers["Authorization"] = `Bearer ${token}`;
   }
   // 参数处理
-  if (conf.data && getType(conf.data) === "object") {
-    const { __filterEmpty = 1, ...query } = conf.data;
+  if (conf.body && getType(conf.body) === "object") {
+    const { __filterEmpty = 1, ...query } = conf.body;
     let data = query;
     if (__filterEmpty) {
       data = filterObject(query);
     }
-    conf.data = isRealEmpty(data) ? undefined : data;
+    conf.body = isRealEmpty(data) ? undefined : data;
   }
   return conf;
 });
 
 // respone拦截器
-axios.interceptors.response.use(
+flyio.interceptors.response.use(
   ({ data }) => {
     const code = Number(data.code);
     if (code !== config.successCode) {
@@ -39,6 +41,9 @@ axios.interceptors.response.use(
         message: "操作失败",
         description: data.msg,
       });
+      if (code === config.loginCode) {
+        router.replace({ name: "login" });
+      }
       return Promise.reject(data);
     }
     return data;
