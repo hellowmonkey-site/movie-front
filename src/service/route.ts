@@ -10,7 +10,7 @@ export interface IRoute {
   parent_id: number;
   sort: number;
   title: string;
-  url?: string;
+  // url?: string;
 }
 
 export const defaultRoute: IRoute = {
@@ -20,7 +20,7 @@ export const defaultRoute: IRoute = {
   parent_id: 0,
   sort: 0,
   title: "",
-  url: "",
+  // url: "",
 };
 
 // 获取路由列表

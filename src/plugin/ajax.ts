@@ -3,7 +3,7 @@ import config from "@/config";
 import { filterObject, getType } from "@/helper";
 import { isRealEmpty } from "@/helper/validate";
 import { KeyType } from "@/config/type";
-import { userToken } from "@/service/user";
+import { requestHeaders } from "@/service/user";
 import { Modal, notification } from "ant-design-vue";
 import router from "@/router";
 
@@ -13,13 +13,9 @@ flyio.interceptors.request.use(conf => {
   conf.headers = {
     ...conf.headers,
     "Content-Type": "application/json;charset=UTF-8",
-    appid: 1,
+    ...requestHeaders.value,
   };
   conf.timeout = 0;
-  const token = userToken.value;
-  if (token) {
-    conf.headers["Authorization"] = `Bearer ${token}`;
-  }
   // 参数处理
   if (conf.body && getType(conf.body) === "object") {
     const { __filterEmpty = 1, ...query } = conf.body;

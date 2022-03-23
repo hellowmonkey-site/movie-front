@@ -12,7 +12,7 @@ export type StorageType = {
   md5?: string;
 };
 
-export type NumberBoolean = 0 | 1;
+// export type NumberBoolean = 0 | 1;
 
 export type TableData = {
   column: any;
@@ -20,3 +20,19 @@ export type TableData = {
   record: any;
   text: any;
 };
+export type UploadChangeParam = {
+  file: any;
+  fileList: any[];
+  event: any;
+};
+
+export type ExcludeAny<T, U> = T extends U ? any : T;
+// 去除interface中某些属性
+export type ExcludeInterface<T, E> = {
+  [P in ExcludeAny<keyof T, E>]: T[P];
+};
+
+export const enum NumberBoolean {
+  FALSE,
+  TRUE,
+}

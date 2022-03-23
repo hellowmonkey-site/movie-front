@@ -1,39 +1,41 @@
+import Avatar from "@/component/Avatar";
 import { TableData } from "@/config/type";
-import { deleteRouter, getRouterList, IRoute } from "@/service/route";
+import { deleteAdmin, getAdminList, IAdmin } from "@/service/admin";
 import { Button, message, Modal, Table } from "ant-design-vue";
 import { defineComponent, onMounted, ref } from "vue";
-import { onBeforeRouteUpdate, RouterLink, useRoute } from "vue-router";
+import { RouterLink } from "vue-router";
 
 export default defineComponent({
   props: {},
   emits: [],
   setup: (props, ctx) => {
-    const route = useRoute();
-    const dataSource = ref<IRoute[]>([]);
-    let parent_id = 0;
+    const dataSource = ref<IAdmin[]>([]);
     const columns = [
       {
         dataIndex: "id",
         title: "ID",
       },
       {
-        dataIndex: "title",
-        title: "标题",
+        dataIndex: "username",
+        title: "登录账号",
       },
       {
-        key: "is_menu",
-        title: "是不是菜单",
+        key: "avatar",
+        title: "头像",
         customRender({ record }: TableData) {
-          return record.is_menu ? "是" : "否";
+          return <Avatar src={record.avatar} />;
         },
       },
       {
-        dataIndex: "sort",
-        title: "排序",
+        key: "role",
+        title: "角色",
+        customRender({ record }: TableData) {
+          return Array.from(record.role).join(",");
+        },
       },
       {
-        dataIndex: "key",
-        title: "name",
+        dataIndex: "home_url",
+        title: "首页地址",
       },
       {
         key: "action",
@@ -41,10 +43,7 @@ export default defineComponent({
         customRender({ record }: TableData) {
           return (
             <>
-              <RouterLink to={{ name: "system-route-index", query: { parent_id: record.id } }} class="mar-r-2-item ant-btn">
-                查看子页面
-              </RouterLink>
-              <RouterLink to={{ name: "system-route-edit", params: { id: record.id } }} class="mar-r-2-item ant-btn ant-btn-primary">
+              <RouterLink to={{ name: "system-admin-edit", params: { id: record.id } }} class="mar-r-2-item ant-btn ant-btn-primary">
                 编辑
               </RouterLink>
               <Button
@@ -54,7 +53,7 @@ export default defineComponent({
                   Modal.confirm({
                     title: `确认要删除${record.title}吗？`,
                     onOk: () => {
-                      return deleteRouter(record.id).then(() => {
+                      return deleteAdmin(record.id).then(() => {
                         fetchData();
                       });
                     },
@@ -71,7 +70,7 @@ export default defineComponent({
 
     function fetchData() {
       const hide = message.loading("数据加载中...");
-      getRouterList(parent_id)
+      getAdminList()
         .then(data => {
           dataSource.value = data;
         })
@@ -80,21 +79,15 @@ export default defineComponent({
         });
     }
 
-    onBeforeRouteUpdate(e => {
-      parent_id = Number(e.query.parent_id || 0);
-      fetchData();
-    });
-
     onMounted(() => {
-      parent_id = Number(route.query.parent_id || 0);
       fetchData();
     });
 
     return () => (
       <>
         <div class="d-flex justify-end mar-b-3">
-          <RouterLink to={{ name: "system-route-add", query: { parent_id } }} class="ant-btn">
-            添加页面
+          <RouterLink to={{ name: "system-admin-add" }} class="ant-btn">
+            添加
           </RouterLink>
         </div>
         <Table bordered columns={columns} pagination={false} dataSource={dataSource.value}></Table>

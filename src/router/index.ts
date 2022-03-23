@@ -19,7 +19,7 @@ const router = createRouter({
       component: Index,
       redirect: () => {
         return {
-          name: "system-route",
+          name: "system-route-index",
         };
       },
       children: [...system],

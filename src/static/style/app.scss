@@ -24,6 +24,13 @@ body {
   background-color: var(--page-background-color);
 }
 
+.avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
 .error-page {
   text-align: center;
   padding: 7% 10px;

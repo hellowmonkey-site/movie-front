@@ -1,7 +1,7 @@
 import storage from "@/helper/storage";
 import { message } from "ant-design-vue";
 import flyio from "flyio";
-import { reactive, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 import { IRoute } from "./route";
 
 export interface IUser {
@@ -18,6 +18,11 @@ export const userInfo = reactive<IUser>({
 export const userRoutes = ref<string[]>([]);
 export const userHandles = ref<string[]>([]);
 export const userMenus = ref<IRoute[]>([]);
+
+export const requestHeaders = computed(() => ({
+  appid: 1,
+  Authorization: userToken.value ? `Bearer ${userToken.value}` : "",
+}));
 
 function setUserToken(data: string) {
   userToken.value = data;

@@ -5,7 +5,6 @@ import {
   Button,
   Drawer,
   Dropdown,
-  DropdownButton,
   LayoutHeader,
   LayoutSider,
   Menu,
@@ -21,7 +20,6 @@ import Logo from "@/static/image/logo.png";
 import { userInfo } from "@/service/user";
 
 export default defineComponent({
-  components: {},
   props: {},
   emits: [],
   setup(props, ctx) {
