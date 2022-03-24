@@ -1,13 +1,9 @@
-import config from "@/config";
-import { UploadChangeParam } from "@/config/type";
-import { getFullUrl } from "@/helper";
+import UploadImageList from "@/component/UploadImageList";
 import router from "@/router";
 import { defaultAdmin, getAdminDetail, IAdmin, postAdmin, putAdmin } from "@/service/admin";
 import { getRoleList, roleList } from "@/service/role";
-import { requestHeaders } from "@/service/user";
-import { PlusOutlined } from "@ant-design/icons-vue";
-import { Button, Form, FormItem, Input, InputPassword, Modal, Select, SelectOption, Upload } from "ant-design-vue";
-import { computed, defineComponent, onMounted, reactive } from "vue";
+import { Button, Form, FormItem, Input, InputPassword, Modal, Select, SelectOption } from "ant-design-vue";
+import { defineComponent, onMounted, reactive } from "vue";
 
 export default defineComponent({
   props: {
@@ -33,22 +29,6 @@ export default defineComponent({
           });
         },
       });
-    };
-
-    const avatarFileList = computed(() => {
-      return form.avatar
-        ? [
-            {
-              uid: form.avatar.id,
-            },
-          ]
-        : [];
-    });
-
-    const onUploadChange = ({ file }: UploadChangeParam) => {
-      if (file.status === "done") {
-        form.avatar = file.response.data;
-      }
     };
 
     onMounted(() => {
@@ -93,20 +73,11 @@ export default defineComponent({
           </FormItem>
         ) : null}
         <FormItem name="avatar" label="头像">
-          <Upload
-            action={getFullUrl(config.baseURL, "common/upload")}
-            headers={{ ...requestHeaders.value }}
-            fileList={avatarFileList}
-            list-type="picture-card"
-            onPreview={e => console.log(e)}
-            onChange={onUploadChange}
-            onRemove={e => (form.avatar = "")}
-          >
-            <div class="d-flex align-items-center justify-center direction-column">
-              <PlusOutlined class="mar-b-1" />
-              <span>上传</span>
-            </div>
-          </Upload>
+          <UploadImageList
+            maxCount={1}
+            images={form.avatar ? [form.avatar] : []}
+            onChange={list => (form.avatar = list[list.length - 1])}
+          />
         </FormItem>
         <FormItem name="role" label="角色" rules={[{ required: true, message: "请先选择角色" }]}>
           <Select mode="multiple" v-model={[form.role, "value"]} placeholder="请选择角色">

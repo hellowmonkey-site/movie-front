@@ -1,7 +1,7 @@
 import { defaultCompressImageOpts } from "@/service/common";
 import Compressor from "compressorjs";
 
-export const compressImage = (file: File, opts = {}) => {
+export function compressImage(file: File, opts = {}): Promise<File> {
   const { quality, maxWidth, convertSize, maxHeight } = Object.assign({}, defaultCompressImageOpts, opts);
   return new Promise((resolve, reject) => {
     // eslint-disable-next-line no-new
@@ -11,15 +11,15 @@ export const compressImage = (file: File, opts = {}) => {
       maxHeight,
       convertSize,
       success(res) {
-        res = new File([res], "file", {
+        const data = new File([res], "file", {
           type: res.type,
           lastModified: Date.now(),
         });
-        resolve(res);
+        resolve(data);
       },
       error(e) {
         reject(e);
       },
     });
   });
-};
+}

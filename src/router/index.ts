@@ -10,6 +10,8 @@ import { pushTab } from "@/service/common";
 NProgress.inc(0.2);
 NProgress.configure({ easing: "ease", speed: 500, showSpinner: false });
 
+export const indexName = "system-route-index";
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -19,7 +21,7 @@ const router = createRouter({
       component: Index,
       redirect: () => {
         return {
-          name: "system-route-index",
+          name: indexName,
         };
       },
       children: [...system],
@@ -30,9 +32,7 @@ const router = createRouter({
 });
 
 router.beforeEach(to => {
-  if (to.meta.keepAlive) {
-    pushTab(to);
-  }
+  pushTab(to);
   NProgress.start();
   return true;
 });

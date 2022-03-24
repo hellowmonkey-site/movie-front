@@ -630,8 +630,52 @@ a {
   clear: both;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-default {
+  cursor: default;
+}
+
+.cursor-help {
+  cursor: help;
+}
+
+.cursor-move {
+  cursor: move;
+}
+
+.cursor-copy {
+  cursor: copy;
+}
+
+.cursor-cell {
+  cursor: cell;
+}
+
+.cursor-none {
+  cursor: none;
+}
+
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
+
+.cursor-text {
+  cursor: text;
+}
+
+.cursor-wait {
+  cursor: wait;
+}
+
+.cursor-progress {
+  cursor: progress;
+}
+
 /** 滚动条 **/
-@media (min-width: 750PX) {
+@media (min-width: #{$mobile-breakpoint}PX) {
   ::-webkit-scrollbar {
     width: 8PX;
     height: 8PX;

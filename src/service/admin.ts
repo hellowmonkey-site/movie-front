@@ -8,7 +8,7 @@ export interface IAdmin {
   id?: number;
   status?: NumberBoolean;
   home_url?: string;
-  avatar?: StorageType;
+  avatar?: StorageType | null;
   nickname?: string;
   remark?: string;
   password?: string;

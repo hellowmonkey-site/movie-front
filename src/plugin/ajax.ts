@@ -1,8 +1,8 @@
-import flyio from "flyio";
+import flyio, { FlyResponse } from "flyio";
 import config from "@/config";
 import { filterObject, getType } from "@/helper";
 import { isRealEmpty } from "@/helper/validate";
-import { KeyType } from "@/config/type";
+import { KeyType, ResponseData } from "@/config/type";
 import { requestHeaders } from "@/service/user";
 import { Modal, notification } from "ant-design-vue";
 import router from "@/router";
@@ -30,7 +30,7 @@ flyio.interceptors.request.use(conf => {
 
 // respone拦截器
 flyio.interceptors.response.use(
-  ({ data }) => {
+  ({ data }: FlyResponse<ResponseData>) => {
     const code = Number(data.code);
     if (code !== config.successCode) {
       notification.error({

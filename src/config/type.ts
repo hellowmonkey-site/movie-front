@@ -8,11 +8,36 @@ export type FunType = (...args: any[]) => any;
 
 export type StorageType = {
   id: number | string;
-  url: string;
-  md5?: string;
+  path: string;
+  name?: string;
 };
 
-// export type NumberBoolean = 0 | 1;
+export type ResponseData = {
+  code: number;
+  data: any;
+  msg: string;
+};
+
+export type UploadFileData = {
+  lastModified: number;
+  lastModifiedDate: Date;
+  name: string;
+  originFileObj: File;
+  percent: number;
+  response?: ResponseData;
+  size: number;
+  status: string;
+  thumbUrl: string;
+  type: string;
+  uid: string;
+};
+
+export type UploadFileItem = {
+  uid: string | number;
+  name: string;
+  status: string;
+  url: string;
+};
 
 export type TableData = {
   column: any;
@@ -21,8 +46,8 @@ export type TableData = {
   text: any;
 };
 export type UploadChangeParam = {
-  file: any;
-  fileList: any[];
+  file: UploadFileData;
+  fileList: UploadFileData[];
   event: any;
 };
 

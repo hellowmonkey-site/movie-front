@@ -10,6 +10,7 @@ import {
   Menu,
   MenuDivider,
   MenuItem,
+  Modal,
   SubMenu,
   TabPane,
   Tabs,
@@ -18,6 +19,7 @@ import { defineComponent, KeepAlive, ref } from "vue";
 import { RouteLocationNormalizedLoaded, RouterView, useRoute, useRouter } from "vue-router";
 import Logo from "@/static/image/logo.png";
 import { userInfo } from "@/service/user";
+import { indexName } from "@/router";
 
 export default defineComponent({
   props: {},
@@ -124,8 +126,8 @@ export default defineComponent({
                     </MenuItem>
                     <MenuItem
                       onClick={e => {
-                        tabList.value = [];
-                        router.replace("/");
+                        tabList.value = tabList.value.filter(v => v.name === indexName);
+                        router.replace({ name: indexName });
                       }}
                     >
                       关闭全部
@@ -174,24 +176,7 @@ export default defineComponent({
                         </KeepAlive>
                       );
                     } else {
-                      return (
-                        <Drawer
-                          width="90vw"
-                          visible={true}
-                          maskClosable={false}
-                          title={String(route.meta?.title || "详情")}
-                          wrapClassName="app-drawer"
-                          onClose={() => {
-                            if (history.state.back) {
-                              router.back();
-                            } else {
-                              router.replace("/");
-                            }
-                          }}
-                        >
-                          <Component />
-                        </Drawer>
-                      );
+                      return <Component />;
                     }
                   },
                 }}

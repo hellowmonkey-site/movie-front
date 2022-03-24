@@ -24,6 +24,7 @@ body {
   background-color: var(--page-background-color);
 }
 
+// 头像
 .avatar {
   width: 60px;
   height: 60px;
@@ -31,40 +32,50 @@ body {
   cursor: pointer;
 }
 
-.error-page {
-  text-align: center;
-  padding: 7% 10px;
+// 上传图片
+.upload-image-list {
+  margin-bottom: -10px;
+}
 
-  img {
-    width: 250px;
-    max-width: 50%;
+.upload-image-item {
+  position: relative;
+  margin-bottom: var(--offset-3);
+  margin-right: var(--offset-3);
+  width: 104px;
+  height: 104px;
+  padding: 8px;
+  border: 1px dashed var(--border-color);
+  border-radius: 6px;
+
+  &.upload-image-btn {
+    cursor: pointer;
+
+    &:hover {
+      border-color: var(--primary-color);
+    }
   }
 
-  .tip {
-    margin-top: 40px;
-    padding-bottom: 30px;
-    margin-bottom: 30px;
-    border-bottom: 1px dashed #ddd;
+  .anticon {
+    font-size: 20px;
   }
 
-  dl {
-    width: 210px;
-    text-align: left;
-    margin: 0 auto;
+  .upload-image-tool {
+    background-color: rgba($color: #000, $alpha: 0.2);
+    opacity: 0;
+
+    .anticon {
+      color: #fff;
+    }
   }
 
-  dd::before {
-    content: "";
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background-color: #bbb;
-    display: block;
-    float: left;
-    margin: 8px 6px 0 0;
+  &:hover {
+    .upload-image-tool {
+      opacity: 1;
+    }
   }
 }
 
+// spin
 .ant-spin-nested-loading {
   .app-loading {
     &.ant-spin {
@@ -208,5 +219,39 @@ body {
 
   .ant-tabs-bar {
     margin: 0;
+  }
+}
+
+.error-page {
+  text-align: center;
+  padding: 7% 10px;
+
+  img {
+    width: 250px;
+    max-width: 50%;
+  }
+
+  .tip {
+    margin-top: 40px;
+    padding-bottom: 30px;
+    margin-bottom: 30px;
+    border-bottom: 1px dashed #ddd;
+  }
+
+  dl {
+    width: 210px;
+    text-align: left;
+    margin: 0 auto;
+  }
+
+  dd::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: #bbb;
+    display: block;
+    float: left;
+    margin: 8px 6px 0 0;
   }
 }

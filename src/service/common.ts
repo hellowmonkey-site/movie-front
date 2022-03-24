@@ -1,8 +1,20 @@
+import { compressImage } from "@/helper/file";
+import fly from "flyio";
 import { reactive, ref } from "vue";
 import { RouteLocationNormalizedLoaded } from "vue-router";
 
-export const defaultCompressImageOpts = { quality: 0.8, maxWidth: 1300, maxHeight: 1800, convertSize: 1024 * 1024 * 2 };
 let timer: number;
+
+export const defaultCompressImageOpts = { quality: 0.8, maxWidth: 1300, maxHeight: 1800, convertSize: 1024 * 1024 * 2 };
+
+// 图片上传
+export function uploadImage(file: File, compressImageOpts = defaultCompressImageOpts) {
+  return compressImage(file, compressImageOpts).then(file => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return fly.post("common/upload", formData).then(data => data.data);
+  });
+}
 
 // tabs
 export const tabList = ref<RouteLocationNormalizedLoaded[]>([]);

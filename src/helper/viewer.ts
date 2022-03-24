@@ -5,22 +5,24 @@ let div: HTMLElement, viewer: Viewer;
 
 type Opt = string | StorageType[] | string[];
 
-export const imagePreview = (params: Opt, index = 0) => {
-  let images: Array<string | StorageType> = [];
+export const imagePreview = (params: Opt, initialViewIndex = 0) => {
+  let images: string[] = [];
   if (typeof params === "string") {
     images = [params];
+  } else {
+    images = params.map(item => {
+      if (typeof item !== "string") {
+        return item.path;
+      }
+      return item;
+    });
   }
-  if (!Array.isArray(images)) {
+  images = images.filter(v => !!v);
+  if (!images.length) {
     return;
   }
   const imgStr = images
-    .map(item => {
-      if (typeof item !== "string") {
-        return item.url;
-      }
-      return item;
-    })
-    .map(item => String(item.replace("_thumb", "")))
+    .map(src => src.replace("_thumb", ""))
     .map((src: string) => `<img src="${src}" />`)
     .join("");
   if (!div) {
@@ -30,9 +32,6 @@ export const imagePreview = (params: Opt, index = 0) => {
   if (viewer) {
     viewer.destroy();
   }
-  const opts = {
-    initialViewIndex: index,
-  };
-  viewer = new Viewer(div, opts);
+  viewer = new Viewer(div, { initialViewIndex });
   viewer.show();
 };
