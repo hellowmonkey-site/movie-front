@@ -1,8 +1,9 @@
+import SelectTable from "@/component/SelectTable";
 import UploadImageList from "@/component/UploadImageList";
 import router from "@/router";
-import { defaultAdmin, getAdminDetail, IAdmin, postAdmin, putAdmin } from "@/service/admin";
+import { defaultAdmin, getAdminDetail, getAdminList, IAdmin, postAdmin, putAdmin } from "@/service/admin";
 import { getRoleList, roleList } from "@/service/role";
-import { Button, Form, FormItem, Input, InputPassword, Modal, Select, SelectOption } from "ant-design-vue";
+import { Button, Dropdown, Form, FormItem, Input, InputPassword, Modal, Select, SelectOption, Table } from "ant-design-vue";
 import { defineComponent, onMounted, reactive } from "vue";
 
 export default defineComponent({
@@ -50,20 +51,19 @@ export default defineComponent({
 
     return () => (
       <Form model={form} labelCol={{ sm: 4 }} onFinish={e => handleSubmit(e)}>
-        {/* <FormItem name="staff_id" label="员工" rules={[{ required: true, message: "请先选择员工" }]}>
-          <Select options={[{ value: "aa", label: "哈哈" }]}>
-            {{
-              dropdownRender: (e: any) => {
-                console.log(e);
-                return (
-                  <>
-                    <div>asas</div>
-                  </>
-                );
-              },
+        <FormItem name="staff_id" label="员工" rules={[{ required: true, message: "请先选择员工" }]}>
+          <SelectTable
+            fetchData={e => {
+              console.log(e);
+              return getAdminList();
             }}
-          </Select>
-        </FormItem> */}
+            showProp="username"
+            columns={[
+              { dataIndex: "id", title: "ID" },
+              { dataIndex: "username", title: "账号" },
+            ]}
+          ></SelectTable>
+        </FormItem>
         <FormItem name="username" label="登录账号" rules={[{ required: true, message: "请先输入登录账号" }]}>
           <Input placeholder="请输入登录账号" v-model={[form.username, "value"]}></Input>
         </FormItem>

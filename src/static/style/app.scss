@@ -24,6 +24,19 @@ body {
   background-color: var(--page-background-color);
 }
 
+// 下拉
+.select-table-dropdown {
+  position: absolute;
+  width: 100%;
+  min-width: 400px;
+  background-color: #fff;
+  border: 1px solid var(--border-color);
+  padding: var(--offset-3);
+  border-radius: 6px;
+  top: calc(100% + var(--offset-3));
+  z-index: 9999;
+}
+
 // 头像
 .avatar {
   width: 60px;

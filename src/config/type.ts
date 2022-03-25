@@ -18,6 +18,13 @@ export type ResponseData = {
   msg: string;
 };
 
+export type TableColumnType = {
+  dataIndex: string;
+  key?: string;
+  title: string;
+  customRender?: (params: TableData) => any;
+};
+
 export type UploadFileData = {
   lastModified: number;
   lastModifiedDate: Date;
