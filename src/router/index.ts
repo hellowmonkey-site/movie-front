@@ -3,36 +3,29 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import Index from "@/layout/Index";
 
-import user from "@/router/user";
-import system from "@/router/system";
-import { pushTab } from "@/service/common";
-
 NProgress.inc(0.2);
 NProgress.configure({ easing: "ease", speed: 500, showSpinner: false });
-
-export const indexName = "system-route-index";
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
       path: "/",
-      name: "index",
+      name: "main",
       component: Index,
-      redirect: () => {
-        return {
-          name: indexName,
-        };
-      },
-      children: [...system],
+      children: [
+        {
+          path: "/",
+          name: "index",
+          component: () => import("@/page/index"),
+        },
+      ],
     },
-    ...user,
-    { path: "/:pathMatch(.*)*", name: "NotFound", component: () => import("@/page/error/404") },
+    { path: "/:pathMatch(.*)*", name: "NotFound", component: () => import("@/page/404") },
   ],
 });
 
 router.beforeEach(to => {
-  pushTab(to);
   NProgress.start();
   return true;
 });

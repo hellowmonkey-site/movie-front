@@ -3,9 +3,7 @@ import config from "@/config";
 import { filterObject, getType } from "@/helper";
 import { isRealEmpty } from "@/helper/validate";
 import { KeyType, ResponseData } from "@/config/type";
-import { requestHeaders } from "@/service/user";
-import { Modal, notification } from "ant-design-vue";
-import router from "@/router";
+import { useDialog, useNotification } from "naive-ui";
 
 // request拦截器
 flyio.interceptors.request.use(conf => {
@@ -13,7 +11,6 @@ flyio.interceptors.request.use(conf => {
   conf.headers = {
     ...conf.headers,
     "Content-Type": "application/json;charset=UTF-8",
-    ...requestHeaders.value,
   };
   conf.timeout = 0;
   // 参数处理
@@ -31,20 +28,19 @@ flyio.interceptors.request.use(conf => {
 // respone拦截器
 flyio.interceptors.response.use(
   ({ data }: FlyResponse<ResponseData>) => {
+    const notification = useNotification();
     const code = Number(data.code);
     if (code !== config.successCode) {
       notification.error({
-        message: "操作失败",
-        description: data.msg,
+        content: "操作失败",
+        meta: data.msg,
       });
-      if (code === config.loginCode) {
-        router.replace({ name: "login" });
-      }
       return Promise.reject(data);
     }
     return data;
   },
   (error: any) => {
+    const dialog = useDialog();
     type Message = {
       [prop: KeyType]: string;
     };
@@ -66,7 +62,7 @@ flyio.interceptors.response.use(
     if (!message && error.status) {
       message = messages[error.status];
     }
-    Modal.error({
+    dialog.error({
       title: "请求失败",
       content: message,
     });

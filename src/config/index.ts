@@ -1,5 +1,4 @@
 export default {
-  baseURL: "http://test.guoyuan.oa.api.cheqianqiu.net/api",
+  baseURL: "http://127.0.0.1:7001",
   successCode: 200,
-  loginCode: 10000,
 };

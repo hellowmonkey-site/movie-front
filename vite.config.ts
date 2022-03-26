@@ -14,15 +14,5 @@ export default defineConfig({
       "@": "/src",
       "~": "/node_modules",
     },
-  },
-  css: {
-    preprocessorOptions: {
-      less: {
-        modifyVars: {
-          "layout-body-background": "#ffffff",
-        },
-        javascriptEnabled: true,
-      },
-    },
-  },
+  }
 });
