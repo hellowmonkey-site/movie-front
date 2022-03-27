@@ -14,5 +14,5 @@ export default defineConfig({
       "@": "/src",
       "~": "/node_modules",
     },
-  }
+  },
 });

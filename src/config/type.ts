@@ -7,7 +7,7 @@ export type ObjType = {
 export type FunType = (...args: any[]) => any;
 
 export type ResponseData = {
-  code: number;
+  status: number;
   data: any;
-  msg: string;
+  message: string;
 };

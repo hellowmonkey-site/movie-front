@@ -3,268 +3,35 @@
 @import "~/nprogress/nprogress.css";
 @import "./var.scss";
 @import "./mixin.scss";
-@import "./font.scss";
 @import "./flex.scss";
 @import "./common.scss";
 @import "./animate.scss";
 
-@keyframes ani-spin-zoom {
-  0% {
-    transform: scale(0) translate(-200%, -200%);
-    opacity: 0;
-  }
-
-  100% {
-    transform: scale(1) translate(-50%, -50%);
-    opacity: 1;
-  }
+a {
+  text-decoration: none;
 }
 
-body {
-  background-color: var(--page-background-color);
+.video-list {
+  min-height: 60vh;
 }
 
-// 下拉
-.select-table-dropdown {
-  position: absolute;
-  width: 100%;
-  min-width: 400px;
-  background-color: #fff;
-  border: 1px solid var(--border-color);
-  padding: var(--offset-3);
-  border-radius: 6px;
-  top: calc(100% + var(--offset-3));
-  z-index: 9999;
-}
-
-// 头像
-.avatar {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-// 上传图片
-.upload-image-list {
-  margin-bottom: -10px;
-}
-
-.upload-image-item {
-  position: relative;
-  margin-bottom: var(--offset-3);
-  margin-right: var(--offset-3);
-  width: 104px;
-  height: 104px;
-  padding: 8px;
-  border: 1px dashed var(--border-color);
-  border-radius: 6px;
-
-  &.upload-image-btn {
-    cursor: pointer;
-
-    &:hover {
-      border-color: var(--primary-color);
-    }
-  }
-
-  .anticon {
-    font-size: 20px;
-  }
-
-  .upload-image-tool {
-    background-color: rgba($color: #000, $alpha: 0.2);
-    opacity: 0;
-
-    .anticon {
-      color: #fff;
-    }
-  }
-
-  &:hover {
-    .upload-image-tool {
-      opacity: 1;
-    }
-  }
-}
-
-// spin
-.ant-spin-nested-loading {
-  .app-loading {
-    &.ant-spin {
-      position: fixed;
-      width: auto;
-      height: auto;
-      min-width: 100px;
-      min-height: 100px;
-      top: 45%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: #fff;
-      border-radius: 25px;
-      padding: 20px;
-      z-index: 1003;
-      color: var(--text-color);
-      animation: ani-spin-zoom ease-in-out 0.1s;
-      box-sizing: border-box;
-
-      .ant-spin-dot-item {
-        background-color: #fff;
-      }
-
-      .ant-spin-text {
-        padding-top: 10px;
-        text-shadow: none;
-      }
-
-      .ant-spin-text,
-      .ant-spin-dot {
-        position: static;
-      }
-    }
-
-    .loading-spin.ant-spin-dot {
-      position: relative;
-      width: auto;
-      height: auto;
-      margin-top: 0 !important;
-      top: auto;
-      left: auto;
-    }
-  }
-}
-
-.ant-spin-blur {
-  // animation: ani-fade ease-in-out .3s;
-  opacity: 1;
-}
-
-.ant-spin-container::after {
-  background: #000;
-  z-index: 1002;
-
-  // opacity: 0.45;
-}
-
-// 登录页
-.login-page {
-  height: 100vh;
-  padding-bottom: 10vh;
-  background-color: #494a5f;
-
-  .ant-card {
-    width: 90vw;
-    max-width: 500px;
-    border-radius: 10px;
-  }
-
-  .logo {
-    height: 50px;
-  }
-
-  .ant-card-head-title {
-    text-align: center;
-  }
-
-  .ant-card-body {
-    padding: 40px;
-  }
-
-  .ant-card-head {
-    padding: 5px;
-  }
-}
-
-.app-content {
-  background-color: #fff;
-  min-height: calc(100vh - 100px);
-  position: relative;
-}
-
-.app-header {
-  padding-left: var(--offset-5);
-  padding-right: var(--offset-5);
-
-  .app-logo {
-    height: 50%;
-  }
-}
-
-.app-drawer {
-  .ant-drawer-wrapper-body {
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .ant-drawer-body {
-    overflow-y: auto;
-  }
-}
-
-.app-sider {
-  background: #fff;
-  position: fixed;
-  height: 100%;
-
-  .ant-menu {
-    min-height: 100%;
-  }
-
-  .ant-layout-sider-trigger {
-    background: #eee;
-    color: #333;
-  }
-}
-
-.app-router {
-  padding: var(--offset-4) var(--offset-4) var(--offset-4) calc(200px + var(--offset-4));
-
-  &.collapsed {
-    padding-left: calc(80px + var(--offset-4));
-  }
-}
-
-.app-tabs {
-  padding-left: var(--offset-5);
-  padding-top: var(--offset-5);
-  padding-right: var(--offset-5);
-
-  .ant-tabs-bar {
-    margin: 0;
-  }
-}
-
-.error-page {
-  text-align: center;
-  padding: 7% 10px;
-
-  img {
-    width: 250px;
-    max-width: 50%;
-  }
-
-  .tip {
-    margin-top: 40px;
-    padding-bottom: 30px;
-    margin-bottom: 30px;
-    border-bottom: 1px dashed #ddd;
-  }
-
-  dl {
-    width: 210px;
-    text-align: left;
-    margin: 0 auto;
-  }
-
-  dd::before {
-    content: "";
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background-color: #bbb;
+.video-item {
+  .bg-cover {
+    height: 200px;
     display: block;
-    float: left;
-    margin: 8px 6px 0 0;
+  }
+
+  .tag {
+    position: absolute;
+    top: 10px;
+    right: 0;
+    background-color: rgba($color: #000, $alpha: 0.4);
+    color: #fff;
+    padding: 5px 12px;
+    border-radius: 20px 0 0 20px;
+  }
+
+  .n-card__content {
+    padding-bottom: 5px;
   }
 }

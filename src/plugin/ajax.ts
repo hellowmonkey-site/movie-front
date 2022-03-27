@@ -3,7 +3,7 @@ import config from "@/config";
 import { filterObject, getType } from "@/helper";
 import { isRealEmpty } from "@/helper/validate";
 import { KeyType, ResponseData } from "@/config/type";
-import { useDialog, useNotification } from "naive-ui";
+import { notification, dialog } from "@/service/common";
 
 // request拦截器
 flyio.interceptors.request.use(conf => {
@@ -28,19 +28,17 @@ flyio.interceptors.request.use(conf => {
 // respone拦截器
 flyio.interceptors.response.use(
   ({ data }: FlyResponse<ResponseData>) => {
-    const notification = useNotification();
-    const code = Number(data.code);
-    if (code !== config.successCode) {
+    const status = Number(data.status);
+    if (status !== config.successCode) {
       notification.error({
         content: "操作失败",
-        meta: data.msg,
+        meta: data.message,
       });
       return Promise.reject(data);
     }
     return data;
   },
   (error: any) => {
-    const dialog = useDialog();
     type Message = {
       [prop: KeyType]: string;
     };

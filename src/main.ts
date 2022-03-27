@@ -5,11 +5,13 @@ import "@/static/style/app.scss";
 
 import "@/extend";
 import "@/plugin/ajax";
+import { getCategoryList } from "./service/category";
 
 const app = createApp(App);
 
 app.use(router);
 
-router.isReady().then(() => {
+router.isReady().then(async () => {
+  await getCategoryList();
   app.mount("#app");
 });
