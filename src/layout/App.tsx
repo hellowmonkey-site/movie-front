@@ -1,4 +1,4 @@
-import { computed, defineComponent } from "vue";
+import { defineComponent } from "vue";
 import { RouterView } from "vue-router";
 import { NConfigProvider, NDialogProvider, NMessageProvider, NNotificationProvider } from "naive-ui";
 import { globalTheme } from "@/service/theme";

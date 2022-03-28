@@ -1,7 +1,9 @@
 import VideoItem from "@/component/VideoItem";
+import { PageData } from "@/config/type";
 import { categorys } from "@/service/category";
-import { getRecommendVideoList, recommendVideoList } from "@/service/video";
-import { NGrid, NGridItem, NH2, NResult, NSpin, NText } from "naive-ui";
+import { defaultPageData } from "@/service/common";
+import { getCategoryVideos, IVideo } from "@/service/video";
+import { NEmpty, NGrid, NGridItem, NH2, NPagination, NResult, NSpin, NText } from "naive-ui";
 import { computed, defineComponent, onMounted, ref } from "vue";
 import { onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
 
@@ -10,6 +12,9 @@ export default defineComponent({
   emits: [],
   setup: (props, ctx) => {
     const route = useRoute();
+    const router = useRouter();
+
+    const videos = ref<PageData<IVideo>>(defaultPageData);
 
     const title = computed(() => {
       const category = categorys.value.find(v => v.url === route.params.category);
@@ -17,11 +22,19 @@ export default defineComponent({
     });
     const loading = ref(false);
 
-    function fetchData() {
+    function fetchData(category = route.params.category, page = route.query.page) {
+      if (!category) {
+        return;
+      }
       loading.value = true;
-      getRecommendVideoList().finally(() => {
-        loading.value = false;
-      });
+      videos.value = defaultPageData;
+      getCategoryVideos(String(category), Number(page))
+        .then(data => {
+          videos.value = data;
+        })
+        .finally(() => {
+          loading.value = false;
+        });
     }
 
     onMounted(() => {
@@ -29,7 +42,7 @@ export default defineComponent({
     });
 
     onBeforeRouteUpdate(to => {
-      fetchData();
+      fetchData(to.params.category, to.query.page);
     });
 
     return () => (
@@ -38,23 +51,46 @@ export default defineComponent({
           <NText>{title.value}</NText>
         </NH2>
         <NSpin show={loading.value}>
-          <div class="video-list">
-            <NGrid cols="2 s:3 m:4 l:5 xl:6" xGap={10} yGap={10} responsive="screen">
-              {recommendVideoList.value.map(item => {
-                return (
-                  <NGridItem>
-                    <VideoItem video={item} tag="definition"></VideoItem>
-                  </NGridItem>
-                );
-              })}
-            </NGrid>
-          </div>
+          {videos.value.count ? (
+            <>
+              <div class="video-list mar-b-4-item">
+                <NGrid cols="2 s:3 m:4 l:5 xl:6" xGap={10} yGap={10} responsive="screen">
+                  {videos.value.data.map(item => {
+                    return (
+                      <NGridItem>
+                        <VideoItem video={item} tag="definition"></VideoItem>
+                      </NGridItem>
+                    );
+                  })}
+                </NGrid>
+              </div>
+              <div class="d-flex justify-center">
+                <NPagination
+                  page={videos.value.page}
+                  pageCount={videos.value.pageCount}
+                  pageSize={videos.value.pageSize}
+                  onUpdatePage={page =>
+                    router.push({
+                      name: route.name!,
+                      params: route.params,
+                      query: {
+                        page,
+                      },
+                    })
+                  }
+                ></NPagination>
+              </div>
+            </>
+          ) : (
+            <div class="empty-box">
+              {title.value ? (
+                <NEmpty description="暂无数据"></NEmpty>
+              ) : (
+                <NResult status="404" title="分类不存在" description="别瞎搞好吧..."></NResult>
+              )}
+            </div>
+          )}
         </NSpin>
-        {!title.value ? (
-          <div style={{ height: "70vh" }} class="d-flex direction-column justify-center">
-            <NResult status="404" title="分类不存在" description="别瞎搞好吧..."></NResult>
-          </div>
-        ) : null}
       </>
     );
   },

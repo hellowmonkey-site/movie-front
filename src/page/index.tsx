@@ -1,6 +1,6 @@
 import VideoItem from "@/component/VideoItem";
-import { getRecommendVideoList, recommendVideoList } from "@/service/video";
-import { NGrid, NGridItem, NH2, NSpin, NText } from "naive-ui";
+import { getRecommendVideos, recommendVideos } from "@/service/video";
+import { NEmpty, NGrid, NGridItem, NH2, NPagination, NSpin, NText } from "naive-ui";
 import { defineComponent, onMounted, ref } from "vue";
 
 export default defineComponent({
@@ -9,9 +9,9 @@ export default defineComponent({
   setup: (props, ctx) => {
     const loading = ref(false);
 
-    function fetchData() {
+    function fetchData(page = 1) {
       loading.value = true;
-      getRecommendVideoList().finally(() => {
+      getRecommendVideos(page).finally(() => {
         loading.value = false;
       });
     }
@@ -26,17 +26,33 @@ export default defineComponent({
           <NText>最新推荐</NText>
         </NH2>
         <NSpin show={loading.value}>
-          <div class="video-list">
-            <NGrid cols="2 s:3 m:4 l:5 xl:6" xGap={10} yGap={10} responsive="screen">
-              {recommendVideoList.value.map(item => {
-                return (
-                  <NGridItem>
-                    <VideoItem video={item}></VideoItem>
-                  </NGridItem>
-                );
-              })}
-            </NGrid>
-          </div>
+          {recommendVideos.value.count ? (
+            <>
+              <div class="video-list mar-b-4-item">
+                <NGrid cols="2 s:3 m:4 l:5 xl:6" xGap={10} yGap={10} responsive="screen">
+                  {recommendVideos.value.data.map(item => {
+                    return (
+                      <NGridItem>
+                        <VideoItem video={item}></VideoItem>
+                      </NGridItem>
+                    );
+                  })}
+                </NGrid>
+              </div>
+              <div class="d-flex justify-center">
+                <NPagination
+                  page={recommendVideos.value.page}
+                  pageCount={recommendVideos.value.pageCount}
+                  pageSize={recommendVideos.value.pageSize}
+                  onUpdatePage={e => fetchData(e)}
+                ></NPagination>
+              </div>
+            </>
+          ) : (
+            <div class="empty-box">
+              <NEmpty description="暂无数据"></NEmpty>
+            </div>
+          )}
         </NSpin>
       </>
     );

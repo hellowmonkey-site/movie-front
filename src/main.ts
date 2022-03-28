@@ -12,6 +12,9 @@ const app = createApp(App);
 app.use(router);
 
 router.isReady().then(async () => {
-  await getCategoryList();
-  app.mount("#app");
+  try {
+    await getCategoryList();
+  } finally {
+    app.mount("#app");
+  }
 });

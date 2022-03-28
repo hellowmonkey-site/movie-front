@@ -37,6 +37,11 @@ const router = createRouter({
           name: "play",
           component: () => import("@/page/play"),
         },
+        {
+          path: "/search",
+          name: "search",
+          component: () => import("@/page/search"),
+        },
       ],
     },
     { path: "/:pathMatch(.*)*", name: "NotFound", component: () => import("@/page/404") },

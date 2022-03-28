@@ -1,7 +1,7 @@
 import flyio, { FlyResponse } from "flyio";
 import config from "@/config";
 import { filterObject, getType } from "@/helper";
-import { isRealEmpty } from "@/helper/validate";
+import { isEmpty, isRealEmpty } from "@/helper/validate";
 import { KeyType, ResponseData } from "@/config/type";
 import { notification, dialog } from "@/service/common";
 
@@ -31,8 +31,9 @@ flyio.interceptors.response.use(
     const status = Number(data.status);
     if (status !== config.successCode) {
       notification.error({
-        content: "操作失败",
-        meta: data.message,
+        title: "操作失败",
+        content: data.message,
+        duration: 3 * 1000,
       });
       return Promise.reject(data);
     }
@@ -56,13 +57,14 @@ flyio.interceptors.response.use(
       504: "网关超时",
       505: "HTTP版本不受支持",
     };
-    let message = error?.response?.data?.message;
-    if (!message && error.status) {
+    let message = error?.response?.data?.message || "异常请求";
+    if (!message && !isEmpty(error.status)) {
       message = messages[error.status];
     }
-    dialog.error({
+    dialog?.error({
       title: "请求失败",
       content: message,
+      maskClosable: false,
     });
     return Promise.reject(error);
   }

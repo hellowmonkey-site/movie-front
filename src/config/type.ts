@@ -11,3 +11,11 @@ export type ResponseData = {
   data: any;
   message: string;
 };
+
+export type PageData<T = any> = {
+  count: number;
+  data: T[];
+  page: number;
+  pageCount: number;
+  pageSize: number;
+};

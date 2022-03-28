@@ -1,14 +1,14 @@
 import { isIE } from "@/helper/validate";
 import { categorys } from "@/service/category";
-import { setDialog, setNotification } from "@/service/common";
-import { changeThemeType, themeTypes } from "@/service/theme";
+import { isMobileWidth, menuCollapsed, setDialog, setNotification } from "@/service/common";
+import { changeThemeType, globalTheme, themeTypes } from "@/service/theme";
 import {
   MenuOption,
   NButton,
+  NDrawer,
+  NDrawerContent,
   NDropdown,
   NIcon,
-  NInput,
-  NInputGroup,
   NLayout,
   NLayoutHeader,
   NLayoutSider,
@@ -18,21 +18,33 @@ import {
   useNotification,
 } from "naive-ui";
 import { computed, defineComponent, onMounted, ref } from "vue";
-import { RouterLink, RouterView, useRoute } from "vue-router";
-import { HomeFilled, MovieFilterFilled, SettingsFilled, WbSunnyFilled } from "@vicons/material";
+import { RouterLink, RouterView, useRoute, useRouter } from "vue-router";
+import {
+  HomeFilled,
+  MovieFilterFilled,
+  SearchFilled,
+  SearchOutlined,
+  SettingsFilled,
+  SettingsOutlined,
+  WbSunnyFilled,
+  WbSunnyOutlined,
+} from "@vicons/material";
+import SearchInput from "@/component/SearchInput";
+import Logo from "@/static/image/logo.png";
 
 export default defineComponent({
   props: {},
   emits: [],
   setup: (props, ctx) => {
     const route = useRoute();
+    const router = useRouter();
 
     const notification = useNotification();
     const dialog = useDialog();
     setNotification(notification);
     setDialog(dialog);
 
-    const collapsed = ref(false);
+    const settingOpen = ref(false);
 
     const selectedMenu = computed(() => {
       if (route.name === "index") {
@@ -84,7 +96,7 @@ export default defineComponent({
               ? [
                   {
                     label() {
-                      return <RouterLink to={{ name: "category", params: { category: item.url } }}>全部</RouterLink>;
+                      return <RouterLink to={{ name: "category", params: { category: item.url } }}>全部{item.name}</RouterLink>;
                     },
                     key: item.url,
                   },
@@ -130,66 +142,93 @@ export default defineComponent({
       }
     });
     return () => (
-      <NLayout position="absolute">
-        <NLayoutHeader bordered class="d-flex align-items-center justify-between pad-3">
-          <RouterLink to={{ name: "index" }} class="font-large mar-r-5-item">
-            沃德影视
-          </RouterLink>
-          <form action="" class="d-flex mar-r-3" style={{ width: "600px" }}>
-            <NInputGroup>
-              <NInput placeholder="搜索影视剧..." clearable size="large" />
-              <NButton type="primary" size="large" attrType="submit">
-                搜索
-              </NButton>
-            </NInputGroup>
-          </form>
-          <div class="flex-item-extend d-flex justify-end">
-            <NDropdown options={themeTypes} onSelect={e => changeThemeType(e)}>
-              <NButton size="large" class="mar-r-3-item" circle>
+      <>
+        <NLayout position="absolute">
+          <NLayoutHeader bordered class="d-flex align-items-center justify-between pad-3">
+            <img src={Logo} class="logo mar-r-3-item" />
+            <RouterLink to={{ name: "index" }} class="font-large mar-r-5-item wrap-nowrap">
+              沃德影视
+            </RouterLink>
+            {route.name === "search" || isMobileWidth.value ? null : <SearchInput />}
+            <div class="flex-item-extend d-flex justify-end">
+              {isMobileWidth.value ? (
+                <NTooltip>
+                  {{
+                    default: () => <span>搜索</span>,
+                    trigger: () => (
+                      <NButton
+                        size="large"
+                        class="mar-r-3-item"
+                        circle
+                        onClick={() => {
+                          router.push({ name: "search" });
+                        }}
+                      >
+                        {{
+                          icon: () => <NIcon>{globalTheme.value === null ? <SearchOutlined /> : <SearchFilled />}</NIcon>,
+                        }}
+                      </NButton>
+                    ),
+                  }}
+                </NTooltip>
+              ) : null}
+              <NDropdown options={themeTypes} trigger="click" onSelect={e => changeThemeType(e)}>
+                <NTooltip>
+                  {{
+                    default: () => <span>选择主题</span>,
+                    trigger: () => (
+                      <NButton size="large" class="mar-r-3-item" circle>
+                        {{
+                          icon: () => <NIcon>{globalTheme.value === null ? <WbSunnyOutlined /> : <WbSunnyFilled />}</NIcon>,
+                        }}
+                      </NButton>
+                    ),
+                  }}
+                </NTooltip>
+              </NDropdown>
+              <NTooltip>
                 {{
-                  icon: () => (
-                    <NIcon>
-                      <WbSunnyFilled />
-                    </NIcon>
+                  default: () => <span>个性化设置</span>,
+                  trigger: () => (
+                    <NButton
+                      size="large"
+                      class="mar-r-3-item"
+                      circle
+                      onClick={() => {
+                        settingOpen.value = true;
+                      }}
+                    >
+                      {{
+                        icon: () => <NIcon>{globalTheme.value === null ? <SettingsOutlined /> : <SettingsFilled />}</NIcon>,
+                      }}
+                    </NButton>
                   ),
                 }}
-                {/* {globalTheme.value === null ? "亮色" : "暗色"} */}
-              </NButton>
-            </NDropdown>
-            <NTooltip>
-              {{
-                default: () => <span>设置</span>,
-                trigger: () => (
-                  <NButton size="large" class="mar-r-3-item" circle>
-                    {{
-                      icon: () => (
-                        <NIcon>
-                          <SettingsFilled />
-                        </NIcon>
-                      ),
-                    }}
-                  </NButton>
-                ),
-              }}
-            </NTooltip>
-          </div>
-        </NLayoutHeader>
-        <NLayout hasSider position="absolute" style={{ top: "64px" }}>
-          <NLayoutSider v-model={[collapsed.value, "collapsed"]} bordered showTrigger nativeScrollbar={false} collapseMode="width">
-            <NMenu
-              collapsed={collapsed.value}
-              options={menus.value}
-              value={selectedMenu.value}
-              defaultExpandedKeys={defaultExpandedKeys.value}
-            ></NMenu>
-          </NLayoutSider>
-          <NLayout nativeScrollbar={false}>
-            <div class="pad-4">
-              <RouterView />
+              </NTooltip>
             </div>
+          </NLayoutHeader>
+          <NLayout hasSider position="absolute" style={{ top: "64px" }}>
+            <NLayoutSider v-model={[menuCollapsed.value, "collapsed"]} bordered showTrigger nativeScrollbar={false} collapseMode="width">
+              <NMenu
+                collapsed={menuCollapsed.value}
+                options={menus.value}
+                value={selectedMenu.value}
+                defaultExpandedKeys={defaultExpandedKeys.value}
+              ></NMenu>
+            </NLayoutSider>
+            <NLayout nativeScrollbar={false}>
+              <div class="pad-4">
+                <RouterView />
+              </div>
+            </NLayout>
           </NLayout>
         </NLayout>
-      </NLayout>
+        <NDrawer v-model={[settingOpen.value, "show"]} width="500px">
+          <NDrawerContent title="个性化设置" closable>
+            开发中...
+          </NDrawerContent>
+        </NDrawer>
+      </>
     );
   },
 });
