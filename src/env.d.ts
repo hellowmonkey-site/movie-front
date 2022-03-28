@@ -6,3 +6,8 @@ declare module "*.vue" {
   const component: DefineComponent<{}, {}, any>;
   export default component;
 }
+
+declare module "xgplayer-hls.js" {
+  import Player from "xgplayer";
+  export default Player;
+}
