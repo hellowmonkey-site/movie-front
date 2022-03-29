@@ -1,5 +1,5 @@
 import { IPlay, IPlayListGroup } from "@/service/playlist";
-import { NButton, NSpace, NTabPane, NTabs } from "naive-ui";
+import { NButton, NGrid, NGridItem, NSpace, NTabPane, NTabs } from "naive-ui";
 import { computed, defineComponent, onMounted, PropType, ref, watch } from "vue";
 
 export default defineComponent({
@@ -52,13 +52,20 @@ export default defineComponent({
       <NTabs type="card" size="large" v-model={[activeTab.value, "value"]}>
         {playlist.value.map(item => (
           <NTabPane tab={item.circuit_name} name={item.circuit_id}>
-            <NSpace>
+            <NGrid cols="2 s:3 m:6 l:8 xl:12" xGap={10} yGap={10} responsive="screen">
               {item.list.map(v => (
-                <NButton size="large" onClick={() => ctx.emit("click", v)} type={Number(props.playId) === v.id ? "primary" : "default"}>
-                  {v.title}
-                </NButton>
+                <NGridItem>
+                  <NButton
+                    size="large"
+                    block
+                    onClick={() => ctx.emit("click", v)}
+                    type={Number(props.playId) === v.id ? "primary" : "default"}
+                  >
+                    {v.title}
+                  </NButton>
+                </NGridItem>
               ))}
-            </NSpace>
+            </NGrid>
           </NTabPane>
         ))}
       </NTabs>

@@ -1,10 +1,11 @@
 import Description from "@/component/Description";
 import PlayList from "@/component/PlayList";
+import RecommendList from "@/component/RecommendList";
 import { addZero } from "@/helper";
-import { getVideoDetail, IVideoDetail } from "@/service/video";
+import { getRecommendByCategoryId, getVideoDetail, IVideoDetail } from "@/service/video";
 import { NButton, NImage, NSkeleton } from "naive-ui";
 import { computed, defineComponent, onMounted, PropType, ref } from "vue";
-import { useRouter } from "vue-router";
+import { onBeforeRouteUpdate, useRouter } from "vue-router";
 
 export default defineComponent({
   props: {
@@ -56,13 +57,22 @@ export default defineComponent({
       ].filter(v => !!v.value);
     });
 
+    let videoId = Number(props.videoId);
+
     function fetchData() {
-      getVideoDetail(props.videoId).then(data => {
+      getVideoDetail(videoId).then(data => {
         video.value = data;
+        // 推荐
+        getRecommendByCategoryId(data.category_id);
       });
     }
 
     onMounted(() => {
+      fetchData();
+    });
+
+    onBeforeRouteUpdate(to => {
+      videoId = Number(to.params.videoId);
       fetchData();
     });
 
@@ -73,7 +83,7 @@ export default defineComponent({
             {video.value ? (
               <NImage src={video.value?.cover} objectFit="fill" class="full-width"></NImage>
             ) : (
-              <NSkeleton height="300px"></NSkeleton>
+              <NSkeleton height="400px"></NSkeleton>
             )}
           </div>
           <div class="flex-item-extend d-flex direction-column">
@@ -119,7 +129,7 @@ export default defineComponent({
         {video.value ? (
           <PlayList
             playlist={video.value.playlist}
-            onClick={({ id: playId }) => router.push({ name: "play", params: { videoId: props.videoId, playId } })}
+            onClick={({ id: playId }) => router.push({ name: "play", params: { videoId, playId } })}
           />
         ) : (
           <div class="mar-t-6">
@@ -128,6 +138,7 @@ export default defineComponent({
             <NSkeleton height="50px" text class="mar-b-3-item"></NSkeleton>
           </div>
         )}
+        <RecommendList videoId={videoId} />
       </>
     );
   },

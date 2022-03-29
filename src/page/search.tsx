@@ -50,11 +50,11 @@ export default defineComponent({
           <>
             <div class="d-flex align-items-center justify-between">
               <NH2 prefix="bar">
-                <NText>搜索{route.query.keywords}</NText>
+                <NText>搜索 {route.query.keywords}</NText>
               </NH2>
-              <div class="d-flex align-items-center">
+              <div class="d-flex align-items-center font-small">
                 <span class="font-gray">共找到</span>
-                <strong class="font-xlg mar-l-1 mar-r-1">{videos.value.count}</strong>
+                <strong class="font-large mar-l-1 mar-r-1">{videos.value.count}</strong>
                 <span class="font-gray">条记录</span>
               </div>
             </div>

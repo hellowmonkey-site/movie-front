@@ -23,9 +23,6 @@ export default defineComponent({
         style={{ width: "600px" }}
         onSubmit={e => {
           e.preventDefault();
-          if (!keywords.value) {
-            return;
-          }
           router.push({ name: "search", query: { keywords: keywords.value } });
         }}
       >

@@ -1,10 +1,11 @@
 import { isIE } from "@/helper/validate";
 import { categorys } from "@/service/category";
-import { isMobileWidth, menuCollapsed, setDialog, setNotification } from "@/service/common";
-import { changeThemeType, globalTheme, themeTypes } from "@/service/theme";
+import { appConfig, fitVideoSizes, isMobileWidth, menuCollapsed, setAppConfig, setDialog, setNotification } from "@/service/common";
+import { changeThemeType, globalTheme, themeTypes } from "@/service/common";
 import {
   MenuOption,
   NButton,
+  NDivider,
   NDrawer,
   NDrawerContent,
   NDropdown,
@@ -13,6 +14,10 @@ import {
   NLayoutHeader,
   NLayoutSider,
   NMenu,
+  NRadio,
+  NRadioGroup,
+  NSlider,
+  NSwitch,
   NTooltip,
   useDialog,
   useNotification,
@@ -31,6 +36,8 @@ import {
 } from "@vicons/material";
 import SearchInput from "@/component/SearchInput";
 import Logo from "@/static/image/logo.png";
+import config from "@/config";
+import { version } from "../../package.json";
 
 export default defineComponent({
   props: {},
@@ -115,6 +122,13 @@ export default defineComponent({
       return [home, ...list];
     });
 
+    const marks: Record<string, string> = {};
+    config.playbackRates
+      .map(v => String(v))
+      .forEach((v: string) => {
+        marks[String(v)] = `${String(v)}x`;
+      });
+
     // 默认打开菜单
     const defaultExpandedKeys = computed(() => {
       const selected = selectedMenu.value;
@@ -188,7 +202,7 @@ export default defineComponent({
               </NDropdown>
               <NTooltip>
                 {{
-                  default: () => <span>个性化设置</span>,
+                  default: () => <span>系统设置</span>,
                   trigger: () => (
                     <NButton
                       size="large"
@@ -223,9 +237,114 @@ export default defineComponent({
             </NLayout>
           </NLayout>
         </NLayout>
-        <NDrawer v-model={[settingOpen.value, "show"]} width="500px">
-          <NDrawerContent title="个性化设置" closable>
-            开发中...
+        <NDrawer v-model={[settingOpen.value, "show"]} class="setting-drawer" width="90vw">
+          <NDrawerContent title="系统设置" closable>
+            <NDivider titlePlacement="left">主题</NDivider>
+            <div class="d-flex justify-between align-items-center mar-b-6-item">
+              <span class="font-gray font-small mar-r-7 flex-item-extend">默认主题</span>
+              <NRadioGroup
+                value={appConfig.value.themeType}
+                onUpdateValue={themeType => {
+                  setAppConfig({ themeType });
+                  changeThemeType(themeType);
+                }}
+              >
+                {themeTypes.map(v => (
+                  <NRadio key={v.key} value={v.key}>
+                    {v.label}
+                  </NRadio>
+                ))}
+              </NRadioGroup>
+            </div>
+            <NDivider titlePlacement="left">播放器</NDivider>
+            <div class="d-flex justify-between align-items-center mar-b-6-item">
+              <span class="font-gray font-small mar-r-7 flex-item-extend">默认音量</span>
+              <NSlider
+                style={{ width: "65%" }}
+                step={5}
+                value={appConfig.value.volume}
+                onUpdateValue={volume => {
+                  setAppConfig({ volume });
+                }}
+              ></NSlider>
+            </div>
+            <div class="d-flex justify-between align-items-center mar-b-6-item">
+              <span class="font-gray font-small mar-r-7 flex-item-extend">默认播放速度</span>
+              <NSlider
+                style={{ width: "65%" }}
+                min={config.playbackRates[0]}
+                max={config.playbackRates[config.playbackRates.length - 1]}
+                step="mark"
+                marks={marks}
+                value={appConfig.value.playbackRate}
+                onUpdateValue={playbackRate => {
+                  setAppConfig({ playbackRate });
+                }}
+              ></NSlider>
+            </div>
+            <div class="d-flex justify-between align-items-center mar-b-6-item">
+              <span class="font-gray font-small mar-r-7 flex-item-extend">视频布局</span>
+              <NRadioGroup
+                value={appConfig.value.fitVideoSize}
+                onUpdateValue={fitVideoSize => {
+                  setAppConfig({ fitVideoSize });
+                }}
+              >
+                {fitVideoSizes.map(v => (
+                  <NRadio key={v.value} value={v.value}>
+                    {v.text}
+                  </NRadio>
+                ))}
+              </NRadioGroup>
+            </div>
+            <div class="d-flex justify-between align-items-center mar-b-6-item">
+              <span class="font-gray font-small mar-r-7 flex-item-extend">自动播放</span>
+              <NSwitch
+                value={appConfig.value.autoplay}
+                onUpdateValue={autoplay => {
+                  setAppConfig({ autoplay });
+                }}
+              ></NSwitch>
+            </div>
+            <div class="d-flex justify-between align-items-center mar-b-6-item">
+              <span class="font-gray font-small mar-r-7 flex-item-extend">开启画中画</span>
+              <NSwitch
+                value={appConfig.value.pip}
+                onUpdateValue={pip => {
+                  setAppConfig({ pip });
+                }}
+              ></NSwitch>
+            </div>
+            <div class="d-flex justify-between align-items-center mar-b-6-item">
+              <span class="font-gray font-small mar-r-7 flex-item-extend">开启小窗口</span>
+              <NSwitch
+                value={appConfig.value.miniplayer}
+                onUpdateValue={miniplayer => {
+                  setAppConfig({ miniplayer });
+                }}
+              ></NSwitch>
+            </div>
+            <NDivider titlePlacement="left">推荐</NDivider>
+            <div class="d-flex justify-between align-items-center mar-b-6-item">
+              <span class="font-gray font-small mar-r-7 flex-item-extend">开启相关推荐</span>
+              <NSwitch
+                value={appConfig.value.recommend}
+                onUpdateValue={recommend => {
+                  setAppConfig({ recommend });
+                }}
+              ></NSwitch>
+            </div>
+            <NDivider titlePlacement="left">系统信息</NDivider>
+            <div class="d-flex justify-between align-items-center mar-b-6-item">
+              <span class="font-gray font-small mar-r-7 flex-item-extend">版本号</span>
+              <span>v {version}</span>
+            </div>
+            <div class="d-flex justify-between align-items-center mar-b-6-item">
+              <span class="font-gray font-small mar-r-7">说明</span>
+              <div class="flex-item-extend d-flex justify-end">
+                <span>本站资源均来自互联网，未做存储，侵立删！</span>
+              </div>
+            </div>
           </NDrawerContent>
         </NDrawer>
       </>

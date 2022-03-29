@@ -6,7 +6,7 @@ const l = window.localStorage;
 
 const fn = (storage = s) => {
   return {
-    get(key: string): string | ObjType | any[] {
+    get<T = ObjType>(key: string): string | T | any[] {
       const data = storage.getItem(key);
       if (data === null) {
         return "";

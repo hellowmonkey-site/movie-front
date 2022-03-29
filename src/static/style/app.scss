@@ -19,6 +19,10 @@ a {
   max-width: 100%;
 }
 
+.setting-drawer {
+  max-width: 500px;
+}
+
 .empty-box {
   height: 70vh;
   display: flex;
@@ -53,8 +57,13 @@ a {
   }
 }
 
-.video-player {
+.video-player-container {
   background-color: #000;
+}
+
+.video-player {
+  height: calc(100vh - 100px);
+  width: 100%;
 }
 
 @media (max-width: 640px) {

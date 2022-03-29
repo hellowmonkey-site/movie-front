@@ -1,7 +1,9 @@
 import PlayList from "@/component/PlayList";
-import { menuCollapsed } from "@/service/common";
-import { changeThemeType, themeType, ThemeTypes } from "@/service/theme";
-import { getVideoDetail, videoDetail } from "@/service/video";
+import RecommendList from "@/component/RecommendList";
+import config from "@/config";
+import { appConfig, menuCollapsed } from "@/service/common";
+import { changeThemeType, themeType, ThemeTypes } from "@/service/common";
+import { getRecommendByCategoryId, getVideoDetail, videoDetail } from "@/service/video";
 import { computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref } from "vue";
 import { onBeforeRouteUpdate, useRouter } from "vue-router";
 import Player, { IPlayerOptions } from "xgplayer";
@@ -41,22 +43,28 @@ export default defineComponent({
       if (!play.value) {
         return;
       }
+      if (!el.value) {
+        return;
+      }
       videoPlayer?.destroy();
+      const { offsetWidth, offsetHeight } = el.value;
       setTimeout(() => {
         const options: IPlayerOptions = {
           el: el.value,
-          autoplay: true,
+          autoplay: appConfig.value.autoplay,
           url: play.value?.src || "",
-          width: "90%",
-          height: "calc(100vh - 200px)",
-          fitVideoSize: "fixWidth",
+          width: offsetWidth,
+          height: offsetHeight,
+          fitVideoSize: appConfig.value.fitVideoSize,
           // fluid: true,
           poster: videoDetail.value?.cover,
-          playbackRate: [0.5, 1, 1.25, 1.5, 2, 3],
-          defaultPlaybackRate: 1,
-          pip: true,
-          // miniplayer: true,
+          playbackRate: config.playbackRates,
+          defaultPlaybackRate: appConfig.value.playbackRate,
+          pip: appConfig.value.pip,
+          miniplayer: appConfig.value.miniplayer,
           enableContextmenu: true,
+          lang: "zh-cn",
+          volume: appConfig.value.volume / 100,
           // download: true
         };
         if (String(options.url).indexOf(".m3u8") !== -1) {
@@ -64,12 +72,21 @@ export default defineComponent({
         } else {
           videoPlayer = new Player(options);
         }
+
+        // 视频加载完成做处理
+        // videoPlayer.once("complete", () => {
+        //   setTimeout(() => {
+        //     videoPlayer.play();
+        //   }, 100);
+        // });
       }, 100);
     }
 
     function fetchData() {
-      getVideoDetail(props.videoId).then(() => {
+      getVideoDetail(props.videoId).then(data => {
         createPlayer();
+        // 推荐
+        getRecommendByCategoryId(data.category_id);
       });
     }
 
@@ -94,8 +111,8 @@ export default defineComponent({
 
     return () => (
       <>
-        <div class="video-player mar-b-5-item d-flex justify-center align-items-center">
-          <div ref={el} />
+        <div class="video-player-container mar-b-5-item d-flex justify-center align-items-center">
+          <div ref={el} class="video-player" />
         </div>
         <div class="d-flex align-items-center mar-b-5">
           <h1 class="font-xlg mar-r-2-item">{videoDetail.value?.title}</h1>
@@ -109,6 +126,7 @@ export default defineComponent({
             router.replace({ name: "play", params: { videoId: props.videoId, playId } });
           }}
         />
+        <RecommendList />
       </>
     );
   },

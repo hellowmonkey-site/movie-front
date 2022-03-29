@@ -3,7 +3,8 @@ import { PageData } from "@/config/type";
 import { getFullUrl } from "@/helper";
 import fly from "flyio";
 import { ref } from "vue";
-import { defaultPageData } from "./common";
+import { categorys } from "./category";
+import { appConfig, defaultPageData } from "./common";
 import { IPlay } from "./playlist";
 
 export interface IVideo {
@@ -42,6 +43,20 @@ export function getRecommendVideos(page = 1) {
 export function getCategoryVideos(category: string, page = 1) {
   return fly.get<PageData<IVideo>>("video/category", { category, page }).then(data => data.data);
 }
+export const recommendCategoryVideos = ref<IVideo[]>([]);
+export function getRecommendByCategoryId(categoryId: number) {
+  if (!appConfig.value.recommend) {
+    return null;
+  }
+  const category = categorys.value.find(v => v.id === Number(categoryId));
+  if (category) {
+    return getCategoryVideos(category.url).then(data => {
+      recommendCategoryVideos.value = data.data;
+      return data;
+    });
+  }
+  return null;
+}
 
 // 详情
 export const videoDetail = ref<IVideoDetail>();
@@ -53,7 +68,14 @@ export function getVideoDetail(id: number) {
       return {
         ...data,
         cover: getFullUrl(config.baseURL, data.cover),
-        playlist: Array.from(data.playlist).sort((a, b) => (a.title > b.title ? 1 : -1)),
+        playlist: Array.from(data.playlist).sort((a, b) => {
+          const na = parseInt(a.title);
+          const nb = parseInt(b.title);
+          if (!Number.isNaN(na) && !Number.isNaN(nb)) {
+            return na - nb;
+          }
+          return a.title > b.title ? 1 : -1;
+        }),
       };
     })
     .then(data => {
