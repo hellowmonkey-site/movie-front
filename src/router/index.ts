@@ -42,6 +42,16 @@ const router = createRouter({
           name: "search",
           component: () => import("@/page/search"),
         },
+        {
+          path: "/search/history",
+          name: "search-history",
+          component: () => import("@/page/search-history"),
+        },
+        {
+          path: "/play/history",
+          name: "play-history",
+          component: () => import("@/page/play-history"),
+        },
       ],
     },
     { path: "/:pathMatch(.*)*", name: "NotFound", component: () => import("@/page/404") },

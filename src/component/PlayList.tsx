@@ -1,3 +1,4 @@
+import { playHistoryIds } from "@/service/history";
 import { IPlay, IPlayListGroup } from "@/service/playlist";
 import { NButton, NGrid, NGridItem, NSpace, NTabPane, NTabs } from "naive-ui";
 import { computed, defineComponent, onMounted, PropType, ref, watch } from "vue";
@@ -50,24 +51,30 @@ export default defineComponent({
 
     return () => (
       <NTabs type="card" size="large" v-model={[activeTab.value, "value"]}>
-        {playlist.value.map(item => (
-          <NTabPane tab={item.circuit_name} name={item.circuit_id}>
-            <NGrid cols="2 s:3 m:6 l:8 xl:12" xGap={10} yGap={10} responsive="screen">
-              {item.list.map(v => (
-                <NGridItem>
-                  <NButton
-                    size="large"
-                    block
-                    onClick={() => ctx.emit("click", v)}
-                    type={Number(props.playId) === v.id ? "primary" : "default"}
-                  >
-                    {v.title}
-                  </NButton>
-                </NGridItem>
-              ))}
-            </NGrid>
-          </NTabPane>
-        ))}
+        {playlist.value.map(item => {
+          return (
+            <NTabPane tab={item.circuit_name} name={item.circuit_id} key={item.circuit_id}>
+              <NGrid cols="2 s:3 m:6 l:8 xl:12" xGap={10} yGap={10} responsive="screen">
+                {item.list.map(v => {
+                  const seed = playHistoryIds.value.includes(v.id);
+                  return (
+                    <NGridItem key={v.id}>
+                      <NButton
+                        size="large"
+                        block
+                        onClick={() => ctx.emit("click", v)}
+                        type={Number(props.playId) === v.id || seed ? "primary" : "default"}
+                        ghost={seed}
+                      >
+                        {v.title}
+                      </NButton>
+                    </NGridItem>
+                  );
+                })}
+              </NGrid>
+            </NTabPane>
+          );
+        })}
       </NTabs>
     );
   },

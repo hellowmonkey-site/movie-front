@@ -23,6 +23,15 @@ a {
   max-width: 500px;
 }
 
+#nprogress .bar {
+  background: #18a058;
+}
+
+#nprogress .spinner-icon {
+  border-left-color: #18a058;
+  border-top-color: #18a058;
+}
+
 .empty-box {
   height: 70vh;
   display: flex;

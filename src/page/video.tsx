@@ -91,7 +91,7 @@ export default defineComponent({
             {video.value ? (
               <>
                 {infoList.value.map(info => (
-                  <div class="mar-b-4-item d-flex">
+                  <div class="mar-b-4-item d-flex" key={info.value}>
                     <span class="font-gray font-small mar-r-3">{info.text}</span>
                     <span class="flex-item-extend">{info.value}</span>
                   </div>
@@ -119,7 +119,7 @@ export default defineComponent({
             ) : (
               <>
                 {new Array(5).fill(1).map((v, i) => (
-                  <NSkeleton height="20px" text class="mar-b-3-item"></NSkeleton>
+                  <NSkeleton height="20px" text class="mar-b-3-item" key={i}></NSkeleton>
                 ))}
                 <NSkeleton height="100px" text></NSkeleton>
               </>

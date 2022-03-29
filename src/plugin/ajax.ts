@@ -3,7 +3,7 @@ import config from "@/config";
 import { filterObject, getType } from "@/helper";
 import { isEmpty, isRealEmpty } from "@/helper/validate";
 import { KeyType, ResponseData } from "@/config/type";
-import { notification, dialog } from "@/service/common";
+import { notification, dialog, appConfig } from "@/service/common";
 
 // request拦截器
 flyio.interceptors.request.use(conf => {
@@ -11,6 +11,9 @@ flyio.interceptors.request.use(conf => {
   conf.headers = {
     ...conf.headers,
     "Content-Type": "application/json;charset=UTF-8",
+    app_id: config.appId,
+    search_log: appConfig.value.searchLog ? 1 : 0,
+    play_log: appConfig.value.playLog ? 1 : 0,
   };
   conf.timeout = 0;
   // 参数处理

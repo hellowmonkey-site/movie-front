@@ -3,7 +3,8 @@ import VideoItem from "@/component/VideoItem";
 import { PageData } from "@/config/type";
 import { defaultPageData } from "@/service/common";
 import { getVideoSearch, IVideo } from "@/service/video";
-import { NEmpty, NGrid, NGridItem, NH2, NPagination, NSpin, NText } from "naive-ui";
+import { getSearchHistory, searchHistorys } from "@/service/history";
+import { NButton, NEmpty, NGrid, NGridItem, NH2, NPagination, NSpace, NSpin, NText } from "naive-ui";
 import { defineComponent, onMounted, ref } from "vue";
 import { onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
 
@@ -35,6 +36,9 @@ export default defineComponent({
 
     onMounted(() => {
       fetchData();
+      if (!route.query.keywords) {
+        getSearchHistory();
+      }
     });
 
     onBeforeRouteUpdate(to => {
@@ -65,7 +69,7 @@ export default defineComponent({
                     <NGrid cols="2 s:3 m:4 l:5 xl:6" xGap={10} yGap={10} responsive="screen">
                       {videos.value.data.map(item => {
                         return (
-                          <NGridItem>
+                          <NGridItem key={item.id}>
                             <VideoItem video={item}></VideoItem>
                           </NGridItem>
                         );
@@ -97,7 +101,21 @@ export default defineComponent({
               )}
             </NSpin>
           </>
-        ) : null}
+        ) : (
+          <NSpace class="text-center" justify="center">
+            {searchHistorys.value.map(v => (
+              <NButton
+                key={v}
+                round
+                onClick={() => {
+                  router.push({ name: "search", query: { keywords: v } });
+                }}
+              >
+                {v}
+              </NButton>
+            ))}
+          </NSpace>
+        )}
       </>
     );
   },

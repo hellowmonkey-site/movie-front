@@ -32,7 +32,7 @@ export default defineComponent({
                 <NGrid cols="2 s:3 m:4 l:5 xl:6" xGap={10} yGap={10} responsive="screen">
                   {recommendVideos.value.data.map(item => {
                     return (
-                      <NGridItem>
+                      <NGridItem key={item.id}>
                         <VideoItem video={item}></VideoItem>
                       </NGridItem>
                     );

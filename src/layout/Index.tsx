@@ -1,6 +1,15 @@
 import { isIE } from "@/helper/validate";
 import { categorys } from "@/service/category";
-import { appConfig, fitVideoSizes, isMobileWidth, menuCollapsed, setAppConfig, setDialog, setNotification } from "@/service/common";
+import {
+  appConfig,
+  fitVideoSizes,
+  isMobileWidth,
+  menuCollapsed,
+  setAppConfig,
+  setDialog,
+  setNotification,
+  ThemeTypes,
+} from "@/service/common";
 import { changeThemeType, globalTheme, themeTypes } from "@/service/common";
 import {
   MenuOption,
@@ -21,12 +30,17 @@ import {
   NTooltip,
   useDialog,
   useNotification,
+  useOsTheme,
 } from "naive-ui";
 import { computed, defineComponent, onMounted, ref } from "vue";
 import { RouterLink, RouterView, useRoute, useRouter } from "vue-router";
 import {
+  ContentPasteSearchOutlined,
+  HistoryOutlined,
   HomeFilled,
   MovieFilterFilled,
+  PersonFilled,
+  PersonOutlineOutlined,
   SearchFilled,
   SearchOutlined,
   SettingsFilled,
@@ -45,6 +59,7 @@ export default defineComponent({
   setup: (props, ctx) => {
     const route = useRoute();
     const router = useRouter();
+    const os = useOsTheme();
 
     const notification = useNotification();
     const dialog = useDialog();
@@ -77,7 +92,7 @@ export default defineComponent({
           );
         },
       };
-      const list = categorys.value
+      const list: MenuOption[] = categorys.value
         .filter(v => v.parent_id === 0)
         .map(item => {
           const children = categorys.value
@@ -126,7 +141,7 @@ export default defineComponent({
     config.playbackRates
       .map(v => String(v))
       .forEach((v: string) => {
-        marks[String(v)] = `${String(v)}x`;
+        marks[String(v)] = String(v);
       });
 
     // 默认打开菜单
@@ -186,7 +201,33 @@ export default defineComponent({
                   }}
                 </NTooltip>
               ) : null}
-              <NDropdown options={themeTypes} trigger="click" onSelect={e => changeThemeType(e)}>
+              <NDropdown
+                options={themeTypes.map(v => {
+                  return {
+                    ...v,
+                    icon() {
+                      switch (v.key) {
+                        case ThemeTypes.OS:
+                          return <NIcon>{os.value === "dark" ? <WbSunnyFilled /> : <WbSunnyOutlined />}</NIcon>;
+                        case ThemeTypes.LIGHT:
+                          return (
+                            <NIcon>
+                              <WbSunnyOutlined />
+                            </NIcon>
+                          );
+                        case ThemeTypes.DARK:
+                          return (
+                            <NIcon>
+                              <WbSunnyFilled />
+                            </NIcon>
+                          );
+                      }
+                    },
+                  };
+                })}
+                trigger="click"
+                onSelect={e => changeThemeType(e)}
+              >
                 <NTooltip>
                   {{
                     default: () => <span>选择主题</span>,
@@ -194,6 +235,50 @@ export default defineComponent({
                       <NButton size="large" class="mar-r-3-item" circle>
                         {{
                           icon: () => <NIcon>{globalTheme.value === null ? <WbSunnyOutlined /> : <WbSunnyFilled />}</NIcon>,
+                        }}
+                      </NButton>
+                    ),
+                  }}
+                </NTooltip>
+              </NDropdown>
+              <NDropdown
+                options={[
+                  {
+                    label: "观看历史",
+                    key: "play-history",
+                    icon() {
+                      return (
+                        <NIcon>
+                          <HistoryOutlined />
+                        </NIcon>
+                      );
+                    },
+                  },
+                  {
+                    label: "搜索历史",
+                    key: "search-history",
+                    icon() {
+                      return (
+                        <NIcon>
+                          <ContentPasteSearchOutlined />
+                        </NIcon>
+                      );
+                    },
+                  },
+                ]}
+                trigger="click"
+                onSelect={name => {
+                  console.log(name);
+                  router.push({ name });
+                }}
+              >
+                <NTooltip>
+                  {{
+                    default: () => <span>个人信息</span>,
+                    trigger: () => (
+                      <NButton size="large" class="mar-r-3-item" circle>
+                        {{
+                          icon: () => <NIcon>{globalTheme.value === null ? <PersonOutlineOutlined /> : <PersonFilled />}</NIcon>,
                         }}
                       </NButton>
                     ),
@@ -238,7 +323,7 @@ export default defineComponent({
           </NLayout>
         </NLayout>
         <NDrawer v-model={[settingOpen.value, "show"]} class="setting-drawer" width="90vw">
-          <NDrawerContent title="系统设置" closable>
+          <NDrawerContent title="系统设置" closable nativeScrollbar={false}>
             <NDivider titlePlacement="left">主题</NDivider>
             <div class="d-flex justify-between align-items-center mar-b-6-item">
               <span class="font-gray font-small mar-r-7 flex-item-extend">默认主题</span>
@@ -324,6 +409,15 @@ export default defineComponent({
                 }}
               ></NSwitch>
             </div>
+            <div class="d-flex justify-between align-items-center mar-b-6-item">
+              <span class="font-gray font-small mar-r-7 flex-item-extend">自动播放下一集</span>
+              <NSwitch
+                value={appConfig.value.autoNext}
+                onUpdateValue={autoNext => {
+                  setAppConfig({ autoNext });
+                }}
+              ></NSwitch>
+            </div>
             <NDivider titlePlacement="left">推荐</NDivider>
             <div class="d-flex justify-between align-items-center mar-b-6-item">
               <span class="font-gray font-small mar-r-7 flex-item-extend">开启相关推荐</span>
@@ -331,6 +425,25 @@ export default defineComponent({
                 value={appConfig.value.recommend}
                 onUpdateValue={recommend => {
                   setAppConfig({ recommend });
+                }}
+              ></NSwitch>
+            </div>
+            <NDivider titlePlacement="left">历史</NDivider>
+            <div class="d-flex justify-between align-items-center mar-b-6-item">
+              <span class="font-gray font-small mar-r-7 flex-item-extend">记录搜索历史</span>
+              <NSwitch
+                value={appConfig.value.searchLog}
+                onUpdateValue={searchLog => {
+                  setAppConfig({ searchLog });
+                }}
+              ></NSwitch>
+            </div>
+            <div class="d-flex justify-between align-items-center mar-b-6-item">
+              <span class="font-gray font-small mar-r-7 flex-item-extend">记录观看历史</span>
+              <NSwitch
+                value={appConfig.value.playLog}
+                onUpdateValue={playLog => {
+                  setAppConfig({ playLog });
                 }}
               ></NSwitch>
             </div>

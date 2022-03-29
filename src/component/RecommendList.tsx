@@ -32,7 +32,7 @@ export default function RecommendList({ videoId }: IProp) {
         <NGrid cols="2 s:3 m:4 l:5 xl:6" xGap={10} yGap={10} responsive="screen">
           {list.value.map(item => {
             return (
-              <NGridItem>
+              <NGridItem key={item.id}>
                 <VideoItem video={item}></VideoItem>
               </NGridItem>
             );

@@ -71,8 +71,16 @@ export interface IConfig {
   // 小窗口
   miniplayer: boolean;
 
+  // 自动播放下一集
+  autoNext: boolean;
+
   // 推荐
   recommend: boolean;
+
+  // 搜索历史
+  searchLog: boolean;
+  // 观看历史
+  playLog: boolean;
 }
 export const fitVideoSizes = [
   {
@@ -97,6 +105,9 @@ export const defaultConfig: IConfig = {
   recommend: true,
   playbackRate: 1,
   fitVideoSize: "fixHeight",
+  searchLog: true,
+  playLog: true,
+  autoNext: true,
 };
 let localConfig = localStorage.get<IConfig>("appConfig") || defaultConfig;
 if (typeof localConfig === "string" || Array.isArray(localConfig)) {
@@ -139,6 +150,15 @@ export function setAppConfig(params: Partial<IConfig>) {
   }
   if (params.recommend !== undefined) {
     appConfig.value.recommend = Boolean(params.recommend);
+  }
+  if (params.searchLog !== undefined) {
+    appConfig.value.searchLog = Boolean(params.searchLog);
+  }
+  if (params.playLog !== undefined) {
+    appConfig.value.playLog = Boolean(params.playLog);
+  }
+  if (params.autoNext !== undefined) {
+    appConfig.value.autoNext = Boolean(params.autoNext);
   }
   localStorage.set("appConfig", appConfig.value);
 }
