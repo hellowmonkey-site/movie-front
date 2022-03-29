@@ -58,7 +58,8 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach(to => {
+router.beforeEach(() => {
+  document.querySelector(".n-back-top")?.dispatchEvent(new Event("click"));
   NProgress.start();
   return true;
 });

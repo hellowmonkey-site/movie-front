@@ -9,11 +9,13 @@ import {
   setAppConfig,
   setDialog,
   setNotification,
+  themeColors,
   ThemeTypes,
 } from "@/service/common";
 import { changeThemeType, globalTheme, themeTypes } from "@/service/common";
 import {
   MenuOption,
+  NBackTop,
   NButton,
   NDivider,
   NDrawer,
@@ -26,6 +28,7 @@ import {
   NMenu,
   NRadio,
   NRadioGroup,
+  NSelect,
   NSlider,
   NSwitch,
   NTooltip,
@@ -352,6 +355,7 @@ export default defineComponent({
               <div class="pad-4">
                 <RouterView />
               </div>
+              <NBackTop visibilityHeight={10} />
             </NLayout>
           </NLayout>
         </NLayout>
@@ -373,6 +377,27 @@ export default defineComponent({
                   </NRadio>
                 ))}
               </NRadioGroup>
+            </div>
+            <div class="d-flex justify-between align-items-center mar-b-6-item">
+              <span class="font-gray font-small mar-r-7 flex-item-extend">主题颜色</span>
+              <NSelect
+                style={{ width: "65%" }}
+                value={appConfig.value.themeColor}
+                onUpdateValue={themeColor => setAppConfig({ themeColor })}
+                options={themeColors.map(v => {
+                  return {
+                    label() {
+                      return (
+                        <div class="d-flex align-items-center">
+                          <span class="color-box mar-r-3-item" style={{ backgroundColor: v.color }}></span>
+                          <span>{v.label}</span>
+                        </div>
+                      );
+                    },
+                    value: v.key,
+                  };
+                })}
+              ></NSelect>
             </div>
             <NDivider titlePlacement="left">播放器</NDivider>
             <div class="d-flex justify-between align-items-center mar-b-6-item">

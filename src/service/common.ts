@@ -53,10 +53,56 @@ export const themeTypes = [
   },
 ];
 
+export const enum ThemeColors {
+  RED = "red",
+  GREEN = "green",
+  BLUE = "blue",
+  YELLOW = "yellow",
+  PURPLE = "purple",
+}
+export const themeColors = [
+  {
+    label: "红色",
+    key: ThemeColors.RED,
+    color: "#f5222d",
+    hoverColor: "#ff3b45",
+    pressedColor: "#e01a24",
+  },
+  {
+    label: "绿色",
+    key: ThemeColors.GREEN,
+    color: "#18a058",
+    hoverColor: "#24b86a",
+    pressedColor: "#1a7f4a",
+  },
+  {
+    label: "蓝色",
+    key: ThemeColors.BLUE,
+    color: "#2f54eb",
+    hoverColor: "#4e6ef2",
+    pressedColor: "#2e49ba",
+  },
+  {
+    label: "黄色",
+    key: ThemeColors.YELLOW,
+    color: "#dcbf00",
+    hoverColor: "#dbc433",
+    pressedColor: "#c1aa14",
+  },
+  {
+    label: "紫色",
+    key: ThemeColors.PURPLE,
+    color: "#722ed1",
+    hoverColor: "#934af8",
+    pressedColor: "#5a1fab",
+  },
+];
+
 // 个性化配置
 export interface IConfig {
   // 主题
   themeType: ThemeTypes;
+  themeColor: ThemeColors;
 
   // 视频
   // 音量
@@ -99,6 +145,7 @@ export const fitVideoSizes = [
 ];
 export const defaultConfig: IConfig = {
   themeType: ThemeTypes.OS,
+  themeColor: ThemeColors.GREEN,
   volume: 60,
   autoplay: true,
   pip: true,
@@ -120,6 +167,12 @@ export function setAppConfig(params: Partial<IConfig>) {
     const value = params.themeType;
     if (themeTypes.some(v => v.key === value)) {
       appConfig.value.themeType = value;
+    }
+  }
+  if (params.themeColor !== undefined) {
+    const value = params.themeColor;
+    if (themeColors.some(v => v.key === value)) {
+      appConfig.value.themeColor = value;
     }
   }
   if (params.volume !== undefined) {

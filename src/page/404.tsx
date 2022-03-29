@@ -8,7 +8,7 @@ export default defineComponent({
   setup: (props, ctx) => {
     return () => (
       <div class="full-height-vh d-flex direction-column align-items-center justify-center" style={{ paddingBottom: "20vh" }}>
-        <NResult status="404" title="404 资源不存在" description="生活总归带点荒谬">
+        <NResult status="404" title="页面不存在" description="是不是在瞎捣鼓些什么东西呢？">
           {{
             footer() {
               return <NButton onClick={e => router.replace("/")}>返回首页</NButton>;
