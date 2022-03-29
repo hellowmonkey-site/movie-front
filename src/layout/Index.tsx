@@ -2,6 +2,7 @@ import { isIE } from "@/helper/validate";
 import { categorys } from "@/service/category";
 import {
   appConfig,
+  canInstall,
   fitVideoSizes,
   isMobileWidth,
   menuCollapsed,
@@ -29,12 +30,15 @@ import {
   NSwitch,
   NTooltip,
   useDialog,
+  useMessage,
   useNotification,
   useOsTheme,
 } from "naive-ui";
 import { computed, defineComponent, onMounted, ref } from "vue";
 import { RouterLink, RouterView, useRoute, useRouter } from "vue-router";
 import {
+  CloudDownloadFilled,
+  CloudDownloadOutlined,
   ContentPasteSearchOutlined,
   HistoryOutlined,
   HomeFilled,
@@ -52,6 +56,7 @@ import SearchInput from "@/component/SearchInput";
 import Logo from "@/static/image/logo.png";
 import config from "@/config";
 import { version } from "../../package.json";
+import pwaInstallHandler from "pwa-install-handler";
 
 export default defineComponent({
   props: {},
@@ -60,6 +65,7 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const os = useOsTheme();
+    const message = useMessage();
 
     const notification = useNotification();
     const dialog = useDialog();
@@ -180,6 +186,33 @@ export default defineComponent({
             </RouterLink>
             {route.name === "search" || isMobileWidth.value ? null : <SearchInput />}
             <div class="flex-item-extend d-flex justify-end">
+              {canInstall.value ? (
+                <NTooltip>
+                  {{
+                    default: () => <span>下载应用</span>,
+                    trigger: () => (
+                      <NButton
+                        size="large"
+                        class="mar-r-3-item"
+                        circle
+                        onClick={() => {
+                          pwaInstallHandler.install().then(installed => {
+                            if (installed) {
+                              message.success("恭喜您安装成功~");
+                            } else {
+                              message.error("真的不打算安装么？");
+                            }
+                          });
+                        }}
+                      >
+                        {{
+                          icon: () => <NIcon>{globalTheme.value === null ? <CloudDownloadOutlined /> : <CloudDownloadFilled />}</NIcon>,
+                        }}
+                      </NButton>
+                    ),
+                  }}
+                </NTooltip>
+              ) : null}
               {isMobileWidth.value ? (
                 <NTooltip>
                   {{

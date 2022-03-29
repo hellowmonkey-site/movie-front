@@ -3116,6 +3116,11 @@ punycode@^2.1.0, punycode@^2.1.1:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
+pwa-install-handler@^2.1.6:
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/pwa-install-handler/-/pwa-install-handler-2.1.6.tgz#1f6f7b0d1c0c900c9878e00d36f94e1305e458b6"
+  integrity sha512-D85m1K6O8Cx/hyVyUbxuntMqlYNr2V4XrRi3K3PI4T9nohkT4+ZheZUvkUcuj937tzrhPmjV4Y19Xxq+KSMdzg==
+
 qs@~6.5.2:
   version "6.5.3"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.3.tgz#3aeeffc91967ef6e35c0e488ef46fb296ab76aad"

@@ -1,5 +1,7 @@
 {
-  "name": "template",
+  "name": "movie-front",
+  "description": "有点好看，干干净净的视频在线播放应用",
+  "author": "Parker",
   "private": true,
   "version": "0.1.5",
   "scripts": {
@@ -15,6 +17,7 @@
     "naive-ui": "^2.26.4",
     "normalize.css": "^8.0.1",
     "nprogress": "^0.2.0",
+    "pwa-install-handler": "^2.1.6",
     "reset-css": "^5.0.1",
     "vfonts": "^0.0.3",
     "vue": "^3.2.25",

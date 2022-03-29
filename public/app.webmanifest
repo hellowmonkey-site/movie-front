@@ -1,0 +1,16 @@
+{
+  "name": "沃德影视",
+  "short_name": "沃德影视",
+  "description": "有点好看，干干净净的视频在线播放应用",
+  "icons": [
+    {
+      "src": "/launcher.png",
+      "sizes": "495x495",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/index.html",
+  "display": "fullscreen",
+  "theme_color": "#18a058",
+  "background_color": "#ffffff"
+}

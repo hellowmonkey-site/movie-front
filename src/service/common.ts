@@ -6,6 +6,7 @@ import { computed, ref } from "vue";
 import { darkTheme, GlobalTheme, useOsTheme } from "naive-ui";
 import { IPlayerOptions } from "xgplayer";
 import { localStorage } from "@/helper/storage";
+import pwaInstallHandler from "pwa-install-handler";
 
 const os = useOsTheme();
 
@@ -180,4 +181,10 @@ export const globalTheme = computed<GlobalTheme | null>(() => {
     return darkTheme;
   }
   return null;
+});
+
+// 应用下载
+export const canInstall = ref<boolean>(false);
+pwaInstallHandler.addListener(can => {
+  canInstall.value = Boolean(can);
 });
