@@ -1,6 +1,7 @@
 import Description from "@/component/Description";
 import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
+import { FailImg } from "@/service/common";
 import { getInfoList, getRecommendByCategoryId, getVideoDetail, IVideoDetail } from "@/service/video";
 import { NButton, NImage, NSkeleton } from "naive-ui";
 import { computed, defineComponent, onMounted, PropType, ref } from "vue";
@@ -45,7 +46,7 @@ export default defineComponent({
         <div class="video-info d-flex mar-b-5-item">
           <div class="video-cover">
             {video.value ? (
-              <NImage src={video.value?.cover} objectFit="fill" class="full-width"></NImage>
+              <NImage src={video.value?.cover} objectFit="fill" fallbackSrc={FailImg} class="full-width"></NImage>
             ) : (
               <NSkeleton height="400px"></NSkeleton>
             )}

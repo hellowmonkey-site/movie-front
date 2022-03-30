@@ -83,7 +83,7 @@ export default defineComponent({
             </>
           ) : (
             <div class="empty-box">
-              {categorys.value.length ? (
+              {categorys.value.length && !title.value ? (
                 <NResult status="404" title="分类不存在" description="别瞎搞好吧..."></NResult>
               ) : (
                 <NEmpty description="暂无数据"></NEmpty>

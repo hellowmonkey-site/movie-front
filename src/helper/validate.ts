@@ -8,7 +8,10 @@ export const isRealEmpty = (data: any) => {
 
 // 是不是链接
 export const isUrl = (url: string) => {
-  return /^((https?|ftp|file):\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/.test(url);
+  if (!url) {
+    return false;
+  }
+  return /^https?:\/\/.+/.test(url);
 };
 
 // 是不是email

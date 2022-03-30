@@ -1,7 +1,7 @@
 import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
 import config from "@/config";
-import { appConfig, menuCollapsed, setAppConfig } from "@/service/common";
+import { appConfig, FailImg, menuCollapsed, setAppConfig } from "@/service/common";
 import { ThemeTypes } from "@/service/common";
 import { postPlayLog } from "@/service/history";
 import { getInfoList, getRecommendByCategoryId, getVideoDetail, videoDetail } from "@/service/video";
@@ -166,7 +166,7 @@ export default defineComponent({
           <NCollapseTransition show={toggleCollapse.value}>
             <div class="video-info video-info-small d-flex">
               <div class="video-cover">
-                <NImage src={videoDetail.value?.cover} objectFit="fill" class="full-width"></NImage>
+                <NImage src={videoDetail.value?.cover} objectFit="fill" fallbackSrc={FailImg} class="full-width"></NImage>
               </div>
               <div class="flex-item-extend d-flex direction-column">
                 {infoList.value.map(info => (

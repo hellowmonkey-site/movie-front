@@ -1,42 +1,47 @@
+import { defineComponent, PropType } from "vue";
 import config from "@/config";
 import { getFullUrl } from "@/helper";
-import { isUrl } from "@/helper/validate";
 import { IVideo } from "@/service/video";
-import { NCard } from "naive-ui";
-import { RouterLink } from "vue-router";
+import { NImage } from "naive-ui";
+import { useRouter } from "vue-router";
+import { FailImg } from "@/service/common";
 
-interface IProp {
-  video: IVideo;
-  tag?: "category" | "definition";
-}
-export default function VideoItem({ video, tag = "category" }: IProp) {
-  return (
-    <NCard class="video-item" hoverable>
-      {{
-        cover: () => {
-          let cover = video.cover;
-          if (!isUrl(cover)) {
-            cover = getFullUrl(config.baseURL, cover);
-          }
-          return (
-            <RouterLink
-              to={{ name: "video", params: { videoId: video.id } }}
-              class="bg-cover pos-rel"
-              style={{ backgroundImage: `url('${cover}')` }}
-            >
-              <div class="tag font-small">{video[tag]}</div>
-            </RouterLink>
-          );
-        },
-        default: () => (
-          <div class="text-elip">
-            <RouterLink to={{ name: "video", params: { videoId: video.id } }} class="font-large">
-              {video.title}
-            </RouterLink>
+export default defineComponent({
+  props: {
+    video: {
+      type: Object as PropType<IVideo>,
+      default: undefined,
+    },
+    tag: {
+      type: String as PropType<"category" | "definition">,
+      default: "category",
+    },
+  },
+  emits: [],
+  setup: (props, ctx) => {
+    const router = useRouter();
+    return () => {
+      if (!props.video) {
+        return null;
+      }
+      const cover = getFullUrl(config.baseURL, props.video.cover);
+      return (
+        <div
+          class="video-item"
+          onClick={() => {
+            router.push({ name: "video", params: { videoId: props.video?.id } });
+          }}
+        >
+          <div class="cover mar-b-4-item">
+            <NImage src={cover} previewDisabled fallbackSrc={FailImg} objectFit="cover" class="full-width full-height" />
+            {props.tag ? <div class="tag font-small">{props.video[props.tag]}</div> : null}
           </div>
-        ),
-        action: () => <div class="font-small text-elip font-gray">{video.actress}</div>,
-      }}
-    </NCard>
-  );
-}
+          <div class="content">
+            <h2 class="font-large text-elip mar-b-2-item">{props.video.title}</h2>
+            <div class="font-gray font-small text-elip">{props.video.actress}</div>
+          </div>
+        </div>
+      );
+    };
+  },
+});
