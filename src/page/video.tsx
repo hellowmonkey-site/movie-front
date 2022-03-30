@@ -1,8 +1,7 @@
 import Description from "@/component/Description";
 import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
-import { addZero } from "@/helper";
-import { getRecommendByCategoryId, getVideoDetail, IVideoDetail } from "@/service/video";
+import { getInfoList, getRecommendByCategoryId, getVideoDetail, IVideoDetail } from "@/service/video";
 import { NButton, NImage, NSkeleton } from "naive-ui";
 import { computed, defineComponent, onMounted, PropType, ref } from "vue";
 import { onBeforeRouteUpdate, useRouter } from "vue-router";
@@ -19,42 +18,7 @@ export default defineComponent({
     const router = useRouter();
     const video = ref<IVideoDetail>();
     const infoList = computed(() => {
-      let publishedAt = "";
-      if (video.value?.published_at) {
-        const dt = new Date(video.value.published_at * 1000);
-        const arr = [dt.getFullYear(), addZero(dt.getMonth() + 1), addZero(dt.getDate())];
-        publishedAt = arr.join("-");
-      }
-      return [
-        {
-          text: "分类",
-          value: video.value?.category,
-        },
-        {
-          text: "演员",
-          value: video.value?.actress,
-        },
-        {
-          text: "导演",
-          value: video.value?.director,
-        },
-        {
-          text: "清晰度",
-          value: video.value?.definition,
-        },
-        {
-          text: "地区",
-          value: video.value?.area,
-        },
-        {
-          text: "时长",
-          value: video.value?.druation,
-        },
-        {
-          text: "发布时间",
-          value: publishedAt,
-        },
-      ].filter(v => !!v.value);
+      return getInfoList(video.value);
     });
 
     let videoId = Number(props.videoId);

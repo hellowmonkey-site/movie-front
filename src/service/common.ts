@@ -225,12 +225,12 @@ window.addEventListener("resize", e => {
   menuCollapsed.value = isMobileWidth.value;
 });
 
-export const themeType = ref<ThemeTypes>(appConfig.value.themeType);
-export function changeThemeType(type: ThemeTypes) {
-  themeType.value = type;
-}
+// export const themeType = ref<ThemeTypes>(appConfig.value.themeType);
+// export function changeThemeType(type: ThemeTypes) {
+//   themeType.value = type;
+// }
 export const globalTheme = computed<GlobalTheme | null>(() => {
-  if (themeType.value === ThemeTypes.DARK || (themeType.value === ThemeTypes.OS && os.value === "dark")) {
+  if (appConfig.value.themeType === ThemeTypes.DARK || (appConfig.value.themeType === ThemeTypes.OS && os.value === "dark")) {
     return darkTheme;
   }
   return null;

@@ -12,7 +12,7 @@ import {
   themeColors,
   ThemeTypes,
 } from "@/service/common";
-import { changeThemeType, globalTheme, themeTypes } from "@/service/common";
+import { globalTheme, themeTypes } from "@/service/common";
 import {
   MenuOption,
   NBackTop,
@@ -60,6 +60,8 @@ import Logo from "@/static/image/logo.png";
 import config from "@/config";
 import { version } from "../../package.json";
 import pwaInstallHandler from "pwa-install-handler";
+import { videoDetail } from "@/service/video";
+import category from "@/page/category";
 
 export default defineComponent({
   props: {},
@@ -78,11 +80,18 @@ export default defineComponent({
     const settingOpen = ref(false);
 
     const selectedMenu = computed(() => {
-      if (route.name === "index") {
+      const { name } = route;
+      if (name === "index") {
         return "index";
       }
-      if (route.name === "category") {
+      if (name === "category") {
         return String(route.params.category) || null;
+      }
+      if ((name === "video" || name === "play") && videoDetail.value) {
+        const category = categorys.value.find(v => v.id === videoDetail.value?.category_id);
+        if (category) {
+          return category.url;
+        }
       }
       return null;
     });
@@ -262,7 +271,9 @@ export default defineComponent({
                   };
                 })}
                 trigger="click"
-                onSelect={e => changeThemeType(e)}
+                onSelect={themeType => {
+                  setAppConfig({ themeType });
+                }}
               >
                 <NTooltip>
                   {{
@@ -363,12 +374,12 @@ export default defineComponent({
           <NDrawerContent title="系统设置" closable nativeScrollbar={false}>
             <NDivider titlePlacement="left">主题</NDivider>
             <div class="d-flex justify-between align-items-center mar-b-6-item">
-              <span class="font-gray font-small mar-r-7 flex-item-extend">默认主题</span>
+              <span class="font-gray font-small mar-r-7 flex-item-extend">选择主题</span>
               <NRadioGroup
                 value={appConfig.value.themeType}
                 onUpdateValue={themeType => {
                   setAppConfig({ themeType });
-                  changeThemeType(themeType);
+                  // changeThemeType(themeType);
                 }}
               >
                 {themeTypes.map(v => (
@@ -390,7 +401,7 @@ export default defineComponent({
                       return (
                         <div class="d-flex align-items-center">
                           <span class="color-box mar-r-3-item" style={{ backgroundColor: v.color }}></span>
-                          <span>{v.label}</span>
+                          <span style={{ color: v.color }}>{v.label}</span>
                         </div>
                       );
                     },

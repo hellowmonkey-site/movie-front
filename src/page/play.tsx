@@ -1,10 +1,12 @@
 import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
 import config from "@/config";
-import { appConfig, menuCollapsed } from "@/service/common";
-import { changeThemeType, themeType, ThemeTypes } from "@/service/common";
+import { appConfig, menuCollapsed, setAppConfig } from "@/service/common";
+import { ThemeTypes } from "@/service/common";
 import { postPlayLog } from "@/service/history";
-import { getRecommendByCategoryId, getVideoDetail, videoDetail } from "@/service/video";
+import { getInfoList, getRecommendByCategoryId, getVideoDetail, videoDetail } from "@/service/video";
+import { KeyboardArrowDownOutlined, KeyboardArrowUpOutlined } from "@vicons/material";
+import { NCollapseTransition, NIcon, NImage } from "naive-ui";
 import { computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref } from "vue";
 import { onBeforeRouteUpdate, useRouter } from "vue-router";
 import Player, { IPlayerOptions } from "xgplayer";
@@ -33,8 +35,13 @@ export default defineComponent({
       }
       return videoDetail.value.playlist.find(v => v.id === Number(playId.value));
     });
+    const infoList = computed(() => {
+      return getInfoList(videoDetail.value);
+    });
 
-    const oldTheme = themeType.value;
+    const toggleCollapse = ref(false);
+
+    const oldTheme = appConfig.value.themeType;
     const oldCollapsed = menuCollapsed.value;
 
     // const playNextUrls = computed(() => {
@@ -125,13 +132,17 @@ export default defineComponent({
       createPlayer();
       fetchData();
 
-      changeThemeType(ThemeTypes.DARK);
+      setAppConfig({
+        themeType: ThemeTypes.DARK,
+      });
       menuCollapsed.value = true;
     });
 
     onBeforeUnmount(() => {
       videoPlayer?.destroy();
-      changeThemeType(oldTheme);
+      setAppConfig({
+        themeType: oldTheme,
+      });
       menuCollapsed.value = oldCollapsed;
     });
 
@@ -140,10 +151,33 @@ export default defineComponent({
         <div class="video-player-container mar-b-5-item d-flex justify-center align-items-center">
           <div ref={el} class="video-player" />
         </div>
-        <div class="d-flex align-items-center mar-b-5">
-          <h1 class="font-xlg mar-r-2-item">{videoDetail.value?.title}</h1>
-          <span class="font-large font-bold mar-r-2-item font-gray">·</span>
-          <span>{play.value?.title}</span>
+        <div class="mar-b-5">
+          <div class="d-flex justify-between align-items-center mar-b-3-item">
+            <div class="d-flex align-items-center">
+              <h1 class="font-xlg mar-r-2-item">{videoDetail.value?.title}</h1>
+              <span class="font-large font-bold mar-r-2-item font-gray">·</span>
+              <span>{play.value?.title}</span>
+            </div>
+            <div class="d-flex align-items-center cursor-pointer" onClick={() => (toggleCollapse.value = !toggleCollapse.value)}>
+              <span class="font-gray mar-r-1-item font-small">简介</span>
+              <NIcon size={20}>{toggleCollapse.value ? <KeyboardArrowUpOutlined /> : <KeyboardArrowDownOutlined />}</NIcon>
+            </div>
+          </div>
+          <NCollapseTransition show={toggleCollapse.value}>
+            <div class="video-info video-info-small d-flex">
+              <div class="video-cover">
+                <NImage src={videoDetail.value?.cover} objectFit="fill" class="full-width"></NImage>
+              </div>
+              <div class="flex-item-extend d-flex direction-column">
+                {infoList.value.map(info => (
+                  <div class="mar-b-4-item d-flex" key={info.value}>
+                    <span class="font-gray font-small mar-r-3">{info.text}</span>
+                    <span class="flex-item-extend">{info.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </NCollapseTransition>
         </div>
         <PlayList
           playId={play.value?.id}

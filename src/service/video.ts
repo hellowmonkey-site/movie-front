@@ -1,6 +1,6 @@
 import config from "@/config";
 import { PageData } from "@/config/type";
-import { getFullUrl } from "@/helper";
+import { addZero, getFullUrl } from "@/helper";
 import fly from "flyio";
 import { ref } from "vue";
 import { categorys } from "./category";
@@ -25,6 +25,45 @@ export interface IVideo {
 
 export interface IVideoDetail extends IVideo {
   playlist: IPlay[];
+}
+
+export function getInfoList(video?: IVideo) {
+  let publishedAt = "";
+  if (video?.published_at) {
+    const dt = new Date(video.published_at * 1000);
+    const arr = [dt.getFullYear(), addZero(dt.getMonth() + 1), addZero(dt.getDate())];
+    publishedAt = arr.join("-");
+  }
+  return [
+    {
+      text: "分类",
+      value: video?.category,
+    },
+    {
+      text: "演员",
+      value: video?.actress,
+    },
+    {
+      text: "导演",
+      value: video?.director,
+    },
+    {
+      text: "清晰度",
+      value: video?.definition,
+    },
+    {
+      text: "地区",
+      value: video?.area,
+    },
+    {
+      text: "时长",
+      value: video?.druation,
+    },
+    {
+      text: "发布时间",
+      value: publishedAt,
+    },
+  ].filter(v => !!v.value);
 }
 
 // 首页推荐
