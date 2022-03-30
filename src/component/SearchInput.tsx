@@ -1,7 +1,7 @@
 import { SearchFilled } from "@vicons/material";
 import { NButton, NIcon, NInput, NInputGroup } from "naive-ui";
 import { defineComponent, PropType, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   props: {
@@ -10,10 +10,9 @@ export default defineComponent({
       default: "icon",
     },
   },
-  emits: [],
+  emits: ["submit"],
   setup: (props, ctx) => {
     const route = useRoute();
-    const router = useRouter();
     const keywords = ref(route.query.keywords || "");
 
     return () => (
@@ -23,7 +22,7 @@ export default defineComponent({
         style={{ width: "600px" }}
         onSubmit={e => {
           e.preventDefault();
-          router.push({ name: "search", query: { keywords: keywords.value } });
+          ctx.emit("submit", keywords.value);
         }}
       >
         <NInputGroup>

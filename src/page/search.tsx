@@ -24,7 +24,6 @@ export default defineComponent({
         return;
       }
       loading.value = true;
-      videos.value = defaultPageData;
       getVideoSearch(String(keywords), Number(page))
         .then(data => {
           videos.value = data;
@@ -48,7 +47,12 @@ export default defineComponent({
     return () => (
       <>
         <div class="d-flex align-items-center justify-center mar-b-4-item">
-          <SearchInput type="string" />
+          <SearchInput
+            type="string"
+            onSubmit={keywords => {
+              fetchData(keywords);
+            }}
+          />
         </div>
         {route.query.keywords ? (
           <>

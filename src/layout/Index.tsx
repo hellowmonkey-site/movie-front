@@ -195,7 +195,13 @@ export default defineComponent({
             <RouterLink to={{ name: "index" }} class="font-large mar-r-5-item wrap-nowrap">
               沃德影视
             </RouterLink>
-            {route.name === "search" || isMobileWidth.value ? null : <SearchInput />}
+            {route.name === "search" || isMobileWidth.value ? null : (
+              <SearchInput
+                onSubmit={keywords => {
+                  router.push({ name: "search", query: { keywords } });
+                }}
+              />
+            )}
             <div class="flex-item-extend d-flex justify-end">
               {canInstall.value ? (
                 <NTooltip>
