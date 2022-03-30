@@ -88,6 +88,7 @@ a {
   &:hover {
     .cover {
       transform: scale(1.03);
+      filter: saturate(1.5) contrast(120%);
     }
   }
 }
