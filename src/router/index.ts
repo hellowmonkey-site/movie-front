@@ -2,6 +2,7 @@ import NProgress from "nprogress";
 import { createRouter, createWebHistory } from "vue-router";
 
 import Index from "@/layout/Index";
+import { goTop } from "@/helper";
 
 NProgress.inc(0.2);
 NProgress.configure({ easing: "ease", speed: 500, showSpinner: false });
@@ -59,7 +60,7 @@ const router = createRouter({
 });
 
 router.beforeEach(() => {
-  document.querySelector(".n-back-top")?.dispatchEvent(new Event("click"));
+  goTop();
   NProgress.start();
   return true;
 });

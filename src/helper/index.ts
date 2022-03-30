@@ -180,3 +180,8 @@ export const fileToBase64 = (file: File): Promise<FileReader["result"]> => {
     reader.onerror = error => reject(error);
   });
 };
+
+// 回到顶部
+export function goTop() {
+  document.querySelector(".n-back-top")?.dispatchEvent(new Event("click"));
+}

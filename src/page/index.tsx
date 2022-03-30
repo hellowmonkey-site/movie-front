@@ -1,4 +1,5 @@
 import VideoItem from "@/component/VideoItem";
+import { goTop } from "@/helper";
 import { getRecommendVideos, recommendVideos } from "@/service/video";
 import { NEmpty, NGrid, NGridItem, NH2, NPagination, NSpin, NText } from "naive-ui";
 import { defineComponent, onMounted, ref } from "vue";
@@ -44,7 +45,10 @@ export default defineComponent({
                   page={recommendVideos.value.page}
                   pageCount={recommendVideos.value.pageCount}
                   pageSize={recommendVideos.value.pageSize}
-                  onUpdatePage={e => fetchData(e)}
+                  onUpdatePage={page => {
+                    goTop();
+                    fetchData(page);
+                  }}
                 ></NPagination>
               </div>
             </>
