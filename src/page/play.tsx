@@ -79,7 +79,7 @@ export default defineComponent({
           defaultPlaybackRate: appConfig.value.playbackRate,
           pip: appConfig.value.pip,
           miniplayer: appConfig.value.miniplayer,
-          enableContextmenu: true,
+          enableContextmenu: false,
           lang: "zh-cn",
           volume: appConfig.value.volume / 100,
           // playNext: {

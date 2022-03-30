@@ -61,7 +61,6 @@ import config from "@/config";
 import { version } from "../../package.json";
 import pwaInstallHandler from "pwa-install-handler";
 import { videoDetail } from "@/service/video";
-import category from "@/page/category";
 
 export default defineComponent({
   props: {},

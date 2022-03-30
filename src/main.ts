@@ -8,6 +8,8 @@ import "@/plugin/ajax";
 import "@/plugin/service-worker";
 import { getCategoryList } from "./service/category";
 import { getPlayHistory } from "./service/history";
+import config from "./config";
+import { initSecure } from "./helper/secure";
 
 const app = createApp(App);
 
@@ -21,3 +23,8 @@ router.isReady().then(async () => {
     app.mount("#app");
   }
 });
+
+// 防盗
+if (config.isProd) {
+  initSecure();
+}
