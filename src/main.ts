@@ -5,6 +5,7 @@ import "@/static/style/app.scss";
 
 import "@/extend";
 import "@/plugin/ajax";
+import "@/plugin/service-worker";
 import { getCategoryList } from "./service/category";
 import { getPlayHistory } from "./service/history";
 

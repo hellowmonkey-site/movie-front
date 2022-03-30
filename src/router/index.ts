@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import Index from "@/layout/Index";
 import { goTop } from "@/helper";
+import { themeOverrides } from "@/service/common";
 
 NProgress.inc(0.2);
 NProgress.configure({ easing: "ease", speed: 500, showSpinner: false });
@@ -60,6 +61,7 @@ const router = createRouter({
 });
 
 router.beforeEach(() => {
+  document.body.setAttribute("style", `--primary-color: ${themeOverrides.value.common?.primaryColor}`);
   goTop();
   NProgress.start();
   return true;
