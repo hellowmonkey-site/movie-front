@@ -233,6 +233,12 @@ export function setAppConfig(params: Partial<IConfig>) {
   localStorage.set("appConfig", appConfig.value);
 }
 setAppConfig(localConfig);
+// 移动端默认视频宽度适配
+if (isMobileWidth.value && appConfig.value.fitVideoSize !== "fixWidth") {
+  setAppConfig({
+    fitVideoSize: "fixWidth",
+  });
+}
 
 // 菜单
 export const menuCollapsed = ref(isMobileWidth.value);

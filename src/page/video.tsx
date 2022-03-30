@@ -2,6 +2,7 @@ import Description from "@/component/Description";
 import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
 import { FailImg } from "@/service/common";
+import { playHistoryIds } from "@/service/history";
 import { getInfoList, getRecommendByCategoryId, getVideoDetail, IVideoDetail } from "@/service/video";
 import { NButton, NImage, NSkeleton } from "naive-ui";
 import { computed, defineComponent, onMounted, PropType, ref } from "vue";
@@ -20,6 +21,15 @@ export default defineComponent({
     const video = ref<IVideoDetail>();
     const infoList = computed(() => {
       return getInfoList(video.value);
+    });
+
+    const playId = computed(() => {
+      const playlist = Array.from(video.value?.playlist || []);
+      const play = playlist.find(v => playHistoryIds.value.includes(v.id));
+      if (play) {
+        return play.id;
+      }
+      return playlist[0]?.id;
     });
 
     let videoId = Number(props.videoId);
@@ -74,7 +84,7 @@ export default defineComponent({
                     size="large"
                     type="primary"
                     onClick={() => {
-                      router.push({ name: "play", params: { videoId: video.value?.id, playId: video.value?.playlist[0].id } });
+                      router.push({ name: "play", params: { videoId: video.value?.id, playId: playId.value } });
                     }}
                   >
                     立即播放

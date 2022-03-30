@@ -27,7 +27,6 @@ export default defineComponent({
         return;
       }
       loading.value = true;
-      videos.value = defaultPageData;
       getCategoryVideos(String(category), Number(page))
         .then(data => {
           videos.value = data;
