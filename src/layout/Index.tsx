@@ -10,6 +10,7 @@ import {
   setDialog,
   setNotification,
   themeColors,
+  themeOverrides,
   ThemeTypes,
 } from "@/service/common";
 import { globalTheme, themeTypes } from "@/service/common";
@@ -43,8 +44,13 @@ import {
   CloudDownloadFilled,
   CloudDownloadOutlined,
   ContentPasteSearchOutlined,
+  FileDownloadFilled,
+  FileDownloadOutlined,
   HistoryOutlined,
   HomeFilled,
+  LogInFilled,
+  LogInOutlined,
+  LogOutOutlined,
   MovieFilterFilled,
   PersonFilled,
   PersonOutlineOutlined,
@@ -61,6 +67,8 @@ import config from "@/config";
 import { version } from "../../package.json";
 import pwaInstallHandler from "pwa-install-handler";
 import { videoDetail } from "@/service/video";
+import { DropdownMixedOption } from "naive-ui/lib/dropdown/src/interface";
+import { clearUser, user } from "@/service/user";
 
 export default defineComponent({
   props: {},
@@ -154,6 +162,60 @@ export default defineComponent({
       return [home, ...list];
     });
 
+    const userMenus = computed<DropdownMixedOption[]>(() => {
+      return [
+        {
+          label: "观看历史",
+          key: "play-history",
+          icon() {
+            return (
+              <NIcon>
+                <HistoryOutlined />
+              </NIcon>
+            );
+          },
+        },
+        {
+          label: "搜索历史",
+          key: "search-history",
+          icon() {
+            return (
+              <NIcon>
+                <ContentPasteSearchOutlined />
+              </NIcon>
+            );
+          },
+        },
+        {
+          key: "",
+          type: "divider",
+        },
+        user.value.token
+          ? {
+              label: "退出登录",
+              key: "logout",
+              icon() {
+                return (
+                  <NIcon>
+                    <LogOutOutlined />
+                  </NIcon>
+                );
+              },
+            }
+          : {
+              label: "登录",
+              key: "login",
+              icon() {
+                return (
+                  <NIcon>
+                    <LogInOutlined />
+                  </NIcon>
+                );
+              },
+            },
+      ];
+    });
+
     const marks: Record<string, string> = {};
     config.playbackRates
       .map(v => String(v))
@@ -203,8 +265,29 @@ export default defineComponent({
               />
             )}
             <div class="flex-item-extend d-flex justify-end">
+              <NTooltip placement={isMobileWidth.value ? "left" : undefined}>
+                {{
+                  default: () => <span>下载客户端</span>,
+                  trigger: () => (
+                    <NButton
+                      size="large"
+                      color={themeOverrides.value.common?.primaryColor}
+                      class="mar-r-3-item"
+                      circle
+                      ghost
+                      onClick={() => {
+                        settingOpen.value = true;
+                      }}
+                    >
+                      {{
+                        icon: () => <NIcon>{globalTheme.value === null ? <FileDownloadOutlined /> : <FileDownloadFilled />}</NIcon>,
+                      }}
+                    </NButton>
+                  ),
+                }}
+              </NTooltip>
               {canInstall.value ? (
-                <NTooltip>
+                <NTooltip placement={isMobileWidth.value ? "left" : undefined}>
                   {{
                     default: () => <span>下载应用</span>,
                     trigger: () => (
@@ -231,7 +314,7 @@ export default defineComponent({
                 </NTooltip>
               ) : null}
               {isMobileWidth.value ? (
-                <NTooltip>
+                <NTooltip placement="left">
                   {{
                     default: () => <span>搜索</span>,
                     trigger: () => (
@@ -280,7 +363,7 @@ export default defineComponent({
                   setAppConfig({ themeType });
                 }}
               >
-                <NTooltip>
+                <NTooltip placement={isMobileWidth.value ? "left" : undefined}>
                   {{
                     default: () => <span>选择主题</span>,
                     trigger: () => (
@@ -294,37 +377,17 @@ export default defineComponent({
                 </NTooltip>
               </NDropdown>
               <NDropdown
-                options={[
-                  {
-                    label: "观看历史",
-                    key: "play-history",
-                    icon() {
-                      return (
-                        <NIcon>
-                          <HistoryOutlined />
-                        </NIcon>
-                      );
-                    },
-                  },
-                  {
-                    label: "搜索历史",
-                    key: "search-history",
-                    icon() {
-                      return (
-                        <NIcon>
-                          <ContentPasteSearchOutlined />
-                        </NIcon>
-                      );
-                    },
-                  },
-                ]}
+                options={userMenus.value}
                 trigger="click"
                 onSelect={name => {
-                  console.log(name);
-                  router.push({ name });
+                  if (name === "logout") {
+                    clearUser();
+                  } else {
+                    router.push({ name });
+                  }
                 }}
               >
-                <NTooltip>
+                <NTooltip placement={isMobileWidth.value ? "left" : undefined}>
                   {{
                     default: () => <span>个人信息</span>,
                     trigger: () => (
@@ -337,7 +400,7 @@ export default defineComponent({
                   }}
                 </NTooltip>
               </NDropdown>
-              <NTooltip>
+              <NTooltip placement={isMobileWidth.value ? "left" : undefined}>
                 {{
                   default: () => <span>系统设置</span>,
                   trigger: () => (

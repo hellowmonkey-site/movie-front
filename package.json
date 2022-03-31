@@ -10,7 +10,10 @@
     "preview": "vite preview",
     "lint": "npm run eslint && npm run stylelint",
     "eslint": "eslint --fix src/**/*.{js,ts,jsx,tsx,vue}",
-    "stylelint": "stylelint --fix src/**/*.{scss,sass,css,less}"
+    "stylelint": "stylelint --fix src/**/*.{scss,sass,css,less}",
+    "tauri": "tauri",
+    "app-dev": "yarn dev && tauri dev",
+    "app-build": "yarn build && tauri build"
   },
   "dependencies": {
     "flyio": "^0.6.14",

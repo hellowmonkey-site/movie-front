@@ -168,7 +168,7 @@ export default defineComponent({
               <div class="video-cover">
                 <NImage src={videoDetail.value?.cover} objectFit="fill" fallbackSrc={FailImg} class="full-width"></NImage>
               </div>
-              <div class="flex-item-extend d-flex direction-column">
+              <div class="flex-item-extend d-flex direction-column break-all">
                 {infoList.value.map(info => (
                   <div class="mar-b-4-item d-flex" key={info.value}>
                     <span class="font-gray font-small mar-r-3">{info.text}</span>

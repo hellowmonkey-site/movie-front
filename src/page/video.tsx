@@ -61,7 +61,7 @@ export default defineComponent({
               <NSkeleton height="400px"></NSkeleton>
             )}
           </div>
-          <div class="flex-item-extend d-flex direction-column">
+          <div class="flex-item-extend d-flex direction-column break-all">
             <h1 class="font-xlg mar-b-5-item">{video.value ? video.value.title : <NSkeleton height="30px"></NSkeleton>}</h1>
             {video.value ? (
               <>

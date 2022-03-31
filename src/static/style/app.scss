@@ -141,3 +141,20 @@ a {
     width: 100%;
   }
 }
+
+.login-page {
+  background-color: #eee;
+}
+
+.login-box {
+  width: 95vw;
+  max-width: 500px;
+  border: 1px solid #ddd;
+  padding: 30px 20px;
+  background-color: #fff;
+  border-radius: 6px;
+
+  .label {
+    width: 80px;
+  }
+}

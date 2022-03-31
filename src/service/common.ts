@@ -2,7 +2,7 @@ import config from "@/config";
 import { PageData } from "@/config/type";
 import { DialogApiInjection } from "naive-ui/lib/dialog/src/DialogProvider";
 import { NotificationApiInjection } from "naive-ui/lib/notification/src/NotificationProvider";
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { darkTheme, GlobalTheme, GlobalThemeOverrides, useOsTheme } from "naive-ui";
 import { IPlayerOptions } from "xgplayer";
 import { localStorage } from "@/helper/storage";
