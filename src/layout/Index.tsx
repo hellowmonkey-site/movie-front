@@ -1,5 +1,5 @@
 import { isIE } from "@/helper/validate";
-import { categorys } from "@/service/category";
+import { categorys, getCategoryList } from "@/service/category";
 import {
   appConfig,
   canInstall,
@@ -57,6 +57,7 @@ import {
   MovieFilterFilled,
   PersonFilled,
   PersonOutlineOutlined,
+  ReplayOutlined,
   SearchFilled,
   SearchOutlined,
   SettingsFilled,
@@ -72,6 +73,7 @@ import { videoDetail } from "@/service/video";
 import { DropdownMixedOption } from "naive-ui/lib/dropdown/src/interface";
 import { clearUser, user } from "@/service/user";
 import { getFullUrl } from "@/helper";
+import { getPlayHistory } from "@/service/history";
 
 export default defineComponent({
   props: {},
@@ -236,6 +238,9 @@ export default defineComponent({
     });
 
     onMounted(() => {
+      getCategoryList();
+      getPlayHistory();
+
       // 判断是不是IE浏览器
       if (isIE) {
         dialog.warning({
@@ -311,7 +316,7 @@ export default defineComponent({
                     trigger: () => (
                       <NButton
                         size="tiny"
-                        class="mar-r-4-item"
+                        class="mar-r-2-item"
                         type="primary"
                         circle
                         onClick={() => {
@@ -322,6 +327,30 @@ export default defineComponent({
                           icon: () => (
                             <NIcon>
                               <ChevronRightRound />
+                            </NIcon>
+                          ),
+                        }}
+                      </NButton>
+                    ),
+                  }}
+                </NTooltip>
+                <NTooltip>
+                  {{
+                    default: () => <span>刷新</span>,
+                    trigger: () => (
+                      <NButton
+                        size="tiny"
+                        class="mar-r-4-item"
+                        type="primary"
+                        circle
+                        onClick={() => {
+                          location.reload();
+                        }}
+                      >
+                        {{
+                          icon: () => (
+                            <NIcon>
+                              <ReplayOutlined />
                             </NIcon>
                           ),
                         }}
