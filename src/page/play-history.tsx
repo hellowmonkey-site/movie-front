@@ -1,14 +1,13 @@
 import VideoItem from "@/component/VideoItem";
 import { deletePlayHistory, getPlayHistory, playHistorys } from "@/service/history";
+import { user } from "@/service/user";
 import { NButton, NEmpty, NGrid, NGridItem, NTimeline, NTimelineItem, useDialog } from "naive-ui";
 import { defineComponent, onMounted } from "vue";
-import { useRouter } from "vue-router";
 
 export default defineComponent({
   props: {},
   emits: [],
   setup: (props, ctx) => {
-    const router = useRouter();
     const dialog = useDialog();
 
     onMounted(() => {
@@ -17,8 +16,9 @@ export default defineComponent({
 
     return () => (
       <div class="d-flex direction-column">
-        {playHistorys.value.length ? (
-          <div class="d-flex justify-end mar-b-5-item">
+        <div class="d-flex align-items-center justify-between mar-b-5-item">
+          <span class="font-gray">{user.value.username}</span>
+          {playHistorys.value.length ? (
             <NButton
               type="error"
               onClick={() => {
@@ -37,8 +37,8 @@ export default defineComponent({
             >
               清除记录
             </NButton>
-          </div>
-        ) : null}
+          ) : null}
+        </div>
         {playHistorys.value.length ? (
           <NTimeline size="large">
             {playHistorys.value.map(item => (

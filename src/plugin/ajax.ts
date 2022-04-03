@@ -4,6 +4,7 @@ import { filterObject, getType } from "@/helper";
 import { isEmpty, isRealEmpty } from "@/helper/validate";
 import { KeyType, ResponseData } from "@/config/type";
 import { notification, dialog, appConfig } from "@/service/common";
+import { user } from "@/service/user";
 
 // request拦截器
 flyio.interceptors.request.use(conf => {
@@ -14,6 +15,7 @@ flyio.interceptors.request.use(conf => {
     app_id: config.appId,
     search_log: appConfig.value.searchLog ? 1 : 0,
     play_log: appConfig.value.playLog ? 1 : 0,
+    token: user.value.token,
   };
   conf.timeout = 0;
   // 参数处理

@@ -1,7 +1,7 @@
 {
   "package": {
-    "productName": "movie-front",
-    "version": "0.1.0"
+    "productName": "沃德影视",
+    "version": "1.0.7"
   },
   "build": {
     "distDir": "../dist",
@@ -13,7 +13,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.tauri.dev",
+      "identifier": "cc.hellowmonkey.movie",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -54,8 +54,8 @@
     "windows": [
       {
         "title": "沃德影视",
-        "width": 800,
-        "height": 600,
+        "width": 1280,
+        "height": 1024,
         "resizable": true,
         "fullscreen": false
       }

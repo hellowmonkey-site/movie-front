@@ -22,6 +22,9 @@ export function setDialog(e: DialogApiInjection) {
   dialog = e;
 }
 
+// history页数
+export const visitedPageNum = ref(0);
+
 export const windowWidth = ref(window.innerWidth);
 export const isMobileWidth = computed(() => {
   return windowWidth.value < config.breakpoints.s;

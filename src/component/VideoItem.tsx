@@ -24,7 +24,6 @@ export default defineComponent({
       if (!props.video) {
         return null;
       }
-      const cover = getFullUrl(config.baseURL, props.video.cover);
       return (
         <div
           class="video-item"
@@ -33,7 +32,13 @@ export default defineComponent({
           }}
         >
           <div class="cover mar-b-4-item">
-            <NImage src={cover} previewDisabled fallbackSrc={FailImg} objectFit="cover" class="full-width full-height" />
+            <NImage
+              src={getFullUrl(config.baseURL, props.video.cover)}
+              previewDisabled
+              fallbackSrc={FailImg}
+              objectFit="cover"
+              class="full-width full-height"
+            />
             {props.tag ? <div class="tag font-small">{props.video[props.tag]}</div> : null}
           </div>
           <div class="content">

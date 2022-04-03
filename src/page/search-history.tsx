@@ -1,4 +1,5 @@
 import { deleteSearchHistory, getSearchHistory, searchHistorys } from "@/service/history";
+import { user } from "@/service/user";
 import { NButton, NEmpty, NSpace, useDialog } from "naive-ui";
 import { defineComponent, onMounted } from "vue";
 import { useRouter } from "vue-router";
@@ -16,8 +17,9 @@ export default defineComponent({
 
     return () => (
       <div class="d-flex direction-column">
-        {searchHistorys.value.length ? (
-          <div class="d-flex justify-end mar-b-5-item">
+        <div class="d-flex align-items-center justify-between mar-b-5-item">
+          <span class="font-gray">{user.value.username}</span>
+          {searchHistorys.value.length ? (
             <NButton
               type="error"
               onClick={() => {
@@ -36,8 +38,8 @@ export default defineComponent({
             >
               清除记录
             </NButton>
-          </div>
-        ) : null}
+          ) : null}
+        </div>
         {searchHistorys.value.length ? (
           <NSpace class="text-center" justify="center">
             {searchHistorys.value.map(v => (

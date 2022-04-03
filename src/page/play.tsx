@@ -5,6 +5,7 @@ import { appConfig, FailImg, menuCollapsed, setAppConfig } from "@/service/commo
 import { ThemeTypes } from "@/service/common";
 import { postPlayLog } from "@/service/history";
 import { getInfoList, getRecommendByCategoryId, getVideoDetail, videoDetail } from "@/service/video";
+import { appWindow } from "@tauri-apps/api/window";
 import { KeyboardArrowDownOutlined, KeyboardArrowUpOutlined } from "@vicons/material";
 import { NCollapseTransition, NIcon, NImage } from "naive-ui";
 import { computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref } from "vue";
@@ -136,6 +137,7 @@ export default defineComponent({
         themeType: ThemeTypes.DARK,
       });
       menuCollapsed.value = true;
+      appWindow.setFullscreen(true);
     });
 
     onBeforeUnmount(() => {
@@ -144,6 +146,7 @@ export default defineComponent({
         themeType: oldTheme,
       });
       menuCollapsed.value = oldCollapsed;
+      appWindow.setFullscreen(false);
     });
 
     return () => (

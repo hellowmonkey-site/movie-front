@@ -19,7 +19,7 @@ export default defineComponent({
 
     const loading = ref(false);
 
-    function fetchData(keywords = route.query.keywords, page = route.query.page) {
+    function fetchData(keywords = route.query.keywords, page = Number(route.query.page)) {
       if (!keywords) {
         return;
       }
@@ -40,10 +40,6 @@ export default defineComponent({
       }
     });
 
-    onBeforeRouteUpdate(to => {
-      fetchData(to.query.keywords, to.query.page);
-    });
-
     return () => (
       <>
         <div class="d-flex align-items-center justify-center mar-b-4-item">
@@ -51,6 +47,7 @@ export default defineComponent({
             type="string"
             onSubmit={keywords => {
               fetchData(keywords);
+              router.push({ name: "search", query: { keywords } });
             }}
           />
         </div>
@@ -85,16 +82,7 @@ export default defineComponent({
                       page={videos.value.page}
                       pageCount={videos.value.pageCount}
                       pageSize={videos.value.pageSize}
-                      onUpdatePage={page =>
-                        router.push({
-                          name: route.name!,
-                          params: route.params,
-                          query: {
-                            ...route.query,
-                            page,
-                          },
-                        })
-                      }
+                      onUpdatePage={page => fetchData(route.query.keywords, page)}
                     ></NPagination>
                   </div>
                 </>

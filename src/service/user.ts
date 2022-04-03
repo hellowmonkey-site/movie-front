@@ -10,14 +10,20 @@ export interface IUser {
   username: string;
   token: string;
   id: number;
+  vip: number;
 }
 
 const defaultUser = {
   username: "",
   token: "",
   id: 0,
+  vip: 0,
 };
-export const user = ref<IUser>(defaultUser);
+let localUser = sessionStorage.get("user");
+if (typeof localUser === "string" || Array.isArray(localUser)) {
+  localUser = defaultUser;
+}
+export const user = ref<IUser>({ ...defaultUser, ...localUser });
 
 export function setUser(params: IUser) {
   user.value = params;

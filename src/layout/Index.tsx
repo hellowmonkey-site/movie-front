@@ -12,6 +12,7 @@ import {
   themeColors,
   themeOverrides,
   ThemeTypes,
+  visitedPageNum,
 } from "@/service/common";
 import { globalTheme, themeTypes } from "@/service/common";
 import {
@@ -41,6 +42,8 @@ import {
 import { computed, defineComponent, onMounted, ref } from "vue";
 import { RouterLink, RouterView, useRoute, useRouter } from "vue-router";
 import {
+  ChevronLeftRound,
+  ChevronRightRound,
   CloudDownloadFilled,
   CloudDownloadOutlined,
   ContentPasteSearchOutlined,
@@ -48,7 +51,6 @@ import {
   FileDownloadOutlined,
   HistoryOutlined,
   HomeFilled,
-  LogInFilled,
   LogInOutlined,
   LogOutOutlined,
   MovieFilterFilled,
@@ -64,11 +66,11 @@ import {
 import SearchInput from "@/component/SearchInput";
 import Logo from "@/static/image/logo.png";
 import config from "@/config";
-import { version } from "../../package.json";
 import pwaInstallHandler from "pwa-install-handler";
 import { videoDetail } from "@/service/video";
 import { DropdownMixedOption } from "naive-ui/lib/dropdown/src/interface";
 import { clearUser, user } from "@/service/user";
+import { appWindow } from "@tauri-apps/api/window";
 
 export default defineComponent({
   props: {},
@@ -78,11 +80,14 @@ export default defineComponent({
     const router = useRouter();
     const os = useOsTheme();
     const message = useMessage();
-
     const notification = useNotification();
     const dialog = useDialog();
     setNotification(notification);
     setDialog(dialog);
+
+    // appWindow.toggleMaximize().then(() => {
+    // appWindow.toggleMaximize();
+    // });
 
     const settingOpen = ref(false);
 
@@ -252,10 +257,63 @@ export default defineComponent({
     return () => (
       <>
         <NLayout position="absolute">
-          <NLayoutHeader bordered class="d-flex align-items-center justify-between pad-3">
+          <NLayoutHeader data-tauri-drag-region bordered class="d-flex align-items-center justify-between pad-3">
+            {config.isTauri ? (
+              <>
+                <NTooltip>
+                  {{
+                    default: () => <span>后退</span>,
+                    trigger: () => (
+                      <NButton
+                        size="tiny"
+                        class="mar-r-2-item"
+                        type="primary"
+                        circle
+                        disabled={visitedPageNum.value === 0}
+                        onClick={() => {
+                          router.back();
+                        }}
+                      >
+                        {{
+                          icon: () => (
+                            <NIcon>
+                              <ChevronLeftRound />
+                            </NIcon>
+                          ),
+                        }}
+                      </NButton>
+                    ),
+                  }}
+                </NTooltip>
+                <NTooltip>
+                  {{
+                    default: () => <span>前进</span>,
+                    trigger: () => (
+                      <NButton
+                        size="tiny"
+                        class="mar-r-4-item"
+                        type="primary"
+                        circle
+                        onClick={() => {
+                          router.forward();
+                        }}
+                      >
+                        {{
+                          icon: () => (
+                            <NIcon>
+                              <ChevronRightRound />
+                            </NIcon>
+                          ),
+                        }}
+                      </NButton>
+                    ),
+                  }}
+                </NTooltip>
+              </>
+            ) : null}
             <img src={Logo} class="logo mar-r-3-item" />
             <RouterLink to={{ name: "index" }} class="font-large mar-r-5-item wrap-nowrap">
-              沃德影视
+              {config.title}
             </RouterLink>
             {route.name === "search" || isMobileWidth.value ? null : (
               <SearchInput
@@ -264,55 +322,59 @@ export default defineComponent({
                 }}
               />
             )}
-            <div class="flex-item-extend d-flex justify-end">
-              <NTooltip placement={isMobileWidth.value ? "left" : undefined}>
-                {{
-                  default: () => <span>下载客户端</span>,
-                  trigger: () => (
-                    <NButton
-                      size="large"
-                      color={themeOverrides.value.common?.primaryColor}
-                      class="mar-r-3-item"
-                      circle
-                      ghost
-                      onClick={() => {
-                        settingOpen.value = true;
-                      }}
-                    >
+            <div class="flex-item-extend d-flex justify-end" data-tauri-drag-region>
+              {config.isTauri ? null : (
+                <>
+                  <NTooltip placement={isMobileWidth.value ? "left" : undefined}>
+                    {{
+                      default: () => <span>下载客户端</span>,
+                      trigger: () => (
+                        <NButton
+                          size="large"
+                          color={themeOverrides.value.common?.primaryColor}
+                          class="mar-r-3-item"
+                          circle
+                          ghost
+                          onClick={() => {
+                            settingOpen.value = true;
+                          }}
+                        >
+                          {{
+                            icon: () => <NIcon>{globalTheme.value === null ? <FileDownloadOutlined /> : <FileDownloadFilled />}</NIcon>,
+                          }}
+                        </NButton>
+                      ),
+                    }}
+                  </NTooltip>
+                  {canInstall.value ? (
+                    <NTooltip placement={isMobileWidth.value ? "left" : undefined}>
                       {{
-                        icon: () => <NIcon>{globalTheme.value === null ? <FileDownloadOutlined /> : <FileDownloadFilled />}</NIcon>,
+                        default: () => <span>下载应用</span>,
+                        trigger: () => (
+                          <NButton
+                            size="large"
+                            class="mar-r-3-item"
+                            circle
+                            onClick={() => {
+                              pwaInstallHandler.install().then(installed => {
+                                if (installed) {
+                                  message.success("恭喜您安装成功~");
+                                } else {
+                                  message.error("真的不打算安装么？");
+                                }
+                              });
+                            }}
+                          >
+                            {{
+                              icon: () => <NIcon>{globalTheme.value === null ? <CloudDownloadOutlined /> : <CloudDownloadFilled />}</NIcon>,
+                            }}
+                          </NButton>
+                        ),
                       }}
-                    </NButton>
-                  ),
-                }}
-              </NTooltip>
-              {canInstall.value ? (
-                <NTooltip placement={isMobileWidth.value ? "left" : undefined}>
-                  {{
-                    default: () => <span>下载应用</span>,
-                    trigger: () => (
-                      <NButton
-                        size="large"
-                        class="mar-r-3-item"
-                        circle
-                        onClick={() => {
-                          pwaInstallHandler.install().then(installed => {
-                            if (installed) {
-                              message.success("恭喜您安装成功~");
-                            } else {
-                              message.error("真的不打算安装么？");
-                            }
-                          });
-                        }}
-                      >
-                        {{
-                          icon: () => <NIcon>{globalTheme.value === null ? <CloudDownloadOutlined /> : <CloudDownloadFilled />}</NIcon>,
-                        }}
-                      </NButton>
-                    ),
-                  }}
-                </NTooltip>
-              ) : null}
+                    </NTooltip>
+                  ) : null}
+                </>
+              )}
               {isMobileWidth.value ? (
                 <NTooltip placement="left">
                   {{
@@ -389,7 +451,7 @@ export default defineComponent({
               >
                 <NTooltip placement={isMobileWidth.value ? "left" : undefined}>
                   {{
-                    default: () => <span>个人信息</span>,
+                    default: () => <span>{user.value.username || "个人信息"}</span>,
                     trigger: () => (
                       <NButton size="large" class="mar-r-3-item" circle>
                         {{
@@ -587,7 +649,7 @@ export default defineComponent({
             <NDivider titlePlacement="left">系统信息</NDivider>
             <div class="d-flex justify-between align-items-center mar-b-6-item">
               <span class="font-gray font-small mar-r-7 flex-item-extend">版本号</span>
-              <span>v {version}</span>
+              <span>v {config.version}</span>
             </div>
             <div class="d-flex justify-between align-items-center mar-b-6-item">
               <span class="font-gray font-small mar-r-7">说明</span>

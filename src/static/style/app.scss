@@ -7,6 +7,10 @@
 @import "./common.scss";
 @import "./animate.scss";
 
+* {
+  user-select: none;
+}
+
 a {
   text-decoration: none;
 }
