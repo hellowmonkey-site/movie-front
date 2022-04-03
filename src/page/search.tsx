@@ -1,7 +1,7 @@
 import SearchInput from "@/component/SearchInput";
 import VideoItem from "@/component/VideoItem";
 import { PageData } from "@/config/type";
-import { defaultPageData } from "@/service/common";
+import { defaultPageData, isMobileWidth } from "@/service/common";
 import { getVideoSearch, IVideo } from "@/service/video";
 import { getSearchHistory, searchHistorys } from "@/service/history";
 import { NButton, NEmpty, NGrid, NGridItem, NH2, NPagination, NSpace, NSpin, NText } from "naive-ui";
@@ -79,6 +79,7 @@ export default defineComponent({
                   </div>
                   <div class="d-flex justify-center">
                     <NPagination
+                      pageSlot={isMobileWidth.value ? 5 : 10}
                       page={videos.value.page}
                       pageCount={videos.value.pageCount}
                       pageSize={videos.value.pageSize}

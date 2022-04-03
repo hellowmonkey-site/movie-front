@@ -1,7 +1,6 @@
 import VideoItem from "@/component/VideoItem";
-import { goTop } from "@/helper";
-import { getRecommendVideos, recommendVideos } from "@/service/video";
-import { NEmpty, NGrid, NGridItem, NH2, NPagination, NSpin, NText } from "naive-ui";
+import { getRecommendVideos, recommendVideoComputed } from "@/service/video";
+import { NEmpty, NGrid, NGridItem, NH2, NSpin, NText } from "naive-ui";
 import { defineComponent, onMounted, ref } from "vue";
 
 export default defineComponent({
@@ -10,9 +9,9 @@ export default defineComponent({
   setup: (props, ctx) => {
     const loading = ref(false);
 
-    function fetchData(page = 1) {
+    function fetchData() {
       loading.value = true;
-      getRecommendVideos(page).finally(() => {
+      getRecommendVideos().finally(() => {
         loading.value = false;
       });
     }
@@ -27,11 +26,11 @@ export default defineComponent({
           <NText>最新推荐</NText>
         </NH2>
         <NSpin show={loading.value}>
-          {recommendVideos.value.count ? (
+          {recommendVideoComputed.value.length ? (
             <>
               <div class="video-list mar-b-4-item">
                 <NGrid cols="2 s:3 m:4 l:5 xl:6" xGap={10} yGap={10} responsive="screen">
-                  {recommendVideos.value.data.map(item => {
+                  {recommendVideoComputed.value.map(item => {
                     return (
                       <NGridItem key={item.id}>
                         <VideoItem video={item}></VideoItem>
@@ -39,17 +38,6 @@ export default defineComponent({
                     );
                   })}
                 </NGrid>
-              </div>
-              <div class="d-flex justify-center">
-                <NPagination
-                  page={recommendVideos.value.page}
-                  pageCount={recommendVideos.value.pageCount}
-                  pageSize={recommendVideos.value.pageSize}
-                  onUpdatePage={page => {
-                    goTop();
-                    fetchData(page);
-                  }}
-                ></NPagination>
               </div>
             </>
           ) : (

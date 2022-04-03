@@ -136,8 +136,13 @@ export default defineComponent({
       setAppConfig({
         themeType: ThemeTypes.DARK,
       });
-      menuCollapsed.value = true;
-      appWindow.setFullscreen(true);
+      if (config.isTauri) {
+        appWindow.setFullscreen(true).then(() => {
+          menuCollapsed.value = true;
+        });
+      } else {
+        menuCollapsed.value = true;
+      }
     });
 
     onBeforeUnmount(() => {
@@ -145,8 +150,13 @@ export default defineComponent({
       setAppConfig({
         themeType: oldTheme,
       });
-      menuCollapsed.value = oldCollapsed;
-      appWindow.setFullscreen(false);
+      if (config.isTauri) {
+        appWindow.setFullscreen(false).then(() => {
+          menuCollapsed.value = oldCollapsed;
+        });
+      } else {
+        menuCollapsed.value = oldCollapsed;
+      }
     });
 
     return () => (

@@ -1,7 +1,7 @@
 import VideoItem from "@/component/VideoItem";
 import { PageData } from "@/config/type";
 import { categorys } from "@/service/category";
-import { defaultPageData } from "@/service/common";
+import { defaultPageData, isMobileWidth } from "@/service/common";
 import { getCategoryVideos, IVideo } from "@/service/video";
 import { NEmpty, NGrid, NGridItem, NH2, NPagination, NResult, NSpin, NText } from "naive-ui";
 import { computed, defineComponent, onMounted, ref } from "vue";
@@ -68,6 +68,7 @@ export default defineComponent({
                   page={videos.value.page}
                   pageCount={videos.value.pageCount}
                   pageSize={videos.value.pageSize}
+                  pageSlot={isMobileWidth.value ? 5 : 10}
                   onUpdatePage={page =>
                     router.push({
                       name: route.name!,

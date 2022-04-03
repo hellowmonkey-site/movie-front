@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import Index from "@/layout/Index";
 import { goTop } from "@/helper";
-import { themeOverrides, visitedPageNum } from "@/service/common";
+import { isMobileWidth, menuCollapsed, themeOverrides, visitedPageNum } from "@/service/common";
 
 NProgress.inc(0.2);
 NProgress.configure({ easing: "ease", speed: 500, showSpinner: false });
@@ -70,6 +70,9 @@ router.beforeEach(() => {
 
 router.afterEach(() => {
   visitedPageNum.value = history.length;
+  if (isMobileWidth.value) {
+    menuCollapsed.value = true;
+  }
   NProgress.done();
 });
 

@@ -2,9 +2,9 @@ import config from "@/config";
 import { PageData } from "@/config/type";
 import { addZero, getFullUrl } from "@/helper";
 import fly from "flyio";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { categorys } from "./category";
-import { appConfig, defaultPageData } from "./common";
+import { appConfig, defaultPageData, windowWidth } from "./common";
 import { IPlay } from "./playlist";
 
 export interface IVideo {
@@ -67,11 +67,24 @@ export function getInfoList(video?: IVideo) {
 }
 
 // 首页推荐
-export const recommendVideos = ref<PageData<IVideo>>(defaultPageData);
-export function getRecommendVideos(page = 1) {
+export const recommendVideos = ref<IVideo[]>([]);
+export const recommendVideoComputed = computed(() => {
+  let length = 2 * 20;
+  if (windowWidth.value >= config.breakpoints.xl) {
+    length = 6 * 6;
+  } else if (windowWidth.value >= config.breakpoints.l) {
+    length = 5 * 8;
+  } else if (windowWidth.value >= config.breakpoints.m) {
+    length = 4 * 10;
+  } else if (windowWidth.value >= config.breakpoints.s) {
+    length = 3 * 13;
+  }
+  return recommendVideos.value.slice(0, length);
+});
+export function getRecommendVideos() {
   return fly
-    .get<PageData<IVideo>>("video/recommend", { page })
-    .then(data => data.data)
+    .get<PageData<IVideo>>("video/recommend", { page: 1, pageSize: 40 })
+    .then(data => data.data.data)
     .then(data => {
       recommendVideos.value = data;
       return data;

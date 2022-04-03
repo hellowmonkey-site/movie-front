@@ -53,6 +53,7 @@ import {
   HomeFilled,
   LogInOutlined,
   LogOutOutlined,
+  MenuOutlined,
   MovieFilterFilled,
   PersonFilled,
   PersonOutlineOutlined,
@@ -70,7 +71,6 @@ import pwaInstallHandler from "pwa-install-handler";
 import { videoDetail } from "@/service/video";
 import { DropdownMixedOption } from "naive-ui/lib/dropdown/src/interface";
 import { clearUser, user } from "@/service/user";
-import { appWindow } from "@tauri-apps/api/window";
 
 export default defineComponent({
   props: {},
@@ -84,10 +84,6 @@ export default defineComponent({
     const dialog = useDialog();
     setNotification(notification);
     setDialog(dialog);
-
-    // appWindow.toggleMaximize().then(() => {
-    // appWindow.toggleMaximize();
-    // });
 
     const settingOpen = ref(false);
 
@@ -258,6 +254,29 @@ export default defineComponent({
       <>
         <NLayout position="absolute">
           <NLayoutHeader data-tauri-drag-region bordered class="d-flex align-items-center justify-between pad-3">
+            {isMobileWidth.value ? (
+              <NTooltip>
+                {{
+                  default: () => <span>菜单</span>,
+                  trigger: () => (
+                    <NButton
+                      class="mar-r-3-item"
+                      onClick={() => {
+                        menuCollapsed.value = !menuCollapsed.value;
+                      }}
+                    >
+                      {{
+                        icon: () => (
+                          <NIcon>
+                            <MenuOutlined />
+                          </NIcon>
+                        ),
+                      }}
+                    </NButton>
+                  ),
+                }}
+              </NTooltip>
+            ) : null}
             {config.isTauri ? (
               <>
                 <NTooltip>
@@ -311,10 +330,14 @@ export default defineComponent({
                 </NTooltip>
               </>
             ) : null}
-            <img src={Logo} class="logo mar-r-3-item" />
-            <RouterLink to={{ name: "index" }} class="font-large mar-r-5-item wrap-nowrap">
-              {config.title}
-            </RouterLink>
+            {isMobileWidth.value ? null : (
+              <>
+                <img src={Logo} class="logo mar-r-3-item" />
+                <RouterLink to={{ name: "index" }} class="font-large mar-r-5-item space-nowrap">
+                  {config.title}
+                </RouterLink>
+              </>
+            )}
             {route.name === "search" || isMobileWidth.value ? null : (
               <SearchInput
                 onSubmit={keywords => {
@@ -484,7 +507,14 @@ export default defineComponent({
             </div>
           </NLayoutHeader>
           <NLayout hasSider position="absolute" style={{ top: "64px" }}>
-            <NLayoutSider v-model={[menuCollapsed.value, "collapsed"]} bordered showTrigger nativeScrollbar={false} collapseMode="width">
+            <NLayoutSider
+              v-model={[menuCollapsed.value, "collapsed"]}
+              bordered
+              showTrigger
+              nativeScrollbar={false}
+              collapseMode="transform"
+              collapsedWidth={isMobileWidth.value ? 0 : undefined}
+            >
               <NMenu
                 collapsed={menuCollapsed.value}
                 options={menus.value}

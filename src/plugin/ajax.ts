@@ -1,5 +1,5 @@
 import flyio, { FlyResponse } from "flyio";
-import config from "@/config";
+import config, { Apps } from "@/config";
 import { filterObject, getType } from "@/helper";
 import { isEmpty, isRealEmpty } from "@/helper/validate";
 import { KeyType, ResponseData } from "@/config/type";
@@ -12,7 +12,7 @@ flyio.interceptors.request.use(conf => {
   conf.headers = {
     ...conf.headers,
     "Content-Type": "application/json;charset=UTF-8",
-    app_id: config.appId,
+    app_id: config.isTauri ? Apps.MSI : Apps.WEB,
     search_log: appConfig.value.searchLog ? 1 : 0,
     play_log: appConfig.value.playLog ? 1 : 0,
     token: user.value.token,
