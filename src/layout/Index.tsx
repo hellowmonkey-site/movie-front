@@ -71,6 +71,7 @@ import pwaInstallHandler from "pwa-install-handler";
 import { videoDetail } from "@/service/video";
 import { DropdownMixedOption } from "naive-ui/lib/dropdown/src/interface";
 import { clearUser, user } from "@/service/user";
+import { getFullUrl } from "@/helper";
 
 export default defineComponent({
   props: {},
@@ -359,7 +360,7 @@ export default defineComponent({
                           circle
                           ghost
                           onClick={() => {
-                            settingOpen.value = true;
+                            window.open(getFullUrl(config.baseURL, config.downloadUrl), "_blank");
                           }}
                         >
                           {{
@@ -467,6 +468,7 @@ export default defineComponent({
                 onSelect={name => {
                   if (name === "logout") {
                     clearUser();
+                    location.reload();
                   } else {
                     router.push({ name });
                   }
@@ -678,7 +680,7 @@ export default defineComponent({
             </div>
             <NDivider titlePlacement="left">系统信息</NDivider>
             <div class="d-flex justify-between align-items-center mar-b-6-item">
-              <span class="font-gray font-small mar-r-7 flex-item-extend">版本号</span>
+              <span class="font-gray font-small mar-r-7 flex-item-extend">版本</span>
               <span>v {config.version}</span>
             </div>
             <div class="d-flex justify-between align-items-center mar-b-6-item">

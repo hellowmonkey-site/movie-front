@@ -1,13 +1,14 @@
+import Image from "@/component/Image";
 import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
 import config from "@/config";
-import { appConfig, FailImg, menuCollapsed, setAppConfig } from "@/service/common";
+import { appConfig, menuCollapsed, setAppConfig } from "@/service/common";
 import { ThemeTypes } from "@/service/common";
 import { postPlayLog } from "@/service/history";
 import { getInfoList, getRecommendByCategoryId, getVideoDetail, videoDetail } from "@/service/video";
 import { appWindow } from "@tauri-apps/api/window";
 import { KeyboardArrowDownOutlined, KeyboardArrowUpOutlined } from "@vicons/material";
-import { NCollapseTransition, NIcon, NImage } from "naive-ui";
+import { NCollapseTransition, NIcon } from "naive-ui";
 import { computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref } from "vue";
 import { onBeforeRouteUpdate, useRouter } from "vue-router";
 import Player, { IPlayerOptions } from "xgplayer";
@@ -179,7 +180,7 @@ export default defineComponent({
           <NCollapseTransition show={toggleCollapse.value}>
             <div class="video-info video-info-small d-flex">
               <div class="video-cover">
-                <NImage src={videoDetail.value?.cover} objectFit="fill" fallbackSrc={FailImg} class="full-width"></NImage>
+                <Image src={videoDetail.value?.cover} />
               </div>
               <div class="flex-item-extend d-flex direction-column break-all">
                 {infoList.value.map(info => (

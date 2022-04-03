@@ -1,4 +1,5 @@
 import Description from "@/component/Description";
+import Image from "@/component/Image";
 import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
 import { FailImg } from "@/service/common";
@@ -54,13 +55,7 @@ export default defineComponent({
     return () => (
       <>
         <div class="video-info d-flex mar-b-5-item">
-          <div class="video-cover">
-            {video.value ? (
-              <NImage src={video.value?.cover} objectFit="fill" fallbackSrc={FailImg} class="full-width"></NImage>
-            ) : (
-              <NSkeleton height="400px"></NSkeleton>
-            )}
-          </div>
+          <div class="video-cover">{video.value ? <Image src={video.value?.cover} /> : <NSkeleton height="400px"></NSkeleton>}</div>
           <div class="flex-item-extend d-flex direction-column break-all">
             <h1 class="font-xlg mar-b-5-item">{video.value ? video.value.title : <NSkeleton height="30px"></NSkeleton>}</h1>
             {video.value ? (

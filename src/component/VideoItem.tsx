@@ -1,10 +1,7 @@
 import { defineComponent, PropType } from "vue";
-import config from "@/config";
-import { getFullUrl } from "@/helper";
 import { IVideo } from "@/service/video";
-import { NImage } from "naive-ui";
 import { useRouter } from "vue-router";
-import { FailImg } from "@/service/common";
+import Image from "./Image";
 
 export default defineComponent({
   props: {
@@ -32,13 +29,7 @@ export default defineComponent({
           }}
         >
           <div class="cover mar-b-4-item">
-            <NImage
-              src={getFullUrl(config.baseURL, props.video.cover)}
-              previewDisabled
-              fallbackSrc={FailImg}
-              objectFit="cover"
-              class="full-width full-height"
-            />
+            <Image src={props.video.cover} preview={false} />
             {props.tag ? <div class="tag font-small">{props.video[props.tag]}</div> : null}
           </div>
           <div class="content">
