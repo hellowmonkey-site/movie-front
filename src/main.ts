@@ -29,14 +29,23 @@ router.isReady().then(async () => {
         appWindow.setDecorations(true);
       })
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      .catch(() => {
-        if (config.isApp) {
-          plus.navigator.closeSplashscreen();
-        }
-      });
+      .catch(() => {});
   } finally {
     app.mount("#app");
   }
+
+  document.addEventListener(
+    "plusready",
+    () => {
+      config.isApp = true;
+      config.isWeb = false;
+      router.replace("/");
+      setTimeout(() => {
+        plus.navigator.closeSplashscreen();
+      }, 200);
+    },
+    false
+  );
 });
 
 // 防盗

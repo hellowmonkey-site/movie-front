@@ -2,8 +2,8 @@ import { version } from "../../package.json";
 const isDev = import.meta.env.DEV;
 const isProd = import.meta.env.PROD;
 const isMsi = false;
-const isApp = typeof plus !== "undefined";
-const isWeb = !isApp;
+const isApp = false;
+const isWeb = true;
 
 export default {
   isDev,
