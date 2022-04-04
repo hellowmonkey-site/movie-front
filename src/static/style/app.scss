@@ -149,10 +149,14 @@ a {
 
 .login-page {
   background-color: #eee;
+
+  .logo {
+    height: 55px;
+  }
 }
 
 .login-box {
-  width: 95vw;
+  width: 90vw;
   max-width: 500px;
   border: 1px solid #ddd;
   padding: 30px 20px;

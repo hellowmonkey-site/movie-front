@@ -42,6 +42,7 @@ import {
 import { computed, defineComponent, onMounted, ref } from "vue";
 import { RouterLink, RouterView, useRoute, useRouter } from "vue-router";
 import {
+  AndroidOutlined,
   ChevronLeftRound,
   ChevronRightRound,
   CloudDownloadFilled,
@@ -64,6 +65,7 @@ import {
   SettingsOutlined,
   WbSunnyFilled,
   WbSunnyOutlined,
+  WindowOutlined,
 } from "@vicons/material";
 import SearchInput from "@/component/SearchInput";
 import Logo from "@/static/image/logo.png";
@@ -376,29 +378,51 @@ export default defineComponent({
               />
             )}
             <div class="flex-item-extend d-flex justify-end" data-tauri-drag-region>
-              {config.isMsi ? null : (
+              {config.isWeb ? (
                 <>
-                  <NTooltip placement={isMobileWidth.value ? "left" : undefined}>
-                    {{
-                      default: () => <span>下载客户端</span>,
-                      trigger: () => (
-                        <NButton
-                          size="large"
-                          color={themeOverrides.value.common?.primaryColor}
-                          class="mar-r-3-item"
-                          circle
-                          ghost
-                          onClick={() => {
-                            window.open(getFullUrl(config.baseURL, config.downloadUrl), "_blank");
-                          }}
-                        >
-                          {{
-                            icon: () => <NIcon>{globalTheme.value === null ? <FileDownloadOutlined /> : <FileDownloadFilled />}</NIcon>,
-                          }}
-                        </NButton>
-                      ),
+                  <NDropdown
+                    options={[
+                      {
+                        label: "Windows版下载",
+                        key: "msi",
+                        icon() {
+                          return (
+                            <NIcon>
+                              <WindowOutlined />
+                            </NIcon>
+                          );
+                        },
+                      },
+                      {
+                        label: "Android版下载",
+                        key: "apk",
+                        icon() {
+                          return (
+                            <NIcon>
+                              <AndroidOutlined />
+                            </NIcon>
+                          );
+                        },
+                      },
+                    ]}
+                    trigger="click"
+                    onSelect={suffix => {
+                      window.open(getFullUrl(config.baseURL, config.downloadUrl, `hellowmonkey.${suffix}`));
                     }}
-                  </NTooltip>
+                  >
+                    <NTooltip placement={isMobileWidth.value ? "left" : undefined}>
+                      {{
+                        default: () => <span>下载客户端</span>,
+                        trigger: () => (
+                          <NButton size="large" color={themeOverrides.value.common?.primaryColor} class="mar-r-3-item" circle ghost>
+                            {{
+                              icon: () => <NIcon>{globalTheme.value === null ? <FileDownloadOutlined /> : <FileDownloadFilled />}</NIcon>,
+                            }}
+                          </NButton>
+                        ),
+                      }}
+                    </NTooltip>
+                  </NDropdown>
                   {canInstall.value ? (
                     <NTooltip placement={isMobileWidth.value ? "left" : undefined}>
                       {{
@@ -427,7 +451,7 @@ export default defineComponent({
                     </NTooltip>
                   ) : null}
                 </>
-              )}
+              ) : null}
               {isMobileWidth.value ? (
                 <NTooltip placement="left">
                   {{
