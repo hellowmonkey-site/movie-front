@@ -543,7 +543,7 @@ export default defineComponent({
               bordered
               showTrigger
               nativeScrollbar={false}
-              collapseMode="transform"
+              collapseMode={isMobileWidth.value ? "transform" : "width"}
               collapsedWidth={isMobileWidth.value ? 0 : undefined}
             >
               <NMenu
