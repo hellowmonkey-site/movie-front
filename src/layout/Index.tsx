@@ -68,7 +68,6 @@ import {
   WindowOutlined,
 } from "@vicons/material";
 import SearchInput from "@/component/SearchInput";
-import Logo from "@/static/image/logo.png";
 import config from "@/config";
 import pwaInstallHandler from "pwa-install-handler";
 import { videoDetail } from "@/service/video";
@@ -364,7 +363,7 @@ export default defineComponent({
             ) : null}
             {isMobileWidth.value ? null : (
               <>
-                <img src={Logo} class="logo mar-r-3-item" />
+                <img src={getFullUrl(config.baseURL, config.imageUrl, "logo.png")} class="logo mar-r-3-item" />
                 <RouterLink to={{ name: "index" }} class="font-large mar-r-5-item space-nowrap">
                   {config.title}
                 </RouterLink>

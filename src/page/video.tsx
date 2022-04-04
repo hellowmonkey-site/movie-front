@@ -2,10 +2,9 @@ import Description from "@/component/Description";
 import Image from "@/component/Image";
 import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
-import { FailImg } from "@/service/common";
 import { playHistoryIds } from "@/service/history";
 import { getInfoList, getRecommendByCategoryId, getVideoDetail, IVideoDetail } from "@/service/video";
-import { NButton, NImage, NSkeleton } from "naive-ui";
+import { NButton, NSkeleton } from "naive-ui";
 import { computed, defineComponent, onMounted, PropType, ref } from "vue";
 import { onBeforeRouteUpdate, useRouter } from "vue-router";
 

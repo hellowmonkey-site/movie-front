@@ -7,9 +7,6 @@ import { darkTheme, GlobalTheme, GlobalThemeOverrides, useOsTheme } from "naive-
 import { IPlayerOptions } from "xgplayer";
 import { localStorage } from "@/helper/storage";
 import pwaInstallHandler from "pwa-install-handler";
-import img from "@/static/image/image-fail.png";
-
-export const FailImg = img;
 
 const os = useOsTheme();
 

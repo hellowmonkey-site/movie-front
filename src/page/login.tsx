@@ -1,9 +1,9 @@
 import config from "@/config";
+import { getFullUrl } from "@/helper";
 import { IUserForm, postLogin } from "@/service/user";
 import { NButton, NInput, useMessage } from "naive-ui";
 import { defineComponent, reactive, ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
-import Logo from "@/static/image/logo.png";
 
 export default defineComponent({
   props: {},
@@ -35,7 +35,7 @@ export default defineComponent({
     return () => (
       <div class="d-flex align-items-center justify-center full-height-vh login-page">
         <div class="d-flex direction-column align-items-center justify-center">
-          <img src={Logo} class="logo mar-b-4-item" />
+          <img src={getFullUrl(config.baseURL, config.imageUrl, "logo.png")} class="logo mar-b-4-item" />
           <div class="login-box">
             <div class="font-large text-center mar-b-6-item">
               <span>登录</span>

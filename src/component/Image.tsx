@@ -1,9 +1,9 @@
 import { getFullUrl } from "@/helper";
 import { defineComponent, onMounted, PropType, ref, watch } from "vue";
-import { FailImg } from "@/service/common";
 import { NSpin } from "naive-ui";
 import config from "@/config";
 import { imagePreview } from "@/helper/viewer";
+const FailImg = getFullUrl(config.baseURL, config.imageUrl, "image-fail.png");
 
 const enum ImgStatus {
   EMPTY,
