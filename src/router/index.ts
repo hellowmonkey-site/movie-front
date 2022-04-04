@@ -12,6 +12,10 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
+      path: "/index.html",
+      redirect: "/",
+    },
+    {
       path: "/",
       name: "main",
       component: Index,

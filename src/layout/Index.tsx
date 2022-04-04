@@ -283,7 +283,7 @@ export default defineComponent({
                 }}
               </NTooltip>
             ) : null}
-            {config.isTauri ? (
+            {config.isMsi ? (
               <>
                 <NTooltip>
                   {{
@@ -376,7 +376,7 @@ export default defineComponent({
               />
             )}
             <div class="flex-item-extend d-flex justify-end" data-tauri-drag-region>
-              {config.isTauri ? null : (
+              {config.isMsi ? null : (
                 <>
                   <NTooltip placement={isMobileWidth.value ? "left" : undefined}>
                     {{

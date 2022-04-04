@@ -8,7 +8,6 @@ import "@/plugin/ajax";
 import "@/plugin/service-worker";
 import config from "./config";
 import { initSecure } from "./helper/secure";
-import { getVersion } from "@tauri-apps/api/app";
 import { appWindow } from "@tauri-apps/api/window";
 
 const app = createApp(App);
@@ -17,21 +16,24 @@ app.use(router);
 
 router.isReady().then(async () => {
   try {
-    await getVersion()
-      .then(version => {
-        config.isTauri = true;
-        config.version = version;
-        appWindow.isMaximized().then(isMaximized => {
-          if (!isMaximized) {
-            appWindow.toggleMaximize();
-          }
-        });
+    await appWindow
+      .isMaximized()
+      .then(isMaximized => {
+        config.isMsi = true;
+        config.isWeb = false;
+        if (!isMaximized) {
+          appWindow.toggleMaximize();
+        }
         appWindow.setFocus();
         appWindow.setResizable(true);
         appWindow.setDecorations(true);
       })
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      .catch(() => {});
+      .catch(() => {
+        if (config.isApp) {
+          plus.navigator.closeSplashscreen();
+        }
+      });
   } finally {
     app.mount("#app");
   }

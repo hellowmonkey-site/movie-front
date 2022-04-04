@@ -1,12 +1,16 @@
 import { version } from "../../package.json";
 const isDev = import.meta.env.DEV;
 const isProd = import.meta.env.PROD;
-const isTauri = false;
+const isMsi = false;
+const isApp = typeof plus !== "undefined";
+const isWeb = !isApp;
 
 export default {
   isDev,
   isProd,
-  isTauri,
+  isWeb,
+  isMsi,
+  isApp,
   version,
   baseURL: isDev ? "http://127.0.0.1:7001" : "https://movie.api.hellowmonkey.cc",
   successCode: 200,

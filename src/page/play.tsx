@@ -137,7 +137,7 @@ export default defineComponent({
       setAppConfig({
         themeType: ThemeTypes.DARK,
       });
-      if (config.isTauri) {
+      if (config.isMsi) {
         appWindow.setFullscreen(true).then(() => {
           menuCollapsed.value = true;
         });
@@ -151,7 +151,7 @@ export default defineComponent({
       setAppConfig({
         themeType: oldTheme,
       });
-      if (config.isTauri) {
+      if (config.isMsi) {
         appWindow.setFullscreen(false).then(() => {
           menuCollapsed.value = oldCollapsed;
         });

@@ -12,7 +12,7 @@ flyio.interceptors.request.use(conf => {
   conf.headers = {
     ...conf.headers,
     "Content-Type": "application/json;charset=UTF-8",
-    app_id: config.isTauri ? Apps.MSI : Apps.WEB,
+    app_id: config.isMsi ? Apps.MSI : config.isApp ? Apps.APP : Apps.WEB,
     search_log: appConfig.value.searchLog ? 1 : 0,
     play_log: appConfig.value.playLog ? 1 : 0,
     token: user.value.token,

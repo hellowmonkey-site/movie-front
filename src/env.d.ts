@@ -11,3 +11,5 @@ declare module "xgplayer-hls.js" {
   import Player from "xgplayer";
   export default Player;
 }
+
+declare let plus: any;
