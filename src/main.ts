@@ -33,28 +33,33 @@ app.use(router);
 
 router.isReady().then(async () => {
   try {
-    await Promise.any([
-      plusready().then(() => {
-        config.isApp = true;
-        config.isWeb = false;
-        router.replace("/");
-        setTimeout(() => {
-          plus.navigator.closeSplashscreen();
-        }, 100);
-      }),
-      appWindow.isMaximized().then(isMaximized => {
-        config.isMsi = true;
-        config.isWeb = false;
-        if (!isMaximized) {
-          appWindow.toggleMaximize();
-        }
-        appWindow.setFocus();
-        appWindow.setResizable(true);
-        appWindow.setDecorations(true);
-      }),
-    ])
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      .catch(() => {});
+    await Promise.all([
+      plusready()
+        .then(() => {
+          config.isApp = true;
+          config.isWeb = false;
+          router.replace("/");
+          setTimeout(() => {
+            plus.navigator.closeSplashscreen();
+          }, 100);
+        })
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        .catch(() => {}),
+      appWindow
+        .isMaximized()
+        .then(isMaximized => {
+          config.isMsi = true;
+          config.isWeb = false;
+          if (!isMaximized) {
+            appWindow.toggleMaximize();
+          }
+          appWindow.setFocus();
+          appWindow.setResizable(true);
+          appWindow.setDecorations(true);
+        })
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        .catch(() => {}),
+    ]);
   } finally {
     app.mount("#app");
   }
