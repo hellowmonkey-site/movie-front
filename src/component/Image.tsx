@@ -27,6 +27,7 @@ export default defineComponent({
   setup: (props, ctx) => {
     const imgStatus = ref<ImgStatus>(ImgStatus.EMPTY);
     const src = ref("");
+    const proxyUrl = getFullUrl(config.baseURL, "proxy/image");
 
     function loadImage() {
       if (props.src) {
@@ -39,8 +40,12 @@ export default defineComponent({
           ctx.emit("load");
         };
         img.onerror = () => {
-          imgStatus.value = ImgStatus.ERROR;
-          ctx.emit("error");
+          if (img.src.includes(proxyUrl)) {
+            imgStatus.value = ImgStatus.ERROR;
+            ctx.emit("error");
+          } else {
+            img.src = `${proxyUrl}?url=${img.src}`;
+          }
         };
       }
     }
