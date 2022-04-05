@@ -1,5 +1,6 @@
 import VideoItem from "@/component/VideoItem";
 import { PageData } from "@/config/type";
+import { pullDownRefresh } from "@/helper/plus";
 import { categorys } from "@/service/category";
 import { defaultPageData, isMobileWidth } from "@/service/common";
 import { getCategoryVideos, IVideo } from "@/service/video";
@@ -21,6 +22,7 @@ export default defineComponent({
       return category?.name;
     });
     const loading = ref(false);
+    const refresh = pullDownRefresh(fetchData);
 
     function fetchData(category = route.params.category, page = route.query.page) {
       if (!category) {
@@ -33,6 +35,7 @@ export default defineComponent({
         })
         .finally(() => {
           loading.value = false;
+          refresh?.end();
         });
     }
 

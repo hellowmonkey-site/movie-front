@@ -1,4 +1,5 @@
 import VideoItem from "@/component/VideoItem";
+import { pullDownRefresh } from "@/helper/plus";
 import { deletePlayHistory, getPlayHistory, playHistorys } from "@/service/history";
 import { user } from "@/service/user";
 import { NButton, NEmpty, NGrid, NGridItem, NTimeline, NTimelineItem, useDialog } from "naive-ui";
@@ -9,10 +10,15 @@ export default defineComponent({
   emits: [],
   setup: (props, ctx) => {
     const dialog = useDialog();
+    const refresh = pullDownRefresh(fetchData);
 
-    onMounted(() => {
-      getPlayHistory();
-    });
+    function fetchData() {
+      getPlayHistory().finally(() => {
+        refresh?.end();
+      });
+    }
+
+    onMounted(fetchData);
 
     return () => (
       <div class="d-flex direction-column">

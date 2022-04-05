@@ -9,13 +9,19 @@ import { user } from "@/service/user";
 // request拦截器
 flyio.interceptors.request.use(conf => {
   conf.baseURL = config.baseURL;
+  const headers: { [p: string]: string | number } = {
+    "Content-Type": "application/json;charset=UTF-8",
+    appid: config.isMsi ? Apps.MSI : config.isApp ? Apps.APP : Apps.WEB,
+    searchlog: appConfig.value.searchLog ? 1 : 0,
+    playlog: appConfig.value.playLog ? 1 : 0,
+  };
+  const { token } = user.value;
+  if (token) {
+    headers.token = token;
+  }
   conf.headers = {
     ...conf.headers,
-    "Content-Type": "application/json;charset=UTF-8",
-    app_id: config.isMsi ? Apps.MSI : config.isApp ? Apps.APP : Apps.WEB,
-    search_log: appConfig.value.searchLog ? 1 : 0,
-    play_log: appConfig.value.playLog ? 1 : 0,
-    token: user.value.token,
+    ...headers,
   };
   conf.timeout = 0;
   // 参数处理

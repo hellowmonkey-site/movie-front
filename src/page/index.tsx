@@ -1,4 +1,5 @@
 import VideoItem from "@/component/VideoItem";
+import { pullDownRefresh } from "@/helper/plus";
 import { getRecommendVideos, recommendVideoComputed } from "@/service/video";
 import { NEmpty, NGrid, NGridItem, NH2, NSpin, NText } from "naive-ui";
 import { defineComponent, onMounted, ref } from "vue";
@@ -8,11 +9,13 @@ export default defineComponent({
   emits: [],
   setup: (props, ctx) => {
     const loading = ref(false);
+    const refresh = pullDownRefresh(fetchData);
 
     function fetchData() {
       loading.value = true;
       getRecommendVideos().finally(() => {
         loading.value = false;
+        refresh?.end();
       });
     }
 

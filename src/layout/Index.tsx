@@ -9,6 +9,7 @@ import {
   setAppConfig,
   setDialog,
   setNotification,
+  settingOpen,
   themeColors,
   themeOverrides,
   ThemeTypes,
@@ -88,8 +89,6 @@ export default defineComponent({
     const dialog = useDialog();
     setNotification(notification);
     setDialog(dialog);
-
-    const settingOpen = ref(false);
 
     const selectedMenu = computed(() => {
       const { name } = route;

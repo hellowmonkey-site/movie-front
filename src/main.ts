@@ -9,23 +9,7 @@ import "@/plugin/service-worker";
 import config from "./config";
 import { initSecure } from "./helper/secure";
 import { appWindow } from "@tauri-apps/api/window";
-
-function plusready() {
-  let timer: NodeJS.Timer;
-  return new Promise((resolve, reject) => {
-    timer = setTimeout(() => {
-      reject();
-    }, 1000);
-    document.addEventListener(
-      "plusready",
-      () => {
-        clearTimeout(timer);
-        resolve(plus);
-      },
-      false
-    );
-  });
-}
+import { plusReady } from "./helper/plus";
 
 const app = createApp(App);
 
@@ -34,14 +18,14 @@ app.use(router);
 router.isReady().then(async () => {
   try {
     await Promise.all([
-      plusready()
+      plusReady()
         .then(() => {
           config.isApp = true;
           config.isWeb = false;
           router.replace("/");
           setTimeout(() => {
             plus.navigator.closeSplashscreen();
-          }, 100);
+          }, 350);
         })
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         .catch(() => {}),

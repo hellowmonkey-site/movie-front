@@ -2,13 +2,14 @@ import Image from "@/component/Image";
 import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
 import config from "@/config";
+import { plusPlayURL } from "@/helper/plus";
 import { appConfig, menuCollapsed, setAppConfig } from "@/service/common";
 import { ThemeTypes } from "@/service/common";
 import { postPlayLog } from "@/service/history";
 import { getInfoList, getRecommendByCategoryId, getVideoDetail, videoDetail } from "@/service/video";
 import { appWindow } from "@tauri-apps/api/window";
 import { KeyboardArrowDownOutlined, KeyboardArrowUpOutlined } from "@vicons/material";
-import { NCollapseTransition, NIcon } from "naive-ui";
+import { NButton, NCollapseTransition, NIcon } from "naive-ui";
 import { computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref } from "vue";
 import { onBeforeRouteUpdate, useRouter } from "vue-router";
 import Player, { IPlayerOptions } from "xgplayer";
@@ -73,7 +74,7 @@ export default defineComponent({
           autoplay: appConfig.value.autoplay,
           url: play.value?.src || "",
           width: offsetWidth,
-          height: offsetHeight,
+          height: appConfig.value.fitVideoSize === "fixWidth" ? offsetHeight : undefined,
           fitVideoSize: appConfig.value.fitVideoSize,
           // fluid: true,
           poster: videoDetail.value?.cover,
@@ -166,16 +167,30 @@ export default defineComponent({
           <div ref={el} class="video-player" />
         </div>
         <div class="mar-b-5">
-          <div class="d-flex justify-between align-items-center mar-b-3-item">
-            <div class="d-flex align-items-center">
-              <h1 class="font-xlg mar-r-2-item">{videoDetail.value?.title}</h1>
-              <span class="font-large font-bold mar-r-2-item font-gray">·</span>
-              <span>{play.value?.title}</span>
+          <div class="d-flex direction-column mar-b-3-item">
+            <div class="d-flex justify-between align-items-center mar-b-3-item">
+              <div class="d-flex align-items-center">
+                <h1 class="font-xlg mar-r-2-item">{videoDetail.value?.title}</h1>
+                <span class="font-large font-bold mar-r-2-item font-gray">·</span>
+                <span>{play.value?.title}</span>
+              </div>
+              <div class="d-flex align-items-center cursor-pointer" onClick={() => (toggleCollapse.value = !toggleCollapse.value)}>
+                <span class="font-gray mar-r-1-item font-small">简介</span>
+                <NIcon size={20}>{toggleCollapse.value ? <KeyboardArrowUpOutlined /> : <KeyboardArrowDownOutlined />}</NIcon>
+              </div>
             </div>
-            <div class="d-flex align-items-center cursor-pointer" onClick={() => (toggleCollapse.value = !toggleCollapse.value)}>
-              <span class="font-gray mar-r-1-item font-small">简介</span>
-              <NIcon size={20}>{toggleCollapse.value ? <KeyboardArrowUpOutlined /> : <KeyboardArrowDownOutlined />}</NIcon>
-            </div>
+            {config.isApp && play.value?.src ? (
+              <NButton
+                block
+                type="primary"
+                onClick={() => {
+                  videoPlayer?.destroy();
+                  plusPlayURL(play.value?.src || "");
+                }}
+              >
+                原生播放器观看
+              </NButton>
+            ) : null}
           </div>
           <NCollapseTransition show={toggleCollapse.value}>
             <div class="video-info video-info-small d-flex">

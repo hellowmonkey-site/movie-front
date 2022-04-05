@@ -1,3 +1,4 @@
+import { pullDownRefresh } from "@/helper/plus";
 import { deleteSearchHistory, getSearchHistory, searchHistorys } from "@/service/history";
 import { user } from "@/service/user";
 import { NButton, NEmpty, NSpace, useDialog } from "naive-ui";
@@ -10,10 +11,15 @@ export default defineComponent({
   setup: (props, ctx) => {
     const router = useRouter();
     const dialog = useDialog();
+    const refresh = pullDownRefresh(fetchData);
 
-    onMounted(() => {
-      getSearchHistory();
-    });
+    function fetchData() {
+      getSearchHistory().finally(() => {
+        refresh?.end();
+      });
+    }
+
+    onMounted(getSearchHistory);
 
     return () => (
       <div class="d-flex direction-column">

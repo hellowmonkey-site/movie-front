@@ -19,6 +19,9 @@ export function setDialog(e: DialogApiInjection) {
   dialog = e;
 }
 
+// 设置
+export const settingOpen = ref(false);
+
 // history页数
 export const visitedPageNum = ref(0);
 
@@ -234,10 +237,22 @@ export function setAppConfig(params: Partial<IConfig>) {
 }
 setAppConfig(localConfig);
 // 移动端默认视频宽度适配
-if (isMobileWidth.value && appConfig.value.fitVideoSize !== "fixWidth") {
-  setAppConfig({
-    fitVideoSize: "fixWidth",
-  });
+if (isMobileWidth.value) {
+  if (appConfig.value.fitVideoSize !== "fixWidth") {
+    setAppConfig({
+      fitVideoSize: "fixWidth",
+    });
+  }
+  if (appConfig.value.miniplayer) {
+    setAppConfig({
+      miniplayer: false,
+    });
+  }
+  if (appConfig.value.pip) {
+    setAppConfig({
+      pip: false,
+    });
+  }
 }
 
 // 菜单

@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Index from "@/layout/Index";
 import { goTop } from "@/helper";
 import { isMobileWidth, menuCollapsed, themeOverrides, visitedPageNum } from "@/service/common";
+import { pullDownRefresh } from "@/helper/plus";
 
 NProgress.inc(0.2);
 NProgress.configure({ easing: "ease", speed: 500, showSpinner: false });
@@ -23,52 +24,90 @@ const router = createRouter({
         {
           path: "/",
           name: "index",
+          meta: {
+            pullDownRefresh: true,
+          },
           component: () => import("@/page/index"),
         },
         {
           path: "/category/:category",
           props: true,
           name: "category",
+          meta: {
+            pullDownRefresh: true,
+          },
           component: () => import("@/page/category"),
         },
         {
           path: "/video/:videoId(\\d+)",
           props: true,
           name: "video",
+          meta: {
+            pullDownRefresh: false,
+          },
           component: () => import("@/page/video"),
         },
         {
           path: "/play/:videoId(\\d+)-:playId(\\d+)",
           props: true,
           name: "play",
+          meta: {
+            pullDownRefresh: false,
+          },
           component: () => import("@/page/play"),
         },
         {
           path: "/search",
           name: "search",
+          meta: {
+            pullDownRefresh: true,
+          },
           component: () => import("@/page/search"),
         },
         {
           path: "/search/history",
           name: "search-history",
+          meta: {
+            pullDownRefresh: true,
+          },
           component: () => import("@/page/search-history"),
         },
         {
           path: "/play/history",
           name: "play-history",
+          meta: {
+            pullDownRefresh: true,
+          },
           component: () => import("@/page/play-history"),
         },
       ],
     },
-    { path: "/login", name: "login", component: () => import("@/page/login") },
-    { path: "/:pathMatch(.*)*", name: "NotFound", component: () => import("@/page/404") },
+    {
+      path: "/login",
+      name: "login",
+      meta: {
+        pullDownRefresh: false,
+      },
+      component: () => import("@/page/login"),
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "NotFound",
+      meta: {
+        pullDownRefresh: false,
+      },
+      component: () => import("@/page/404"),
+    },
   ],
 });
 
-router.beforeEach(() => {
+router.beforeEach(to => {
   document.body.setAttribute("style", `--primary-color: ${themeOverrides.value.common?.primaryColor}`);
   goTop();
   NProgress.start();
+  if (!to.meta.pullDownRefresh) {
+    pullDownRefresh(null);
+  }
   return true;
 });
 

@@ -6,7 +6,8 @@ import { getVideoSearch, IVideo } from "@/service/video";
 import { getSearchHistory, searchHistorys } from "@/service/history";
 import { NButton, NEmpty, NGrid, NGridItem, NH2, NPagination, NSpace, NSpin, NText } from "naive-ui";
 import { defineComponent, onMounted, ref } from "vue";
-import { onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { pullDownRefresh } from "@/helper/plus";
 
 export default defineComponent({
   props: {},
@@ -14,6 +15,7 @@ export default defineComponent({
   setup: (props, ctx) => {
     const route = useRoute();
     const router = useRouter();
+    const refresh = pullDownRefresh(fetchData);
 
     const videos = ref<PageData<IVideo>>(defaultPageData);
 
@@ -30,6 +32,7 @@ export default defineComponent({
         })
         .finally(() => {
           loading.value = false;
+          refresh?.end();
         });
     }
 
