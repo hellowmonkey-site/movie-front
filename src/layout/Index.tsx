@@ -8,6 +8,7 @@ import {
   menuCollapsed,
   setAppConfig,
   setDialog,
+  setMessage,
   setNotification,
   settingOpen,
   themeColors,
@@ -89,6 +90,7 @@ export default defineComponent({
     const dialog = useDialog();
     setNotification(notification);
     setDialog(dialog);
+    setMessage(message);
 
     const selectedMenu = computed(() => {
       const { name } = route;

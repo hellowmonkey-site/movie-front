@@ -1,10 +1,10 @@
 import config from "@/config";
-import { PageData } from "@/config/type";
+import { PageData, ResponseData } from "@/config/type";
 import { addZero, getFullUrl } from "@/helper";
 import fly from "flyio";
 import { computed, ref } from "vue";
 import { categorys } from "./category";
-import { appConfig, defaultPageData, windowWidth } from "./common";
+import { appConfig, message, windowWidth } from "./common";
 import { IPlay } from "./playlist";
 
 export interface IVideo {
@@ -139,4 +139,12 @@ export function getVideoDetail(id: number) {
 // 搜索
 export function getVideoSearch(keywords: string, page = 1) {
   return fly.get<PageData<IVideo>>("video/search", { keywords, page }).then(data => data.data);
+}
+
+// 提交纠错
+export function postReport(remark: string, videoId: number, playId?: number) {
+  return fly.post("video/report", { remark, videoId, playId }).then(data => {
+    message.success("提交成功，感谢！");
+    return data.data;
+  });
 }

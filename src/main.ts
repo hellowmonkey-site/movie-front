@@ -10,6 +10,7 @@ import config from "./config";
 import { initSecure } from "./helper/secure";
 import { appWindow } from "@tauri-apps/api/window";
 import { plusReady } from "./helper/plus";
+import { getUserInfo } from "./service/user";
 
 const app = createApp(App);
 
@@ -44,6 +45,7 @@ router.isReady().then(async () => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         .catch(() => {}),
     ]);
+    getUserInfo();
   } finally {
     app.mount("#app");
   }

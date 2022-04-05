@@ -7,6 +7,8 @@ import { darkTheme, GlobalTheme, GlobalThemeOverrides, useOsTheme } from "naive-
 import { IPlayerOptions } from "xgplayer";
 import { localStorage } from "@/helper/storage";
 import pwaInstallHandler from "pwa-install-handler";
+import router from "@/router";
+import { MessageApiInjection } from "naive-ui/lib/message/src/MessageProvider";
 
 const os = useOsTheme();
 
@@ -17,6 +19,11 @@ export function setNotification(e: NotificationApiInjection) {
 export let dialog: DialogApiInjection;
 export function setDialog(e: DialogApiInjection) {
   dialog = e;
+}
+
+export let message: MessageApiInjection;
+export function setMessage(e: MessageApiInjection) {
+  message = e;
 }
 
 // 设置
@@ -257,9 +264,9 @@ if (isMobileWidth.value) {
 
 // 菜单
 export const menuCollapsed = ref(isMobileWidth.value);
-window.addEventListener("resize", e => {
+window.addEventListener("resize", () => {
   windowWidth.value = window.innerWidth;
-  menuCollapsed.value = isMobileWidth.value;
+  menuCollapsed.value = isMobileWidth.value || router.currentRoute.value.name === "play";
 });
 
 // export const themeType = ref<ThemeTypes>(appConfig.value.themeType);

@@ -6,10 +6,10 @@ import { plusPlayURL } from "@/helper/plus";
 import { appConfig, menuCollapsed, setAppConfig } from "@/service/common";
 import { ThemeTypes } from "@/service/common";
 import { postPlayLog } from "@/service/history";
-import { getInfoList, getRecommendByCategoryId, getVideoDetail, videoDetail } from "@/service/video";
+import { getInfoList, getRecommendByCategoryId, getVideoDetail, postReport, videoDetail } from "@/service/video";
 import { appWindow } from "@tauri-apps/api/window";
 import { KeyboardArrowDownOutlined, KeyboardArrowUpOutlined } from "@vicons/material";
-import { NButton, NCollapseTransition, NIcon } from "naive-ui";
+import { NButton, NCollapseTransition, NIcon, NInput, useDialog } from "naive-ui";
 import { computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref } from "vue";
 import { onBeforeRouteUpdate, useRouter } from "vue-router";
 import Player, { IPlayerOptions } from "xgplayer";
@@ -28,6 +28,7 @@ export default defineComponent({
   },
   emits: [],
   setup: (props, ctx) => {
+    const dialog = useDialog();
     let videoPlayer: Player;
     const el = ref<HTMLElement | undefined>();
     const router = useRouter();
@@ -131,20 +132,15 @@ export default defineComponent({
       createPlayer();
     });
 
-    onMounted(() => {
-      createPlayer();
-      fetchData();
-
+    onMounted(async () => {
       setAppConfig({
         themeType: ThemeTypes.DARK,
       });
       if (config.isMsi) {
-        appWindow.setFullscreen(true).then(() => {
-          menuCollapsed.value = true;
-        });
-      } else {
-        menuCollapsed.value = true;
+        await appWindow.setFullscreen(true);
       }
+      menuCollapsed.value = true;
+      fetchData();
     });
 
     onBeforeUnmount(() => {
@@ -168,15 +164,41 @@ export default defineComponent({
         </div>
         <div class="mar-b-5">
           <div class="d-flex direction-column mar-b-3-item">
-            <div class="d-flex justify-between align-items-center mar-b-3-item">
-              <div class="d-flex align-items-center">
+            <div class="d-flex justify-between align-items-start mar-b-3-item">
+              <div class="d-flex align-items-start flex-item-extend justify-start mar-r-4-item">
                 <h1 class="font-xlg mar-r-2-item">{videoDetail.value?.title}</h1>
-                <span class="font-large font-bold mar-r-2-item font-gray">·</span>
-                <span>{play.value?.title}</span>
+                <div class="d-flex align-items-center flex-item-extend pad-t-1">
+                  <span class="font-large font-bold mar-r-2-item font-gray">·</span>
+                  <span class="space-nowrap">{play.value?.title}</span>
+                </div>
               </div>
-              <div class="d-flex align-items-center cursor-pointer" onClick={() => (toggleCollapse.value = !toggleCollapse.value)}>
-                <span class="font-gray mar-r-1-item font-small">简介</span>
-                <NIcon size={20}>{toggleCollapse.value ? <KeyboardArrowUpOutlined /> : <KeyboardArrowDownOutlined />}</NIcon>
+              <div class="d-flex align-items-center">
+                <NButton
+                  size="small"
+                  class="mar-r-2-item"
+                  onClick={() => {
+                    let remark = "无法播放";
+                    dialog.warning({
+                      title: "提交错误",
+                      content() {
+                        return <NInput type="textarea" placeholder="请输入错误内容" defaultValue={remark} onInput={v => (remark = v)} />;
+                      },
+                      positiveText: "确认提交",
+                      onPositiveClick() {
+                        if (!videoDetail.value || !remark) {
+                          return;
+                        }
+                        return postReport(remark, videoDetail.value.id, play.value?.id);
+                      },
+                    });
+                  }}
+                >
+                  纠错
+                </NButton>
+                <div class="d-flex align-items-center cursor-pointer" onClick={() => (toggleCollapse.value = !toggleCollapse.value)}>
+                  <span class="font-gray mar-r-1-item font-small">简介</span>
+                  <NIcon size={20}>{toggleCollapse.value ? <KeyboardArrowUpOutlined /> : <KeyboardArrowDownOutlined />}</NIcon>
+                </div>
               </div>
             </div>
             {config.isApp && play.value?.src ? (
