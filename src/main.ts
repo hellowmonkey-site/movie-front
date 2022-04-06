@@ -52,11 +52,11 @@ router.isReady().then(async () => {
     if (config.isProd && config.isWeb) {
       initSecure();
     }
-    let cls = "app-web";
+    let cls = "platform-web";
     if (config.isApp) {
-      cls = "app-app";
+      cls = "platform-app";
     } else if (config.isMsi) {
-      cls = "app-msi";
+      cls = "platform-msi";
     }
     document.body.classList.add(cls);
   }

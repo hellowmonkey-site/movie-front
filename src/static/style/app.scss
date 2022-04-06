@@ -7,7 +7,7 @@
 @import "./common.scss";
 @import "./animate.scss";
 
-.app-web * {
+* {
   user-select: none;
 }
 
@@ -166,9 +166,22 @@ a {
   }
 
   .n-layout-sider {
-    position: absolute;
-    height: 100%;
+    position: fixed;
+    top: 61px;
+    bottom: 0;
     z-index: 999;
+  }
+
+  .n-layout-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+  }
+
+  .app-layout {
+    padding-top: 61px;
   }
 
   .video-player {

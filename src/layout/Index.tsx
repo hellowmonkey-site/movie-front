@@ -298,7 +298,7 @@ export default defineComponent({
     });
     return () => (
       <>
-        <NLayout position="absolute">
+        <NLayout position={isMobileWidth.value ? "static" : "absolute"} class="app-layout">
           <NLayoutHeader data-tauri-drag-region bordered class="d-flex align-items-center justify-between pad-3">
             {isMobileWidth.value ? (
               <NTooltip>
@@ -563,7 +563,7 @@ export default defineComponent({
               </NTooltip>
             </div>
           </NLayoutHeader>
-          <NLayout hasSider position="absolute" style={{ top: "64px" }}>
+          <NLayout hasSider position={isMobileWidth.value ? "static" : "absolute"} style={{ top: isMobileWidth.value ? 0 : "61px" }}>
             <NLayoutSider
               v-model={[menuCollapsed.value, "collapsed"]}
               bordered
@@ -580,7 +580,7 @@ export default defineComponent({
               ></NMenu>
             </NLayoutSider>
             <NLayout nativeScrollbar={isMobileWidth.value}>
-              <div class="pad-4">
+              <div class="pad-3">
                 <RouterView />
               </div>
               <NBackTop visibilityHeight={10} />
