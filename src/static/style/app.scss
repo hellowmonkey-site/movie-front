@@ -7,7 +7,7 @@
 @import "./common.scss";
 @import "./animate.scss";
 
-* {
+.app-web * {
   user-select: none;
 }
 
@@ -99,41 +99,6 @@ a {
   }
 }
 
-.video-player-container {
-  background-color: #000;
-}
-
-.video-player {
-  height: calc(100vh - 100px);
-  width: 100%;
-}
-
-@media (max-width: 640px) {
-  .video-info {
-    display: block;
-  }
-
-  .video-cover {
-    margin-bottom: var(--offset-3);
-  }
-}
-
-@media (min-width: 640px) {
-  .video-cover {
-    width: 30vw;
-    max-width: 300px;
-    margin-right: var(--offset-3);
-  }
-
-  .video-info-small {
-    .video-cover {
-      width: 23vw;
-      max-width: 180px;
-      margin-right: var(--offset-5);
-    }
-  }
-}
-
 .video-cover {
   border-radius: 6px;
   overflow: hidden;
@@ -166,7 +131,40 @@ a {
   }
 }
 
-.app-mobile {
+.video-player-container {
+  background-color: #000;
+}
+
+.video-player {
+  height: calc(100vh - 100px);
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .video-cover {
+    width: 30vw;
+    max-width: 300px;
+    margin-right: var(--offset-3);
+  }
+
+  .video-info-small {
+    .video-cover {
+      width: 23vw;
+      max-width: 180px;
+      margin-right: var(--offset-5);
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .video-info {
+    display: block;
+  }
+
+  .video-cover {
+    margin-bottom: var(--offset-3);
+  }
+
   .n-layout-sider {
     position: absolute;
     height: 100%;

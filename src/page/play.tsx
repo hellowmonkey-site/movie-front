@@ -2,7 +2,7 @@ import Image from "@/component/Image";
 import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
 import config from "@/config";
-import { plusPlayURL } from "@/helper/plus";
+import { PlusOpenTypes, plusPlayURL } from "@/helper/plus";
 import { appConfig, menuCollapsed, setAppConfig } from "@/service/common";
 import { ThemeTypes } from "@/service/common";
 import { postPlayLog } from "@/service/history";
@@ -206,8 +206,31 @@ export default defineComponent({
                 block
                 type="primary"
                 onClick={() => {
-                  videoPlayer?.destroy();
-                  plusPlayURL(play.value?.src || "");
+                  plus.nativeUI.actionSheet(
+                    {
+                      title: "请选择打开方式",
+                      cancel: "取消",
+                      buttons: [
+                        {
+                          title: "原生应用打开",
+                        },
+                        {
+                          title: "浏览器打开",
+                        },
+                      ],
+                    },
+                    ({ index }: { index: number }) => {
+                      if (index <= 0) {
+                        return;
+                      }
+                      let type = PlusOpenTypes.NATIVE;
+                      if (index === 2) {
+                        type = PlusOpenTypes.BROWSER;
+                      }
+                      videoPlayer?.destroy();
+                      plusPlayURL(play.value?.src || "", type);
+                    }
+                  );
                 }}
               >
                 原生播放器观看

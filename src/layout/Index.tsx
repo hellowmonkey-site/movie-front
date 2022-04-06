@@ -30,8 +30,6 @@ import {
   NLayoutHeader,
   NLayoutSider,
   NMenu,
-  NRadio,
-  NRadioGroup,
   NSelect,
   NSlider,
   NSwitch,
@@ -41,14 +39,12 @@ import {
   useNotification,
   useOsTheme,
 } from "naive-ui";
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted } from "vue";
 import { RouterLink, RouterView, useRoute, useRouter } from "vue-router";
 import {
   AndroidOutlined,
   ChevronLeftRound,
   ChevronRightRound,
-  CloudDownloadFilled,
-  CloudDownloadOutlined,
   ContentPasteSearchOutlined,
   FileDownloadFilled,
   FileDownloadOutlined,
@@ -58,6 +54,7 @@ import {
   LogOutOutlined,
   MenuOutlined,
   MovieFilterFilled,
+  OpenInBrowserOutlined,
   PersonFilled,
   PersonOutlineOutlined,
   ReplayOutlined,
@@ -222,6 +219,47 @@ export default defineComponent({
       ];
     });
 
+    const downloadList = computed(() => {
+      const list = [
+        {
+          label: "Windows版下载",
+          key: "msi",
+          icon() {
+            return (
+              <NIcon>
+                <WindowOutlined />
+              </NIcon>
+            );
+          },
+        },
+        {
+          label: "Android版下载",
+          key: "apk",
+          icon() {
+            return (
+              <NIcon>
+                <AndroidOutlined />
+              </NIcon>
+            );
+          },
+        },
+      ];
+      if (canInstall.value) {
+        list.push({
+          label: "极速版下载",
+          key: "browser",
+          icon() {
+            return (
+              <NIcon>
+                <OpenInBrowserOutlined />
+              </NIcon>
+            );
+          },
+        });
+      }
+      return list;
+    });
+
     const marks: Record<string, string> = {};
     config.playbackRates
       .map(v => String(v))
@@ -381,33 +419,20 @@ export default defineComponent({
               {config.isWeb ? (
                 <>
                   <NDropdown
-                    options={[
-                      {
-                        label: "Windows版下载",
-                        key: "msi",
-                        icon() {
-                          return (
-                            <NIcon>
-                              <WindowOutlined />
-                            </NIcon>
-                          );
-                        },
-                      },
-                      {
-                        label: "Android版下载",
-                        key: "apk",
-                        icon() {
-                          return (
-                            <NIcon>
-                              <AndroidOutlined />
-                            </NIcon>
-                          );
-                        },
-                      },
-                    ]}
+                    options={downloadList.value}
                     trigger="click"
                     onSelect={suffix => {
-                      window.open(getFullUrl(config.baseURL, config.downloadUrl, `hellowmonkey.${suffix}`));
+                      if (suffix === "browser") {
+                        pwaInstallHandler.install().then(installed => {
+                          if (installed) {
+                            message.success("恭喜您安装成功~");
+                          } else {
+                            message.error("真的不打算安装么？");
+                          }
+                        });
+                      } else {
+                        window.open(getFullUrl(config.baseURL, config.downloadUrl, `hellowmonkey.${suffix}`));
+                      }
                     }}
                   >
                     <NTooltip placement={isMobileWidth.value ? "left" : undefined}>
@@ -423,33 +448,6 @@ export default defineComponent({
                       }}
                     </NTooltip>
                   </NDropdown>
-                  {canInstall.value ? (
-                    <NTooltip placement={isMobileWidth.value ? "left" : undefined}>
-                      {{
-                        default: () => <span>下载应用</span>,
-                        trigger: () => (
-                          <NButton
-                            size="large"
-                            class="mar-r-3-item"
-                            circle
-                            onClick={() => {
-                              pwaInstallHandler.install().then(installed => {
-                                if (installed) {
-                                  message.success("恭喜您安装成功~");
-                                } else {
-                                  message.error("真的不打算安装么？");
-                                }
-                              });
-                            }}
-                          >
-                            {{
-                              icon: () => <NIcon>{globalTheme.value === null ? <CloudDownloadOutlined /> : <CloudDownloadFilled />}</NIcon>,
-                            }}
-                          </NButton>
-                        ),
-                      }}
-                    </NTooltip>
-                  ) : null}
                 </>
               ) : null}
               {isMobileWidth.value ? (
@@ -521,7 +519,11 @@ export default defineComponent({
                 onSelect={name => {
                   if (name === "logout") {
                     clearUser();
-                    location.reload();
+                    if (typeof plus === "undefined") {
+                      location.reload();
+                    } else {
+                      router.push({ name: "login" });
+                    }
                   } else {
                     router.push({ name });
                   }
@@ -566,7 +568,7 @@ export default defineComponent({
               v-model={[menuCollapsed.value, "collapsed"]}
               bordered
               showTrigger
-              nativeScrollbar={false}
+              nativeScrollbar={isMobileWidth.value}
               collapseMode={isMobileWidth.value ? "transform" : "width"}
               collapsedWidth={isMobileWidth.value ? 0 : undefined}
             >
@@ -577,7 +579,7 @@ export default defineComponent({
                 defaultExpandedKeys={defaultExpandedKeys.value}
               ></NMenu>
             </NLayoutSider>
-            <NLayout nativeScrollbar={false}>
+            <NLayout nativeScrollbar={isMobileWidth.value}>
               <div class="pad-4">
                 <RouterView />
               </div>
@@ -586,23 +588,21 @@ export default defineComponent({
           </NLayout>
         </NLayout>
         <NDrawer v-model={[settingOpen.value, "show"]} class="setting-drawer" width="90vw">
-          <NDrawerContent title="系统设置" closable nativeScrollbar={false}>
+          <NDrawerContent title="系统设置" closable nativeScrollbar={isMobileWidth.value}>
             <NDivider titlePlacement="left">主题</NDivider>
             <div class="d-flex justify-between align-items-center mar-b-6-item">
               <span class="font-gray font-small mar-r-7 flex-item-extend">选择主题</span>
-              <NRadioGroup
+              <NSelect
+                style={{ width: "65%" }}
                 value={appConfig.value.themeType}
-                onUpdateValue={themeType => {
-                  setAppConfig({ themeType });
-                  // changeThemeType(themeType);
-                }}
-              >
-                {themeTypes.map(v => (
-                  <NRadio key={v.key} value={v.key}>
-                    {v.label}
-                  </NRadio>
-                ))}
-              </NRadioGroup>
+                onUpdateValue={themeType => setAppConfig({ themeType })}
+                options={themeTypes.map(v => {
+                  return {
+                    label: v.label,
+                    value: v.key,
+                  };
+                })}
+              ></NSelect>
             </div>
             <div class="d-flex justify-between align-items-center mar-b-6-item">
               <span class="font-gray font-small mar-r-7 flex-item-extend">主题颜色</span>
@@ -653,18 +653,17 @@ export default defineComponent({
             </div>
             <div class="d-flex justify-between align-items-center mar-b-6-item">
               <span class="font-gray font-small mar-r-7 flex-item-extend">视频布局</span>
-              <NRadioGroup
+              <NSelect
+                style={{ width: "65%" }}
                 value={appConfig.value.fitVideoSize}
-                onUpdateValue={fitVideoSize => {
-                  setAppConfig({ fitVideoSize });
-                }}
-              >
-                {fitVideoSizes.map(v => (
-                  <NRadio key={v.value} value={v.value}>
-                    {v.text}
-                  </NRadio>
-                ))}
-              </NRadioGroup>
+                onUpdateValue={fitVideoSize => setAppConfig({ fitVideoSize })}
+                options={fitVideoSizes.map(v => {
+                  return {
+                    label: v.text,
+                    value: v.value,
+                  };
+                })}
+              ></NSelect>
             </div>
             <div class="d-flex justify-between align-items-center mar-b-6-item">
               <span class="font-gray font-small mar-r-7 flex-item-extend">自动播放</span>

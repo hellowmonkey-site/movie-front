@@ -22,9 +22,11 @@ export default defineComponent({
       return category?.name;
     });
     const loading = ref(false);
-    const refresh = pullDownRefresh(fetchData);
+    const refresh = pullDownRefresh(() => {
+      fetchData(route.params.category, 1);
+    });
 
-    function fetchData(category = route.params.category, page = route.query.page) {
+    function fetchData(category = route.params.category, page = Number(route.query.page)) {
       if (!category) {
         return;
       }
@@ -44,7 +46,7 @@ export default defineComponent({
     });
 
     onBeforeRouteUpdate(to => {
-      fetchData(to.params.category, to.query.page);
+      fetchData(to.params.category, Number(to.query.page));
     });
 
     return () => (

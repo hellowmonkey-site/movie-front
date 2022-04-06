@@ -1,5 +1,10 @@
 import router from "@/router";
-import { menuCollapsed, settingOpen, themeOverrides } from "@/service/common";
+import { dialog, menuCollapsed, settingOpen, themeOverrides } from "@/service/common";
+
+export const enum PlusOpenTypes {
+  NATIVE = 1,
+  BROWSER = 2,
+}
 
 export function plusToast(message: string) {
   if (typeof plus === "undefined") {
@@ -9,6 +14,15 @@ export function plusToast(message: string) {
     duration: "short",
     verticalAlign: "bottom",
   });
+}
+
+// 重新加载
+export function plusReload() {
+  if (typeof plus === "undefined") {
+    return;
+  }
+  const webview = plus.webview.currentWebview();
+  webview.reload();
 }
 
 // 返回
@@ -35,6 +49,18 @@ export function plusBack() {
         settingOpen.value = false;
         return;
       }
+      // 图片预览
+      const viewerCloseBtn = document.querySelector(".viewer-in .viewer-close");
+      if (viewerCloseBtn) {
+        viewerCloseBtn.dispatchEvent(new Event("click"));
+        return;
+      }
+      // 弹框
+      if (document.querySelector(".n-modal-container")) {
+        dialog?.destroyAll();
+        return;
+      }
+
       if (router.currentRoute.value.name === "index") {
         if (!backFirst) {
           backFirst = now;
@@ -54,11 +80,6 @@ export function plusBack() {
   }
 }
 
-// 菜单
-export function plusMenu() {
-  menuCollapsed.value = false;
-}
-
 // 下拉刷新
 export function pullDownRefresh(cb: null | (() => void)) {
   if (typeof plus === "undefined") {
@@ -66,20 +87,17 @@ export function pullDownRefresh(cb: null | (() => void)) {
   }
   const webview = plus.webview.currentWebview();
   const support = cb !== null;
-  const opts = {
-    down: {
+
+  webview.setPullToRefresh(
+    {
       support,
       style: "circle",
       color: themeOverrides.value.common?.primaryColor,
       offset: "60px",
       auto: false,
     },
-    up: {
-      support: false,
-    },
-  };
-
-  webview.setPullToRefresh(opts, cb);
+    cb
+  );
 
   function begin() {
     webview.beginPullToRefresh();
@@ -97,21 +115,26 @@ export function pullDownRefresh(cb: null | (() => void)) {
 
 // 打开资源
 let Intent: any, Uri: any, main: any, intent: any;
-export function plusPlayURL(url: string) {
+export function plusPlayURL(url: string, type: PlusOpenTypes = PlusOpenTypes.BROWSER) {
   if (typeof plus === "undefined") {
     return;
   }
-  try {
-    if (!Intent) {
-      Intent = plus.android.importClass("android.content.Intent");
-      Uri = plus.android.importClass("android.net.Uri");
-      main = plus.android.runtimeMainActivity();
-      intent = new Intent(Intent.ACTION_VIEW);
+  if (type === PlusOpenTypes.NATIVE) {
+    try {
+      if (!Intent) {
+        Intent = plus.android.importClass("android.content.Intent");
+        Uri = plus.android.importClass("android.net.Uri");
+        main = plus.android.runtimeMainActivity();
+        intent = new Intent(Intent.ACTION_VIEW);
+      }
+      const uri = Uri.parse(url);
+      intent.setDataAndType(uri, "video/*");
+      main.startActivity(intent);
+    } catch (error) {
+      plusToast("已降级处理");
+      plus.runtime.openURL(url);
     }
-    const uri = Uri.parse(url);
-    intent.setDataAndType(uri, "video/*");
-    main.startActivity(intent);
-  } catch (error) {
+  } else {
     plus.runtime.openURL(url);
   }
 }
@@ -131,7 +154,13 @@ export function plusReady() {
         plus.key.addEventListener("backbutton", plusBack, false);
 
         // 菜单
-        plus.key.addEventListener("menubutton", plusMenu, false);
+        plus.key.addEventListener(
+          "menubutton",
+          () => {
+            menuCollapsed.value = false;
+          },
+          false
+        );
 
         resolve(plus);
       },

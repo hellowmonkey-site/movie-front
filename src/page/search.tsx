@@ -15,7 +15,9 @@ export default defineComponent({
   setup: (props, ctx) => {
     const route = useRoute();
     const router = useRouter();
-    const refresh = pullDownRefresh(fetchData);
+    const refresh = pullDownRefresh(() => {
+      fetchData(route.query.keywords, 1);
+    });
 
     const videos = ref<PageData<IVideo>>(defaultPageData);
 

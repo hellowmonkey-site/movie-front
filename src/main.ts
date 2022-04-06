@@ -48,10 +48,16 @@ router.isReady().then(async () => {
     getUserInfo();
   } finally {
     app.mount("#app");
+    // 防盗
+    if (config.isProd && config.isWeb) {
+      initSecure();
+    }
+    let cls = "app-web";
+    if (config.isApp) {
+      cls = "app-app";
+    } else if (config.isMsi) {
+      cls = "app-msi";
+    }
+    document.body.classList.add(cls);
   }
 });
-
-// 防盗
-if (config.isProd) {
-  initSecure();
-}

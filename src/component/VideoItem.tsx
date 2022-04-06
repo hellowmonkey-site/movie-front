@@ -30,7 +30,7 @@ export default defineComponent({
         >
           <div class="cover mar-b-4-item">
             <Image src={props.video.cover} preview={false} />
-            {props.tag ? <div class="tag font-small">{props.video[props.tag]}</div> : null}
+            {props.tag ? <div class="tag font-small">{props.video[props.tag] || props.video.category}</div> : null}
           </div>
           <div class="content">
             <h2 class="font-large text-elip mar-b-2-item">{props.video.title}</h2>
