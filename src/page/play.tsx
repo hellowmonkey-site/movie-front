@@ -68,14 +68,14 @@ export default defineComponent({
         return;
       }
       videoPlayer?.destroy();
-      const { offsetWidth, offsetHeight } = el.value;
+      const height = window.innerHeight - 70;
       setTimeout(() => {
         const options: IPlayerOptions = {
           el: el.value,
           autoplay: appConfig.value.autoplay,
           url: play.value?.src || "",
-          width: offsetWidth,
-          height: appConfig.value.fitVideoSize === "fixWidth" ? offsetHeight : undefined,
+          width: "100%",
+          height,
           fitVideoSize: appConfig.value.fitVideoSize,
           // fluid: true,
           poster: videoDetail.value?.cover,
