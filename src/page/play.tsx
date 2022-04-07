@@ -68,7 +68,7 @@ export default defineComponent({
         return;
       }
       videoPlayer?.destroy();
-      const height = window.innerHeight - 70;
+      const height = appConfig.value.fitVideoSize === "fixWidth" ? undefined : window.innerHeight - 70;
       setTimeout(() => {
         const options: IPlayerOptions = {
           el: el.value,

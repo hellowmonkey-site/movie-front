@@ -136,7 +136,8 @@ a {
 }
 
 .video-player {
-  height: calc(100vh - 100px);
+  max-height: calc(100vh - 70px);
+  min-height: 300px;
   width: 100%;
 }
 
@@ -182,9 +183,5 @@ a {
 
   .app-layout {
     padding-top: 61px;
-  }
-
-  .video-player {
-    height: 60vh;
   }
 }
