@@ -107,16 +107,18 @@ router.beforeEach(to => {
   const style = putStyle({ "--primary-color": themeOverrides.value.common?.primaryColor });
   document.body.setAttribute("style", style);
 
+  NProgress.start();
+
   // 返回顶部
   goTop();
 
   // 销毁播放器
   if (config.isApp) {
-    const videoPlayer: IPlusVideoPlayer = plus.video.getVideoPlayerById(config.videoId);
-    videoPlayer?.close();
+    const plusVideoPlayer: IPlusVideoPlayer = plus.video.getVideoPlayerById(config.videoId);
+    plusVideoPlayer?.exitFullScreen();
+    plusVideoPlayer?.close();
   }
 
-  NProgress.start();
   if (!to.meta.pullDownRefresh) {
     pullDownRefresh(null);
   }

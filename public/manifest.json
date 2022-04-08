@@ -90,7 +90,7 @@
     },
     "plus" : {
 				"statusbar" : {
-						"immersed" : true
+						"immersed" : false
 				},
         "splashscreen" : {
             "autoclose" : false, /*是否自动关闭程序启动界面，true表示应用加载应用入口页面后自动关闭；false则需调plus.navigator.closeSplashscreen()关闭*/

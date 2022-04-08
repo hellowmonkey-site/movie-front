@@ -103,7 +103,14 @@ export default defineComponent({
         plus.webview.currentWebview().append(plusVideoPlayer);
 
         // 视频播放完自动下一集
-        plusVideoPlayer.addEventListener("ended", autoNextPlay, false);
+        plusVideoPlayer.addEventListener(
+          "ended",
+          () => {
+            plusVideoPlayer.exitFullScreen();
+            autoNextPlay();
+          },
+          false
+        );
         // 视频播放更新时间，切换全屏时跳转
         plusVideoPlayer.addEventListener(
           "timeupdate",
@@ -189,8 +196,8 @@ export default defineComponent({
     });
 
     onBeforeRouteLeave(() => {
-      videoPlayer?.destroy();
       plusVideoPlayer?.close();
+      videoPlayer?.destroy();
       setAppConfig({
         themeType: oldTheme,
       });
