@@ -1,5 +1,5 @@
 import VideoItem from "@/component/VideoItem";
-import { pullDownRefresh } from "@/helper/plus";
+import { pullDownRefresh } from "@/service/plus";
 import { getRecommendVideos, recommendVideoComputed } from "@/service/video";
 import { NEmpty, NGrid, NGridItem, NH2, NSpin, NText } from "naive-ui";
 import { defineComponent, onMounted, ref } from "vue";

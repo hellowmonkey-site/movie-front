@@ -137,7 +137,7 @@ a {
 
 .video-player {
   max-height: calc(100vh - 70px);
-  min-height: 300px;
+  min-height: 350px;
   width: 100%;
 }
 
@@ -178,7 +178,7 @@ a {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 2;
+    z-index: 998;
   }
 
   .app-layout {

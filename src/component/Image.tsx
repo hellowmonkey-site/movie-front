@@ -3,6 +3,7 @@ import { defineComponent, onMounted, PropType, ref, watch } from "vue";
 import { NSpin } from "naive-ui";
 import config from "@/config";
 import { imagePreview } from "@/helper/viewer";
+import { plusImagePreview } from "@/service/plus";
 const FailImg = getFullUrl(config.baseURL, config.imageUrl, "image-fail.png");
 
 const enum ImgStatus {
@@ -65,7 +66,11 @@ export default defineComponent({
             src={src.value}
             onClick={() => {
               if (props.preview) {
-                imagePreview(src.value);
+                if (config.isApp) {
+                  plusImagePreview(src.value);
+                } else {
+                  imagePreview(src.value);
+                }
               }
             }}
             alt={props.preview ? "点击预览" : ""}

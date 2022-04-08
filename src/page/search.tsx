@@ -7,7 +7,7 @@ import { getSearchHistory, searchHistorys } from "@/service/history";
 import { NButton, NEmpty, NGrid, NGridItem, NH2, NPagination, NSpace, NSpin, NText } from "naive-ui";
 import { defineComponent, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { pullDownRefresh } from "@/helper/plus";
+import { pullDownRefresh } from "@/service/plus";
 
 export default defineComponent({
   props: {},

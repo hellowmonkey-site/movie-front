@@ -9,6 +9,7 @@ import { localStorage } from "@/helper/storage";
 import pwaInstallHandler from "pwa-install-handler";
 import router from "@/router";
 import { MessageApiInjection } from "naive-ui/lib/message/src/MessageProvider";
+import { plusSetStatusBar } from "./plus";
 
 const os = useOsTheme();
 
@@ -177,7 +178,7 @@ export const defaultConfig: IConfig = {
   pip: true,
   miniplayer: true,
   recommend: true,
-  playbackRate: 1,
+  playbackRate: 1.0,
   fitVideoSize: "fixHeight",
   searchLog: true,
   playLog: true,

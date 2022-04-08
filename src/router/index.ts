@@ -2,9 +2,9 @@ import NProgress from "nprogress";
 import { createRouter, createWebHistory } from "vue-router";
 
 import Index from "@/layout/Index";
-import { goTop } from "@/helper";
+import { goTop, putStyle } from "@/helper";
 import { isMobileWidth, menuCollapsed, themeOverrides, visitedPageNum } from "@/service/common";
-import { pullDownRefresh } from "@/helper/plus";
+import { pullDownRefresh } from "@/service/plus";
 
 NProgress.inc(0.2);
 NProgress.configure({ easing: "ease", speed: 500, showSpinner: false });
@@ -102,7 +102,8 @@ const router = createRouter({
 });
 
 router.beforeEach(to => {
-  document.body.setAttribute("style", `--primary-color: ${themeOverrides.value.common?.primaryColor}`);
+  const style = putStyle({ "--primary-color": themeOverrides.value.common?.primaryColor });
+  document.body.setAttribute("style", style);
   goTop();
   NProgress.start();
   if (!to.meta.pullDownRefresh) {

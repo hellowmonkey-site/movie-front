@@ -9,7 +9,7 @@ import "@/plugin/service-worker";
 import config from "./config";
 import { initSecure } from "./helper/secure";
 import { appWindow } from "@tauri-apps/api/window";
-import { plusReady } from "./helper/plus";
+import { plusReady, plusSetStatusBar } from "./service/plus";
 import { getUserInfo } from "./service/user";
 
 const app = createApp(App);
@@ -25,6 +25,7 @@ router.isReady().then(async () => {
           config.isWeb = false;
           router.replace("/");
           setTimeout(() => {
+            plusSetStatusBar();
             plus.navigator.closeSplashscreen();
           }, 1000);
         })
@@ -52,6 +53,7 @@ router.isReady().then(async () => {
     if (config.isProd && config.isWeb) {
       initSecure();
     }
+    // class
     let cls = "platform-web";
     if (config.isApp) {
       cls = "platform-app";

@@ -4,10 +4,10 @@ let div: HTMLElement, viewer: Viewer;
 
 type Opt = string | string[];
 
-export const imagePreview = (params: Opt, initialViewIndex = 0) => {
+export const imagePreview = (src: Opt, initialViewIndex = 0) => {
   let images: string[] = [];
-  if (typeof params === "string") {
-    images = [params];
+  if (typeof src === "string") {
+    images = [src];
   }
   images = images.filter(v => !!v);
   if (!images.length) {

@@ -1,6 +1,6 @@
 import VideoItem from "@/component/VideoItem";
 import { PageData } from "@/config/type";
-import { pullDownRefresh } from "@/helper/plus";
+import { pullDownRefresh } from "@/service/plus";
 import { categorys } from "@/service/category";
 import { defaultPageData, isMobileWidth } from "@/service/common";
 import { getCategoryVideos, IVideo } from "@/service/video";

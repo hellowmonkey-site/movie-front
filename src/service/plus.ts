@@ -1,9 +1,23 @@
 import router from "@/router";
-import { dialog, menuCollapsed, settingOpen, themeOverrides } from "@/service/common";
+import { dialog, globalTheme, menuCollapsed, settingOpen, themeOverrides, ThemeTypes } from "@/service/common";
 
 export const enum PlusOpenTypes {
   NATIVE = 1,
   BROWSER = 2,
+}
+export interface IPlusVideoPlayer {
+  addEventListener: (event: string, listener: () => void, capture: boolean) => void;
+  setStyles(styles: any): void;
+  play(): void;
+  pause(): void;
+  seek(position: number): void;
+  requestFullScreen(): void;
+  exitFullScreen(): void;
+  stop(): void;
+  hide(): void;
+  show(): void;
+  close(): void;
+  playbackRate(rate: number): void;
 }
 
 export function plusToast(message: string) {
@@ -50,9 +64,9 @@ export function plusBack() {
         return;
       }
       // 图片预览
-      const viewerCloseBtn = document.querySelector(".viewer-in .viewer-close");
+      const viewerCloseBtn = document.querySelector(".viewer-in .viewer-close") as HTMLElement;
       if (viewerCloseBtn) {
-        viewerCloseBtn.dispatchEvent(new Event("click"));
+        viewerCloseBtn.click();
         return;
       }
       // 弹框
@@ -78,6 +92,25 @@ export function plusBack() {
       }
     });
   }
+}
+
+// 图片预览
+export function plusImagePreview(src: string | string[], current = 0) {
+  if (typeof plus === "undefined") {
+    return;
+  }
+  let images: string[] = [];
+  if (typeof src === "string") {
+    images = [src];
+  }
+  images = images.filter(v => !!v);
+  if (!images.length) {
+    return;
+  }
+  plus.nativeUI.previewImage(images, {
+    current,
+    loop: true,
+  });
 }
 
 // 下拉刷新
@@ -137,6 +170,14 @@ export function plusPlayURL(url: string, type: PlusOpenTypes = PlusOpenTypes.BRO
   } else {
     plus.runtime.openURL(url);
   }
+}
+
+// 设置状态栏
+export function plusSetStatusBar() {
+  if (typeof plus === "undefined") {
+    return;
+  }
+  plus.navigator.setStatusBarStyle(globalTheme.value === null ? ThemeTypes.LIGHT : ThemeTypes.DARK);
 }
 
 export function plusReady() {

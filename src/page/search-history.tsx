@@ -1,4 +1,4 @@
-import { pullDownRefresh } from "@/helper/plus";
+import { pullDownRefresh } from "@/service/plus";
 import { deleteSearchHistory, getSearchHistory, searchHistorys } from "@/service/history";
 import { user } from "@/service/user";
 import { NButton, NEmpty, NSpace, useDialog } from "naive-ui";

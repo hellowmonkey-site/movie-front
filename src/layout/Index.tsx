@@ -72,8 +72,9 @@ import pwaInstallHandler from "pwa-install-handler";
 import { videoDetail } from "@/service/video";
 import { DropdownMixedOption } from "naive-ui/lib/dropdown/src/interface";
 import { clearUser, user } from "@/service/user";
-import { getFullUrl } from "@/helper";
+import { getFullUrl, goTop } from "@/helper";
 import { getPlayHistory } from "@/service/history";
+import { plusSetStatusBar } from "@/service/plus";
 
 export default defineComponent({
   props: {},
@@ -415,7 +416,7 @@ export default defineComponent({
                 }}
               />
             )}
-            <div class="flex-item-extend d-flex justify-end" data-tauri-drag-region>
+            <div class="flex-item-extend d-flex justify-end" data-tauri-drag-region onDblclick={goTop}>
               {config.isWeb ? (
                 <>
                   <NDropdown
@@ -498,6 +499,7 @@ export default defineComponent({
                 trigger="click"
                 onSelect={themeType => {
                   setAppConfig({ themeType });
+                  plusSetStatusBar();
                 }}
               >
                 <NTooltip placement={isMobileWidth.value ? "left" : undefined}>
@@ -583,7 +585,7 @@ export default defineComponent({
               <div class="pad-3">
                 <RouterView />
               </div>
-              <NBackTop visibilityHeight={10} listenTo={isMobileWidth.value ? document.body : undefined} />
+              <NBackTop visibilityHeight={10} />
             </NLayout>
           </NLayout>
         </NLayout>

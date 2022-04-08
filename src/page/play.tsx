@@ -2,16 +2,16 @@ import Image from "@/component/Image";
 import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
 import config from "@/config";
-import { PlusOpenTypes, plusPlayURL } from "@/helper/plus";
-import { appConfig, menuCollapsed, setAppConfig } from "@/service/common";
+import { IPlusVideoPlayer, PlusOpenTypes, plusPlayURL } from "@/service/plus";
+import { appConfig, isMobileWidth, menuCollapsed, setAppConfig } from "@/service/common";
 import { ThemeTypes } from "@/service/common";
 import { postPlayLog } from "@/service/history";
 import { getInfoList, getRecommendByCategoryId, getVideoDetail, postReport, videoDetail } from "@/service/video";
 import { appWindow } from "@tauri-apps/api/window";
 import { KeyboardArrowDownOutlined, KeyboardArrowUpOutlined } from "@vicons/material";
-import { NButton, NCollapseTransition, NIcon, NInput, useDialog } from "naive-ui";
-import { computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref } from "vue";
-import { onBeforeRouteUpdate, useRouter } from "vue-router";
+import { NButton, NCollapseTransition, NDropdown, NIcon, NInput, useDialog } from "naive-ui";
+import { computed, defineComponent, onMounted, PropType, ref } from "vue";
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from "vue-router";
 import Player, { IPlayerOptions } from "xgplayer";
 import HlsJsPlayer from "xgplayer-hls.js";
 
@@ -30,6 +30,7 @@ export default defineComponent({
   setup: (props, ctx) => {
     const dialog = useDialog();
     let videoPlayer: Player;
+    let plusVideoPlayer: IPlusVideoPlayer;
     const el = ref<HTMLElement | undefined>();
     const router = useRouter();
     const playId = ref(props.playId);
@@ -57,6 +58,26 @@ export default defineComponent({
     //   return playlist.slice(index).map(v => v.src);
     // });
 
+    function sendPlayLog() {
+      if (videoDetail.value && play.value) {
+        // 播放历史
+        postPlayLog(videoDetail.value.id, play.value.id);
+      }
+    }
+
+    function autoNextPlay() {
+      // 自动进入下一集
+      if (appConfig.value.autoNext && videoDetail.value && play.value?.circuit_id) {
+        const playlist = Array.from(videoDetail.value.playlist).filter(v => v.circuit_id === Number(play.value?.circuit_id));
+        const index = playlist.findIndex(v => v.id === Number(play.value?.id));
+        if (index < 0 || index >= playlist.length - 1) {
+          return;
+        }
+        const { id: playId } = playlist[index + 1];
+        router.replace({ name: "play", params: { videoId: props.videoId, playId } });
+      }
+    }
+
     function createPlayer() {
       if (!videoDetail.value) {
         return null;
@@ -67,59 +88,63 @@ export default defineComponent({
       if (!el.value) {
         return;
       }
-      videoPlayer?.destroy();
-      const height = appConfig.value.fitVideoSize === "fixWidth" ? undefined : window.innerHeight - 70;
-      setTimeout(() => {
-        const options: IPlayerOptions = {
-          el: el.value,
-          autoplay: appConfig.value.autoplay,
-          url: play.value?.src || "",
+      if (config.isApp) {
+        plusVideoPlayer = plus.video.createVideoPlayer("videoPlayer", {
+          src: play.value?.src,
+          top: "61px",
+          left: "0",
           width: "100%",
-          height,
-          fitVideoSize: appConfig.value.fitVideoSize,
-          // fluid: true,
-          poster: videoDetail.value?.cover,
-          playbackRate: config.playbackRates,
-          defaultPlaybackRate: appConfig.value.playbackRate,
-          pip: appConfig.value.pip,
-          miniplayer: appConfig.value.miniplayer,
-          enableContextmenu: false,
-          lang: "zh-cn",
-          volume: appConfig.value.volume / 100,
-          // playNext: {
-          //   urlList: playNextUrls.value,
-          // },
-          // download: true
-        };
-        if (String(options.url).indexOf(".m3u8") !== -1) {
-          videoPlayer = new HlsJsPlayer(options);
-        } else {
-          videoPlayer = new Player(options);
-        }
+          height: "340px",
+          position: "static",
+          autoplay: appConfig.value.autoplay,
+          "show-mute-btn": true,
+        });
+        plus.webview.currentWebview().append(plusVideoPlayer);
+        plusVideoPlayer.addEventListener("ended", autoNextPlay, false);
+        sendPlayLog();
+      } else {
+        videoPlayer?.destroy();
+        const height = appConfig.value.fitVideoSize === "fixWidth" ? undefined : window.innerHeight - 70;
+        setTimeout(() => {
+          const options: IPlayerOptions = {
+            el: el.value,
+            autoplay: appConfig.value.autoplay,
+            url: play.value?.src || "",
+            width: "100%",
+            height,
+            fitVideoSize: appConfig.value.fitVideoSize,
+            // fluid: true,
+            poster: videoDetail.value?.cover,
+            playbackRate: config.playbackRates,
+            defaultPlaybackRate: appConfig.value.playbackRate,
+            pip: appConfig.value.pip,
+            miniplayer: appConfig.value.miniplayer,
+            enableContextmenu: config.isDev,
+            lang: "zh-cn",
+            volume: appConfig.value.volume / 100,
+            closeVideoClick: isMobileWidth.value,
+            // playNext: {
+            //   urlList: playNextUrls.value,
+            // },
+            // download: true
+          };
+          if (String(options.url).indexOf(".m3u8") !== -1) {
+            videoPlayer = new HlsJsPlayer(options);
+          } else {
+            videoPlayer = new Player(options);
+          }
 
-        // 视频加载完成做处理
-        videoPlayer.once("complete", () => {
-          if (videoDetail.value && play.value) {
-            // 播放历史
-            postPlayLog(videoDetail.value.id, play.value.id);
-          }
-        });
-        videoPlayer.on("ended", e => {
-          // 自动进入下一集
-          if (appConfig.value.autoNext && videoDetail.value && play.value?.circuit_id) {
-            const playlist = Array.from(videoDetail.value.playlist).filter(v => v.circuit_id === Number(play.value?.circuit_id));
-            const index = playlist.findIndex(v => v.id === Number(play.value?.id));
-            if (index < 0 || index >= playlist.length - 1) {
-              return;
-            }
-            const { id: playId } = playlist[index + 1];
-            router.replace({ name: "play", params: { videoId: props.videoId, playId } });
-          }
-        });
-      }, 100);
+          // 视频加载完成做处理
+          videoPlayer.once("complete", sendPlayLog);
+          videoPlayer.on("ended", autoNextPlay);
+        }, 100);
+      }
     }
 
     function fetchData() {
+      if (videoPlayer) {
+        return;
+      }
       getVideoDetail(props.videoId).then(data => {
         createPlayer();
         // 推荐
@@ -143,8 +168,9 @@ export default defineComponent({
       fetchData();
     });
 
-    onBeforeUnmount(() => {
+    onBeforeRouteLeave(() => {
       videoPlayer?.destroy();
+      plusVideoPlayer?.close();
       setAppConfig({
         themeType: oldTheme,
       });
@@ -202,39 +228,70 @@ export default defineComponent({
               </div>
             </div>
             {config.isApp && play.value?.src ? (
-              <NButton
-                block
-                type="primary"
-                onClick={() => {
-                  plus.nativeUI.actionSheet(
-                    {
-                      title: "请选择打开方式",
-                      cancel: "取消",
-                      buttons: [
-                        {
-                          title: "原生应用打开",
-                        },
-                        {
-                          title: "浏览器打开",
-                        },
-                      ],
-                    },
-                    ({ index }: { index: number }) => {
-                      if (index <= 0) {
-                        return;
+              <div class="d-flex justify-between align-items-center">
+                <NButton
+                  class="flex-item-extend mar-r-3-item"
+                  block
+                  type="primary"
+                  onClick={() => {
+                    plus.nativeUI.actionSheet(
+                      {
+                        title: "请选择打开方式",
+                        cancel: "取消",
+                        buttons: [
+                          {
+                            title: "原生应用打开",
+                          },
+                          {
+                            title: "浏览器打开",
+                          },
+                        ],
+                      },
+                      ({ index }: { index: number }) => {
+                        if (index <= 0) {
+                          return;
+                        }
+                        let type = PlusOpenTypes.NATIVE;
+                        if (index === 2) {
+                          type = PlusOpenTypes.BROWSER;
+                        }
+                        videoPlayer?.destroy();
+                        plusVideoPlayer?.close();
+                        plusPlayURL(play.value?.src || "", type);
                       }
-                      let type = PlusOpenTypes.NATIVE;
-                      if (index === 2) {
-                        type = PlusOpenTypes.BROWSER;
-                      }
-                      videoPlayer?.destroy();
-                      plusPlayURL(play.value?.src || "", type);
-                    }
-                  );
-                }}
-              >
-                原生播放器观看
-              </NButton>
+                    );
+                  }}
+                >
+                  原生播放器观看
+                </NButton>
+                <NDropdown
+                  trigger="click"
+                  options={config.playbackRates.slice(0, -1).map(key => ({
+                    key,
+                    label: `${key} x`,
+                  }))}
+                  value={appConfig.value.playbackRate}
+                  onSelect={playbackRate => {
+                    plusVideoPlayer.playbackRate(playbackRate);
+                    setAppConfig({ playbackRate });
+                  }}
+                >
+                  <NButton type="primary" ghost icon-placement="right">
+                    {{
+                      default() {
+                        return appConfig.value.playbackRate + "倍";
+                      },
+                      icon() {
+                        return (
+                          <NIcon>
+                            <KeyboardArrowDownOutlined />
+                          </NIcon>
+                        );
+                      },
+                    }}
+                  </NButton>
+                </NDropdown>
+              </div>
             ) : null}
           </div>
           <NCollapseTransition show={toggleCollapse.value}>

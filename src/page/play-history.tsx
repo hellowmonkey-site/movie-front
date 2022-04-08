@@ -1,5 +1,5 @@
 import VideoItem from "@/component/VideoItem";
-import { pullDownRefresh } from "@/helper/plus";
+import { pullDownRefresh } from "@/service/plus";
 import { deletePlayHistory, getPlayHistory, playHistorys } from "@/service/history";
 import { user } from "@/service/user";
 import { NButton, NEmpty, NGrid, NGridItem, NTimeline, NTimelineItem, useDialog } from "naive-ui";
