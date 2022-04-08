@@ -89,6 +89,9 @@
         "VideoPlayer" : {}
     },
     "plus" : {
+				"statusbar" : {
+						"immersed" : true
+				},
         "splashscreen" : {
             "autoclose" : false, /*是否自动关闭程序启动界面，true表示应用加载应用入口页面后自动关闭；false则需调plus.navigator.closeSplashscreen()关闭*/
             "waiting" : false, /*是否在程序启动界面显示等待雪花，true表示显示，false表示不显示。*/

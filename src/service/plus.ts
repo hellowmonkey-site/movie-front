@@ -6,7 +6,7 @@ export const enum PlusOpenTypes {
   BROWSER = 2,
 }
 export interface IPlusVideoPlayer {
-  addEventListener: (event: string, listener: () => void, capture: boolean) => void;
+  addEventListener: (event: string, listener: (params?: any) => void, capture: boolean) => void;
   setStyles(styles: any): void;
   play(): void;
   pause(): void;

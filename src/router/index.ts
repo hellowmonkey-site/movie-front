@@ -4,7 +4,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import Index from "@/layout/Index";
 import { goTop, putStyle } from "@/helper";
 import { isMobileWidth, menuCollapsed, themeOverrides, visitedPageNum } from "@/service/common";
-import { pullDownRefresh } from "@/service/plus";
+import { IPlusVideoPlayer, pullDownRefresh } from "@/service/plus";
+import config from "@/config";
 
 NProgress.inc(0.2);
 NProgress.configure({ easing: "ease", speed: 500, showSpinner: false });
@@ -102,9 +103,19 @@ const router = createRouter({
 });
 
 router.beforeEach(to => {
+  // 设置body样式
   const style = putStyle({ "--primary-color": themeOverrides.value.common?.primaryColor });
   document.body.setAttribute("style", style);
+
+  // 返回顶部
   goTop();
+
+  // 销毁播放器
+  if (config.isApp) {
+    const videoPlayer: IPlusVideoPlayer = plus.video.getVideoPlayerById(config.videoId);
+    videoPlayer?.close();
+  }
+
   NProgress.start();
   if (!to.meta.pullDownRefresh) {
     pullDownRefresh(null);

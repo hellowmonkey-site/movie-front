@@ -31,6 +31,7 @@ export default defineComponent({
     const dialog = useDialog();
     let videoPlayer: Player;
     let plusVideoPlayer: IPlusVideoPlayer;
+    let currentPlayTime = 0;
     const el = ref<HTMLElement | undefined>();
     const router = useRouter();
     const playId = ref(props.playId);
@@ -89,7 +90,7 @@ export default defineComponent({
         return;
       }
       if (config.isApp) {
-        plusVideoPlayer = plus.video.createVideoPlayer("videoPlayer", {
+        plusVideoPlayer = plus.video.createVideoPlayer(config.videoId, {
           src: play.value?.src,
           top: "61px",
           left: "0",
@@ -100,7 +101,26 @@ export default defineComponent({
           "show-mute-btn": true,
         });
         plus.webview.currentWebview().append(plusVideoPlayer);
+
+        // 视频播放完自动下一集
         plusVideoPlayer.addEventListener("ended", autoNextPlay, false);
+        // 视频播放更新时间，切换全屏时跳转
+        plusVideoPlayer.addEventListener(
+          "timeupdate",
+          ({ detail }) => {
+            currentPlayTime = Number(detail.currentTime);
+          },
+          false
+        );
+        // 切换全屏
+        plusVideoPlayer.addEventListener(
+          "fullscreenchange",
+          () => {
+            plusVideoPlayer.seek(currentPlayTime);
+          },
+          false
+        );
+
         sendPlayLog();
       } else {
         videoPlayer?.destroy();

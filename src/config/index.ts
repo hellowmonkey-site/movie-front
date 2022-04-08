@@ -21,6 +21,7 @@ export default {
   title: "沃德影视",
   downloadUrl: "resource/app",
   imageUrl: "resource/image",
+  videoId: "videoPlayer",
 };
 
 export const Apps = {
