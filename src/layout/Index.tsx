@@ -583,7 +583,7 @@ export default defineComponent({
               <div class="pad-3">
                 <RouterView />
               </div>
-              <NBackTop visibilityHeight={10} />
+              <NBackTop visibilityHeight={10} listenTo={isMobileWidth.value ? document.body : undefined} />
             </NLayout>
           </NLayout>
         </NLayout>

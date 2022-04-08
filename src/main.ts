@@ -26,7 +26,7 @@ router.isReady().then(async () => {
           router.replace("/");
           setTimeout(() => {
             plus.navigator.closeSplashscreen();
-          }, 350);
+          }, 1000);
         })
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         .catch(() => {}),
