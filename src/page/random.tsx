@@ -2,8 +2,9 @@ import VideoItem from "@/component/VideoItem";
 import { goTop } from "@/helper";
 import { categorys } from "@/service/category";
 import { videoLength } from "@/service/common";
+import { pullDownRefresh } from "@/service/plus";
 import { getRandomVideoList, IVideo } from "@/service/video";
-import { CircleOutlined, RefreshOutlined } from "@vicons/material";
+import { RefreshOutlined } from "@vicons/material";
 import { NButton, NGrid, NGridItem, NH2, NIcon, NSpin, NText } from "naive-ui";
 import { computed, defineComponent, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
@@ -12,6 +13,9 @@ export default defineComponent({
   props: {},
   emits: [],
   setup: (props, ctx) => {
+    const refresh = pullDownRefresh(() => {
+      fetchData();
+    });
     const route = useRoute();
     const loading = ref(false);
     const list = ref<IVideo[]>([]);
@@ -28,6 +32,7 @@ export default defineComponent({
         })
         .finally(() => {
           loading.value = false;
+          refresh?.end();
         });
     }
 
