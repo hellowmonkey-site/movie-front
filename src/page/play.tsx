@@ -95,6 +95,7 @@ export default defineComponent({
           autoplay: appConfig.value.autoplay,
           poster: videoDetail.value?.cover,
         });
+        plusVideoPlayer.playbackRate(appConfig.value.playbackRate);
 
         // 视频播放完自动下一集
         plusVideoPlayer?.addEventListener(
@@ -174,7 +175,6 @@ export default defineComponent({
     });
 
     onBeforeRouteLeave(() => {
-      console.log("onBeforeRouteLeave");
       videoPlayer?.destroy();
       if (config.isApp) {
         plusVideoPlayer?.close();
