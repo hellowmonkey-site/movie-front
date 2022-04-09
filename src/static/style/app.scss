@@ -137,8 +137,15 @@ a {
 
 .video-player {
   max-height: calc(100vh - 70px);
-  min-height: 350px;
+  min-height: 340px;
   width: 100%;
+}
+
+.refresh-fixed {
+  position: fixed;
+  right: 40px;
+  bottom: 95px;
+  z-index: 9;
 }
 
 @media (min-width: 640px) {

@@ -22,6 +22,7 @@ export default defineComponent({
     const infoList = computed(() => {
       return getInfoList(video.value);
     });
+    const loading = ref(false);
 
     const playId = computed(() => {
       const playlist = Array.from(video.value?.playlist || []);
@@ -35,11 +36,16 @@ export default defineComponent({
     let videoId = Number(props.videoId);
 
     function fetchData() {
-      getVideoDetail(videoId).then(data => {
-        video.value = data;
-        // 推荐
-        getRecommendByCategoryId(data.category_id);
-      });
+      loading.value = true;
+      getVideoDetail(videoId)
+        .then(data => {
+          video.value = data;
+          // 推荐
+          getRecommendByCategoryId(data.category_id);
+        })
+        .finally(() => {
+          loading.value = false;
+        });
     }
 
     onMounted(() => {
@@ -54,10 +60,10 @@ export default defineComponent({
     return () => (
       <>
         <div class="video-info d-flex mar-b-5-item">
-          <div class="video-cover">{video.value ? <Image src={video.value?.cover} /> : <NSkeleton height="400px"></NSkeleton>}</div>
+          <div class="video-cover">{!loading.value ? <Image src={video.value?.cover} /> : <NSkeleton height="400px"></NSkeleton>}</div>
           <div class="flex-item-extend d-flex direction-column break-all">
-            <h1 class="font-xlg mar-b-5-item">{video.value ? video.value.title : <NSkeleton height="30px"></NSkeleton>}</h1>
-            {video.value ? (
+            <h1 class="font-xlg mar-b-5-item">{!loading.value ? video.value?.title : <NSkeleton height="30px"></NSkeleton>}</h1>
+            {!loading.value ? (
               <>
                 {infoList.value.map(info => (
                   <div class="mar-b-4-item d-flex" key={info.value}>
@@ -65,7 +71,7 @@ export default defineComponent({
                     <span class="flex-item-extend">{info.value}</span>
                   </div>
                 ))}
-                {video.value.description ? (
+                {video.value?.description ? (
                   <div class="mar-b-5-item d-flex">
                     <span class="font-gray font-small mar-r-3">简介</span>
                     <span class="flex-item-extend">
@@ -95,9 +101,9 @@ export default defineComponent({
             )}
           </div>
         </div>
-        {video.value ? (
+        {!loading.value ? (
           <PlayList
-            playlist={video.value.playlist}
+            playlist={video.value?.playlist}
             onClick={({ id: playId }) => router.push({ name: "play", params: { videoId, playId } })}
           />
         ) : (
@@ -107,7 +113,9 @@ export default defineComponent({
             <NSkeleton height="50px" text class="mar-b-3-item"></NSkeleton>
           </div>
         )}
-        <RecommendList videoId={videoId} />
+        <div class="mar-t-4">
+          <RecommendList videoId={videoId} />
+        </div>
       </>
     );
   },

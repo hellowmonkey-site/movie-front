@@ -125,6 +125,21 @@ export const themeOverrides = computed<GlobalThemeOverrides>(() => {
   return { common };
 });
 
+// 视频数量
+export const videoLength = computed(() => {
+  let length = 2 * 20;
+  if (windowWidth.value >= config.breakpoints.xl) {
+    length = 6 * 6;
+  } else if (windowWidth.value >= config.breakpoints.l) {
+    length = 5 * 8;
+  } else if (windowWidth.value >= config.breakpoints.m) {
+    length = 4 * 10;
+  } else if (windowWidth.value >= config.breakpoints.s) {
+    length = 3 * 13;
+  }
+  return length;
+});
+
 // 个性化配置
 export interface IConfig {
   // 主题

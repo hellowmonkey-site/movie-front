@@ -4,9 +4,11 @@ import { pullDownRefresh } from "@/service/plus";
 import { categorys } from "@/service/category";
 import { defaultPageData, isMobileWidth } from "@/service/common";
 import { getCategoryVideos, IVideo } from "@/service/video";
-import { NEmpty, NGrid, NGridItem, NH2, NPagination, NResult, NSpin, NText } from "naive-ui";
+import { NButton, NEmpty, NGrid, NGridItem, NH2, NIcon, NPagination, NResult, NSpin, NText } from "naive-ui";
 import { computed, defineComponent, onMounted, ref } from "vue";
 import { onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
+import { goTop } from "@/helper";
+import { KeyboardArrowRightOutlined } from "@vicons/material";
 
 export default defineComponent({
   props: {},
@@ -33,6 +35,7 @@ export default defineComponent({
       loading.value = true;
       getCategoryVideos(String(category), Number(page))
         .then(data => {
+          goTop();
           videos.value = data;
         })
         .finally(() => {
@@ -51,9 +54,33 @@ export default defineComponent({
 
     return () => (
       <>
-        <NH2 prefix="bar">
-          <NText>{title.value}</NText>
-        </NH2>
+        <div class="d-flex align-items-center justify-between mar-b-3-item">
+          <NH2 prefix="bar" class="mar-0">
+            <NText>{title.value}</NText>
+          </NH2>
+          <NButton
+            type="tertiary"
+            ghost
+            icon-placement="right"
+            size="small"
+            onClick={() => {
+              router.push({ name: "random", query: { category: videos.value.data[0].category_id } });
+            }}
+          >
+            {{
+              default() {
+                return <span>随机推荐</span>;
+              },
+              icon() {
+                return (
+                  <NIcon>
+                    <KeyboardArrowRightOutlined />
+                  </NIcon>
+                );
+              },
+            }}
+          </NButton>
+        </div>
         <NSpin show={loading.value}>
           {videos.value.count ? (
             <>

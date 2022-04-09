@@ -1,11 +1,13 @@
+import config from "@/config";
 import router from "@/router";
-import { dialog, globalTheme, menuCollapsed, settingOpen, themeOverrides, ThemeTypes } from "@/service/common";
+import { appConfig, dialog, globalTheme, menuCollapsed, settingOpen, themeOverrides, ThemeTypes } from "@/service/common";
 
 export const enum PlusOpenTypes {
   NATIVE = 1,
   BROWSER = 2,
 }
 export interface IPlusVideoPlayer {
+  id: string;
   addEventListener: (event: string, listener: (params?: any) => void, capture: boolean) => void;
   setStyles(styles: any): void;
   play(): void;
@@ -18,6 +20,18 @@ export interface IPlusVideoPlayer {
   show(): void;
   close(): void;
   playbackRate(rate: number): void;
+}
+
+export interface IPlusVideoOptions {
+  src: string;
+  top: string;
+  left: string;
+  width: string;
+  height: string;
+  position: string;
+  autoplay: boolean;
+  poster: string;
+  "show-mute-btn": boolean;
 }
 
 export function plusToast(message: string) {
@@ -170,6 +184,36 @@ export function plusPlayURL(url: string, type: PlusOpenTypes = PlusOpenTypes.BRO
   } else {
     plus.runtime.openURL(url);
   }
+}
+
+// 视频播放器
+let plusVideoPlayer: IPlusVideoPlayer;
+const plusVideoOptions = {
+  src: "",
+  top: "61px",
+  left: "0",
+  width: "100%",
+  height: "350px",
+  position: "static",
+  autoplay: true,
+  poster: "",
+  "show-mute-btn": true,
+};
+export function createPlusVideoPlayer(options: Partial<IPlusVideoOptions>): IPlusVideoPlayer {
+  const webview = plus.webview.currentWebview();
+  plusVideoPlayer = plus.video.getVideoPlayerById(config.videoId);
+  if (plusVideoPlayer && options.src === plusVideoOptions.src) {
+    return plusVideoPlayer;
+  } else {
+    Object.assign(plusVideoOptions, options);
+    if (plusVideoPlayer) {
+      plusVideoPlayer.close();
+      webview.remove(plusVideoPlayer);
+    }
+    plusVideoPlayer = plus.video.createVideoPlayer(config.videoId, plusVideoOptions);
+    webview.append(plusVideoPlayer);
+  }
+  return plusVideoPlayer;
 }
 
 // 设置状态栏

@@ -1,4 +1,4 @@
-import { localStorage } from "@/helper/storage";
+import { sessionStorage } from "@/helper/storage";
 import fly from "flyio";
 import { ref } from "vue";
 export interface IUserForm {
@@ -19,7 +19,7 @@ const defaultUser = {
   id: 0,
   vip: 0,
 };
-let localUser = localStorage.get("user");
+let localUser = sessionStorage.get("user");
 if (typeof localUser === "string" || Array.isArray(localUser)) {
   localUser = defaultUser;
 }
@@ -27,12 +27,12 @@ export const user = ref<IUser>({ ...defaultUser, ...localUser });
 
 export function setUser(params: IUser) {
   user.value = params;
-  localStorage.set("user", {
+  sessionStorage.set("user", {
     ...params,
   });
 }
 export function clearUser() {
-  localStorage.remove("user");
+  sessionStorage.remove("user");
   user.value = defaultUser;
 }
 

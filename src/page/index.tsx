@@ -1,4 +1,5 @@
 import VideoItem from "@/component/VideoItem";
+import { goTop } from "@/helper";
 import { pullDownRefresh } from "@/service/plus";
 import { getRecommendVideos, recommendVideoComputed } from "@/service/video";
 import { NEmpty, NGrid, NGridItem, NH2, NSpin, NText } from "naive-ui";
@@ -13,10 +14,14 @@ export default defineComponent({
 
     function fetchData() {
       loading.value = true;
-      getRecommendVideos().finally(() => {
-        loading.value = false;
-        refresh?.end();
-      });
+      getRecommendVideos()
+        .then(() => {
+          goTop();
+        })
+        .finally(() => {
+          loading.value = false;
+          refresh?.end();
+        });
     }
 
     onMounted(() => {

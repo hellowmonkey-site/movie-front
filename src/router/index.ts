@@ -4,8 +4,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Index from "@/layout/Index";
 import { goTop, putStyle } from "@/helper";
 import { isMobileWidth, menuCollapsed, themeOverrides, visitedPageNum } from "@/service/common";
-import { IPlusVideoPlayer, pullDownRefresh } from "@/service/plus";
-import config from "@/config";
+import { pullDownRefresh } from "@/service/plus";
 
 NProgress.inc(0.2);
 NProgress.configure({ easing: "ease", speed: 500, showSpinner: false });
@@ -29,6 +28,14 @@ const router = createRouter({
             pullDownRefresh: true,
           },
           component: () => import("@/page/index"),
+        },
+        {
+          path: "/random",
+          name: "random",
+          meta: {
+            pullDownRefresh: true,
+          },
+          component: () => import("@/page/random"),
         },
         {
           path: "/category/:category",
@@ -111,13 +118,6 @@ router.beforeEach(to => {
 
   // 返回顶部
   goTop();
-
-  // 销毁播放器
-  if (config.isApp) {
-    const plusVideoPlayer: IPlusVideoPlayer = plus.video.getVideoPlayerById(config.videoId);
-    plusVideoPlayer?.exitFullScreen();
-    plusVideoPlayer?.close();
-  }
 
   if (!to.meta.pullDownRefresh) {
     pullDownRefresh(null);

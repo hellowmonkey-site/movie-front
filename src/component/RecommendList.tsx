@@ -1,7 +1,9 @@
 import config from "@/config";
+import router from "@/router";
 import { windowWidth } from "@/service/common";
 import { recommendCategoryVideos } from "@/service/video";
-import { NGrid, NGridItem, NH2, NText } from "naive-ui";
+import { KeyboardArrowRightOutlined } from "@vicons/material";
+import { NButton, NGrid, NGridItem, NH2, NIcon, NText } from "naive-ui";
 import { computed } from "vue";
 import VideoItem from "./VideoItem";
 
@@ -25,9 +27,33 @@ export default function RecommendList({ videoId }: IProp) {
   });
   return list.value.length ? (
     <>
-      <NH2 prefix="bar">
-        <NText>相关推荐</NText>
-      </NH2>
+      <div class="d-flex align-items-center justify-between mar-b-3-item">
+        <NH2 prefix="bar" class="mar-0">
+          <NText>相关推荐</NText>
+        </NH2>
+        <NButton
+          type="tertiary"
+          ghost
+          icon-placement="right"
+          size="small"
+          onClick={() => {
+            router.push({ name: "random", query: { category: recommendCategoryVideos.value[0].category_id } });
+          }}
+        >
+          {{
+            default() {
+              return <span>随机推荐</span>;
+            },
+            icon() {
+              return (
+                <NIcon>
+                  <KeyboardArrowRightOutlined />
+                </NIcon>
+              );
+            },
+          }}
+        </NButton>
+      </div>
       <div class="video-list mar-b-4-item">
         <NGrid cols="2 s:3 m:4 l:5 xl:6" xGap={10} yGap={10} responsive="screen">
           {list.value.map(item => {

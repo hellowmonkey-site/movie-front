@@ -4,7 +4,7 @@ import { addZero, getFullUrl } from "@/helper";
 import fly from "flyio";
 import { computed, ref } from "vue";
 import { categorys } from "./category";
-import { appConfig, message, windowWidth } from "./common";
+import { appConfig, message, videoLength, windowWidth } from "./common";
 import { IPlay } from "./playlist";
 
 export interface IVideo {
@@ -69,17 +69,7 @@ export function getInfoList(video?: IVideo) {
 // 首页推荐
 export const recommendVideos = ref<IVideo[]>([]);
 export const recommendVideoComputed = computed(() => {
-  let length = 2 * 20;
-  if (windowWidth.value >= config.breakpoints.xl) {
-    length = 6 * 6;
-  } else if (windowWidth.value >= config.breakpoints.l) {
-    length = 5 * 8;
-  } else if (windowWidth.value >= config.breakpoints.m) {
-    length = 4 * 10;
-  } else if (windowWidth.value >= config.breakpoints.s) {
-    length = 3 * 13;
-  }
-  return recommendVideos.value.slice(0, length);
+  return recommendVideos.value.slice(0, videoLength.value);
 });
 export function getRecommendVideos() {
   return fly
@@ -137,8 +127,8 @@ export function getVideoDetail(id: number) {
 }
 
 // 搜索
-export function getVideoSearch(keywords: string, page = 1) {
-  return fly.get<PageData<IVideo>>("video/search", { keywords, page }).then(data => data.data);
+export function getVideoSearch({ keywords, category }: { keywords: string; category?: number }, page = 1) {
+  return fly.get<PageData<IVideo>>("video/search", { keywords, category, page }).then(data => data.data);
 }
 
 // 提交纠错
@@ -147,4 +137,9 @@ export function postReport(remark: string, videoId: number, playId?: number) {
     message.success("提交成功，感谢！");
     return data.data;
   });
+}
+
+// 随机获取视频
+export function getRandomVideoList(categoryId?: number) {
+  return fly.get<IVideo[]>("video/random", { categoryId }).then(data => data.data);
 }

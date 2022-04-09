@@ -2,7 +2,7 @@ import Image from "@/component/Image";
 import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
 import config from "@/config";
-import { IPlusVideoPlayer, PlusOpenTypes, plusPlayURL } from "@/service/plus";
+import { createPlusVideoPlayer, IPlusVideoPlayer, PlusOpenTypes, plusPlayURL } from "@/service/plus";
 import { appConfig, isMobileWidth, menuCollapsed, setAppConfig } from "@/service/common";
 import { ThemeTypes } from "@/service/common";
 import { postPlayLog } from "@/service/history";
@@ -31,7 +31,7 @@ export default defineComponent({
     const dialog = useDialog();
     let videoPlayer: Player;
     let plusVideoPlayer: IPlusVideoPlayer;
-    let currentPlayTime = 0;
+
     const el = ref<HTMLElement | undefined>();
     const router = useRouter();
     const playId = ref(props.playId);
@@ -90,40 +90,18 @@ export default defineComponent({
         return;
       }
       if (config.isApp) {
-        plusVideoPlayer = plus.video.createVideoPlayer(config.videoId, {
+        plusVideoPlayer = createPlusVideoPlayer({
           src: play.value?.src,
-          top: "61px",
-          left: "0",
-          width: "100%",
-          height: "340px",
-          position: "static",
           autoplay: appConfig.value.autoplay,
-          "show-mute-btn": true,
+          poster: videoDetail.value?.cover,
         });
-        plus.webview.currentWebview().append(plusVideoPlayer);
 
         // 视频播放完自动下一集
-        plusVideoPlayer.addEventListener(
+        plusVideoPlayer?.addEventListener(
           "ended",
           () => {
             plusVideoPlayer.exitFullScreen();
             autoNextPlay();
-          },
-          false
-        );
-        // 视频播放更新时间，切换全屏时跳转
-        plusVideoPlayer.addEventListener(
-          "timeupdate",
-          ({ detail }) => {
-            currentPlayTime = Number(detail.currentTime);
-          },
-          false
-        );
-        // 切换全屏
-        plusVideoPlayer.addEventListener(
-          "fullscreenchange",
-          () => {
-            plusVideoPlayer.seek(currentPlayTime);
           },
           false
         );
@@ -196,8 +174,12 @@ export default defineComponent({
     });
 
     onBeforeRouteLeave(() => {
-      plusVideoPlayer?.close();
+      console.log("onBeforeRouteLeave");
       videoPlayer?.destroy();
+      if (config.isApp) {
+        plusVideoPlayer?.close();
+        plus.webview.currentWebview().remove(plusVideoPlayer);
+      }
       setAppConfig({
         themeType: oldTheme,
       });
@@ -282,8 +264,8 @@ export default defineComponent({
                         if (index === 2) {
                           type = PlusOpenTypes.BROWSER;
                         }
-                        videoPlayer?.destroy();
-                        plusVideoPlayer?.close();
+                        // videoPlayer?.pause();
+                        plusVideoPlayer?.stop();
                         plusPlayURL(play.value?.src || "", type);
                       }
                     );
@@ -344,7 +326,9 @@ export default defineComponent({
             router.replace({ name: "play", params: { videoId: props.videoId, playId } });
           }}
         />
-        <RecommendList />
+        <div class="mar-t-4">
+          <RecommendList />
+        </div>
       </>
     );
   },
