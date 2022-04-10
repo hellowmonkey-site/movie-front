@@ -206,3 +206,9 @@ export function goTop() {
   btn?.click();
   window.scrollTo(0, 0);
 }
+
+export function sleep(t = 300) {
+  return new Promise(resolve => {
+    setTimeout(resolve, t);
+  });
+}

@@ -2,7 +2,7 @@ import Image from "@/component/Image";
 import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
 import config from "@/config";
-import { createPlusVideoPlayer, IPlusVideoPlayer, PlusOpenTypes, plusPlayURL } from "@/service/plus";
+import { createPlusVideoPlayer, PlusOpenTypes, plusPlayURL, plusVideoPlayer } from "@/service/plus";
 import { appConfig, isMobileWidth, menuCollapsed, setAppConfig } from "@/service/common";
 import { ThemeTypes } from "@/service/common";
 import { postPlayLog } from "@/service/history";
@@ -30,7 +30,6 @@ export default defineComponent({
   setup: (props, ctx) => {
     const dialog = useDialog();
     let videoPlayer: Player;
-    let plusVideoPlayer: IPlusVideoPlayer;
 
     const el = ref<HTMLElement | undefined>();
     const router = useRouter();
@@ -79,7 +78,7 @@ export default defineComponent({
       }
     }
 
-    function createPlayer() {
+    async function createPlayer() {
       if (!videoDetail.value) {
         return null;
       }
@@ -90,7 +89,7 @@ export default defineComponent({
         return;
       }
       if (config.isApp) {
-        plusVideoPlayer = createPlusVideoPlayer({
+        await createPlusVideoPlayer({
           src: play.value?.src,
           autoplay: appConfig.value.autoplay,
           poster: videoDetail.value?.cover,
@@ -98,14 +97,7 @@ export default defineComponent({
         plusVideoPlayer.playbackRate(appConfig.value.playbackRate);
 
         // 视频播放完自动下一集
-        plusVideoPlayer?.addEventListener(
-          "ended",
-          () => {
-            plusVideoPlayer.exitFullScreen();
-            autoNextPlay();
-          },
-          false
-        );
+        // plusVideoPlayer?.addEventListener("ended", autoNextPlay, false);
 
         sendPlayLog();
       } else {
@@ -174,28 +166,22 @@ export default defineComponent({
       fetchData();
     });
 
-    onBeforeRouteLeave(() => {
+    onBeforeRouteLeave(async () => {
       videoPlayer?.destroy();
-      if (config.isApp) {
-        plusVideoPlayer?.close();
-        plus.webview.currentWebview().remove(plusVideoPlayer);
-      }
+      plusVideoPlayer?.close();
       setAppConfig({
         themeType: oldTheme,
       });
       if (config.isMsi) {
-        appWindow.setFullscreen(false).then(() => {
-          menuCollapsed.value = oldCollapsed;
-        });
-      } else {
-        menuCollapsed.value = oldCollapsed;
+        await appWindow.setFullscreen(false);
       }
+      menuCollapsed.value = oldCollapsed;
     });
 
     return () => (
       <>
         <div class="video-player-container mar-b-5-item d-flex justify-center align-items-center">
-          <div ref={el} class="video-player" />
+          <div ref={el} class="video-player" id="player" />
         </div>
         <div class="mar-b-5">
           <div class="d-flex direction-column mar-b-3-item">

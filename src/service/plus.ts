@@ -1,6 +1,5 @@
-import config from "@/config";
 import router from "@/router";
-import { appConfig, dialog, globalTheme, menuCollapsed, settingOpen, themeOverrides, ThemeTypes } from "@/service/common";
+import { dialog, globalTheme, menuCollapsed, settingOpen, themeOverrides, ThemeTypes } from "@/service/common";
 
 export const enum PlusOpenTypes {
   NATIVE = 1,
@@ -187,32 +186,28 @@ export function plusPlayURL(url: string, type: PlusOpenTypes = PlusOpenTypes.BRO
 }
 
 // 视频播放器
-let plusVideoPlayer: IPlusVideoPlayer;
+export let plusVideoPlayer: IPlusVideoPlayer;
 const plusVideoOptions = {
   src: "",
-  top: "61px",
-  left: "0",
-  width: "100%",
-  height: "350px",
-  position: "static",
+  // top: "61px",
+  // left: "0",
+  // width: "100%",
+  // height: "350px",
+  // position: "static",
   autoplay: true,
   poster: "",
   "show-mute-btn": true,
 };
 export function createPlusVideoPlayer(options: Partial<IPlusVideoOptions>): IPlusVideoPlayer {
-  const webview = plus.webview.currentWebview();
-  plusVideoPlayer = plus.video.getVideoPlayerById(config.videoId);
-  if (plusVideoPlayer && options.src === plusVideoOptions.src) {
-    return plusVideoPlayer;
-  } else {
-    Object.assign(plusVideoOptions, options);
-    if (plusVideoPlayer) {
-      plusVideoPlayer.close();
-      webview.remove(plusVideoPlayer);
+  if (plusVideoPlayer) {
+    if (options.src === plusVideoOptions.src) {
+      plusVideoPlayer.setStyles(options);
+      return plusVideoPlayer;
     }
-    plusVideoPlayer = plus.video.createVideoPlayer(config.videoId, plusVideoOptions);
-    webview.append(plusVideoPlayer);
+    plusVideoPlayer.close();
   }
+  Object.assign(plusVideoOptions, options);
+  plusVideoPlayer = new plus.video.VideoPlayer("player", plusVideoOptions);
   return plusVideoPlayer;
 }
 
