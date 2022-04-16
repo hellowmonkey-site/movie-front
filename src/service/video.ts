@@ -73,7 +73,7 @@ export const recommendVideoComputed = computed(() => {
 });
 export function getRecommendVideos() {
   return fly
-    .get<PageData<IVideo>>("video/recommend", { page: 1, pageSize: 40 })
+    .get<PageData<IVideo>>("video/recommend", { page: 1 })
     .then(data => data.data.data)
     .then(data => {
       recommendVideos.value = data;

@@ -52,7 +52,7 @@ export default defineComponent({
         </NButton>
         <NSpin show={loading.value}>
           <div class="video-list mar-b-3-item">
-            <NGrid cols="2 s:3 m:4 l:5 xl:6" xGap={10} yGap={10} responsive="screen">
+            <NGrid cols="2 s:3 m:4 xl:6" xGap={10} yGap={10} responsive="screen">
               {dataList.value.map(item => {
                 return (
                   <NGridItem key={item.id}>

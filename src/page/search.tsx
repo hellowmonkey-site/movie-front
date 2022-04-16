@@ -106,7 +106,7 @@ export default defineComponent({
               {videos.value.count ? (
                 <>
                   <div class="video-list mar-b-4-item">
-                    <NGrid cols="2 s:3 m:4 l:5 xl:6" xGap={10} yGap={10} responsive="screen">
+                    <NGrid cols="2 s:3 m:4 xl:6" xGap={10} yGap={10} responsive="screen">
                       {videos.value.data.map(item => {
                         return (
                           <NGridItem key={item.id}>
