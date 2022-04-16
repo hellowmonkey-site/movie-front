@@ -110,14 +110,6 @@ export function getVideoDetail(id: number) {
       return {
         ...data,
         cover: getFullUrl(config.baseURL, data.cover),
-        playlist: Array.from(data.playlist).sort((a, b) => {
-          const na = parseInt(a.title);
-          const nb = parseInt(b.title);
-          if (!Number.isNaN(na) && !Number.isNaN(nb)) {
-            return na - nb;
-          }
-          return a.title > b.title ? 1 : -1;
-        }),
       };
     })
     .then(data => {
