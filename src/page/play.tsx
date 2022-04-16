@@ -78,7 +78,7 @@ export default defineComponent({
       }
     }
 
-    async function createPlayer() {
+    function createPlayer() {
       if (!videoDetail.value) {
         return null;
       }
@@ -89,12 +89,14 @@ export default defineComponent({
         return;
       }
       if (config.isApp) {
-        await createPlusVideoPlayer({
+        createPlusVideoPlayer({
           src: play.value?.src,
           autoplay: appConfig.value.autoplay,
           poster: videoDetail.value?.cover,
         });
-        plusVideoPlayer.playbackRate(appConfig.value.playbackRate);
+        setTimeout(() => {
+          plusVideoPlayer.playbackRate(appConfig.value.playbackRate);
+        }, 200);
 
         // 视频播放完自动下一集
         // plusVideoPlayer?.addEventListener("ended", autoNextPlay, false);
@@ -259,19 +261,27 @@ export default defineComponent({
                 >
                   原生播放器观看
                 </NButton>
-                <NDropdown
-                  trigger="click"
-                  options={config.playbackRates.slice(0, -1).map(key => ({
-                    key,
-                    label: `${key} x`,
-                  }))}
-                  value={appConfig.value.playbackRate}
-                  onSelect={playbackRate => {
-                    plusVideoPlayer.playbackRate(playbackRate);
-                    setAppConfig({ playbackRate });
-                  }}
-                >
-                  <NButton type="primary" ghost icon-placement="right">
+                <NButton type="primary" ghost icon-placement="right" onClick={() => {
+                    const list = config.playbackRates.slice(0, -1)
+                    const buttons = list.map(v => ({
+                      title: `${v} x`
+                    }))
+                    plus.nativeUI.actionSheet(
+                      {
+                        title: "播放速度选择",
+                        cancel: "取消",
+                        buttons,
+                      },
+                      ({ index }: { index: number }) => {
+                        if (index <= 0) {
+                          return;
+                        }
+                        const playbackRate = list[index - 1]
+                        plusVideoPlayer.playbackRate(playbackRate);
+                        setAppConfig({ playbackRate });
+                      }
+                    );
+                  }}>
                     {{
                       default() {
                         return appConfig.value.playbackRate + "倍";
@@ -285,7 +295,6 @@ export default defineComponent({
                       },
                     }}
                   </NButton>
-                </NDropdown>
               </div>
             ) : null}
           </div>
