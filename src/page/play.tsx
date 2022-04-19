@@ -261,11 +261,15 @@ export default defineComponent({
                 >
                   原生播放器观看
                 </NButton>
-                <NButton type="primary" ghost icon-placement="right" onClick={() => {
-                    const list = config.playbackRates.slice(0, -1)
+                <NButton
+                  type="primary"
+                  ghost
+                  icon-placement="right"
+                  onClick={() => {
+                    const list = config.playbackRates.slice(0, -1);
                     const buttons = list.map(v => ({
-                      title: `${v} x`
-                    }))
+                      title: `${v} x`,
+                    }));
                     plus.nativeUI.actionSheet(
                       {
                         title: "播放速度选择",
@@ -276,25 +280,26 @@ export default defineComponent({
                         if (index <= 0) {
                           return;
                         }
-                        const playbackRate = list[index - 1]
+                        const playbackRate = list[index - 1];
                         plusVideoPlayer.playbackRate(playbackRate);
                         setAppConfig({ playbackRate });
                       }
                     );
-                  }}>
-                    {{
-                      default() {
-                        return appConfig.value.playbackRate + "倍";
-                      },
-                      icon() {
-                        return (
-                          <NIcon>
-                            <KeyboardArrowDownOutlined />
-                          </NIcon>
-                        );
-                      },
-                    }}
-                  </NButton>
+                  }}
+                >
+                  {{
+                    default() {
+                      return appConfig.value.playbackRate + "倍";
+                    },
+                    icon() {
+                      return (
+                        <NIcon>
+                          <KeyboardArrowDownOutlined />
+                        </NIcon>
+                      );
+                    },
+                  }}
+                </NButton>
               </div>
             ) : null}
           </div>
