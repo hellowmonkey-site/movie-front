@@ -122,7 +122,10 @@ export default defineComponent({
                       page={videos.value.page}
                       pageCount={videos.value.pageCount}
                       pageSize={videos.value.pageSize}
-                      onUpdatePage={page => fetchData(route.query, page)}
+                      onUpdatePage={page => {
+                        router.push({ name: "search", query: { ...route.query, page } });
+                        fetchData({}, page);
+                      }}
                     ></NPagination>
                   </div>
                 </>
