@@ -310,3 +310,12 @@ export function setFullscreen(v: boolean) {
     isFullscreen.value = v;
   });
 }
+
+// 设置标题
+export function setTitle(title?: string) {
+  const str = config.title + (title ? ` - ${title}` : "");
+  if (config.isMsi) {
+    appWindow.setTitle(str);
+  }
+  document.title = str;
+}

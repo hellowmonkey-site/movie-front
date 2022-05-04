@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import Index from "@/layout/Index";
 import { goTop, putStyle } from "@/helper";
-import { isMobileWidth, menuCollapsed, themeOverrides, visitedPageNum } from "@/service/common";
+import { isMobileWidth, menuCollapsed, setTitle, themeOverrides, visitedPageNum } from "@/service/common";
 import { pullDownRefresh } from "@/service/plus";
 
 NProgress.inc(0.2);
@@ -26,6 +26,7 @@ const router = createRouter({
           name: "index",
           meta: {
             pullDownRefresh: true,
+            title: "首页",
           },
           component: () => import("@/page/index"),
         },
@@ -34,6 +35,7 @@ const router = createRouter({
           name: "random",
           meta: {
             pullDownRefresh: true,
+            title: "随机推荐",
           },
           component: () => import("@/page/random"),
         },
@@ -43,6 +45,7 @@ const router = createRouter({
           name: "category",
           meta: {
             pullDownRefresh: true,
+            title: "分类",
           },
           component: () => import("@/page/category"),
         },
@@ -52,6 +55,7 @@ const router = createRouter({
           name: "video",
           meta: {
             pullDownRefresh: false,
+            title: "视频详情",
           },
           component: () => import("@/page/video"),
         },
@@ -61,6 +65,7 @@ const router = createRouter({
           name: "play",
           meta: {
             pullDownRefresh: false,
+            title: "视频播放",
           },
           component: () => import("@/page/play"),
         },
@@ -69,6 +74,7 @@ const router = createRouter({
           name: "search",
           meta: {
             pullDownRefresh: true,
+            title: "搜索",
           },
           component: () => import("@/page/search"),
         },
@@ -77,6 +83,7 @@ const router = createRouter({
           name: "search-history",
           meta: {
             pullDownRefresh: true,
+            title: "搜索历史",
           },
           component: () => import("@/page/search-history"),
         },
@@ -85,6 +92,7 @@ const router = createRouter({
           name: "play-history",
           meta: {
             pullDownRefresh: true,
+            title: "播放历史",
           },
           component: () => import("@/page/play-history"),
         },
@@ -95,6 +103,7 @@ const router = createRouter({
       name: "login",
       meta: {
         pullDownRefresh: false,
+        title: "登录",
       },
       component: () => import("@/page/login"),
     },
@@ -103,6 +112,7 @@ const router = createRouter({
       name: "NotFound",
       meta: {
         pullDownRefresh: false,
+        title: "404",
       },
       component: () => import("@/page/404"),
     },
@@ -122,6 +132,9 @@ router.beforeEach(to => {
   if (!to.meta.pullDownRefresh) {
     pullDownRefresh(null);
   }
+
+  setTitle(String(to.meta.title || ""));
+
   return true;
 });
 

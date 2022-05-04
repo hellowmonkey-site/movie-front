@@ -2,6 +2,7 @@ import Description from "@/component/Description";
 import Image from "@/component/Image";
 import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
+import { setTitle } from "@/service/common";
 import { playHistoryIds } from "@/service/history";
 import { getInfoList, getRecommendByCategoryId, getVideoDetail, IVideoDetail } from "@/service/video";
 import { NButton, NSkeleton } from "naive-ui";
@@ -46,6 +47,8 @@ export default defineComponent({
           getRecommendByCategoryId(data.category_id)?.finally(() => {
             recommendLoading.value = false;
           });
+
+          setTitle(video.value.title);
         })
         .finally(() => {
           loading.value = false;

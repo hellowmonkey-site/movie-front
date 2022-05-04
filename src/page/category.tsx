@@ -2,7 +2,7 @@ import VideoItem from "@/component/VideoItem";
 import { PageData } from "@/config/type";
 import { pullDownRefresh } from "@/service/plus";
 import { categorys } from "@/service/category";
-import { defaultPageData, isMobileWidth } from "@/service/common";
+import { defaultPageData, isMobileWidth, setTitle } from "@/service/common";
 import { getCategoryVideos, IVideo } from "@/service/video";
 import { NButton, NEmpty, NGrid, NGridItem, NH2, NIcon, NPagination, NResult, NSpin, NText } from "naive-ui";
 import { computed, defineComponent, onMounted, ref } from "vue";
@@ -41,6 +41,7 @@ export default defineComponent({
         .finally(() => {
           loading.value = false;
           refresh?.end();
+          setTitle(title.value);
         });
     }
 

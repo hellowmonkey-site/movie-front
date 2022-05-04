@@ -1,7 +1,7 @@
 import SearchInput from "@/component/SearchInput";
 import VideoItem from "@/component/VideoItem";
 import { PageData } from "@/config/type";
-import { defaultPageData, isMobileWidth } from "@/service/common";
+import { defaultPageData, isMobileWidth, setTitle } from "@/service/common";
 import { getVideoSearch, IVideo } from "@/service/video";
 import { getSearchHistory, searchHistorys } from "@/service/history";
 import { NButton, NButtonGroup, NDropdown, NEmpty, NGrid, NGridItem, NH2, NIcon, NPagination, NSpace, NSpin, NText } from "naive-ui";
@@ -43,6 +43,7 @@ export default defineComponent({
         .finally(() => {
           loading.value = false;
           refresh?.end();
+          setTitle(`搜索 - ${keywords}`);
         });
     }
 

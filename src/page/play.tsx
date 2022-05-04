@@ -3,11 +3,10 @@ import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
 import config from "@/config";
 import { createPlusVideoPlayer, PlusOpenTypes, plusPlayURL, plusVideoPlayer } from "@/service/plus";
-import { appConfig, isFullscreen, isMobileWidth, menuCollapsed, setAppConfig, setFullscreen } from "@/service/common";
+import { appConfig, isFullscreen, isMobileWidth, menuCollapsed, setAppConfig, setFullscreen, setTitle } from "@/service/common";
 import { ThemeTypes } from "@/service/common";
 import { postPlayLog } from "@/service/history";
 import { getInfoList, getRecommendByCategoryId, getVideoDetail, postReport, recommendCategoryVideos, videoDetail } from "@/service/video";
-import { appWindow } from "@tauri-apps/api/window";
 import { KeyboardArrowDownOutlined, KeyboardArrowUpOutlined } from "@vicons/material";
 import { NButton, NCollapseTransition, NIcon, NInput, useDialog } from "naive-ui";
 import { computed, defineComponent, onMounted, PropType, ref } from "vue";
@@ -140,6 +139,8 @@ export default defineComponent({
           videoPlayer.on("ended", autoNextPlay);
         }, 100);
       }
+
+      setTitle(videoDetail.value.title + " - " + play.value.title);
     }
 
     function fetchData() {
