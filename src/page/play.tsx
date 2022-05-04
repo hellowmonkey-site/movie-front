@@ -3,13 +3,13 @@ import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
 import config from "@/config";
 import { createPlusVideoPlayer, PlusOpenTypes, plusPlayURL, plusVideoPlayer } from "@/service/plus";
-import { appConfig, isMobileWidth, menuCollapsed, setAppConfig } from "@/service/common";
+import { appConfig, isFullscreen, isMobileWidth, menuCollapsed, setAppConfig, setFullscreen } from "@/service/common";
 import { ThemeTypes } from "@/service/common";
 import { postPlayLog } from "@/service/history";
-import { getInfoList, getRecommendByCategoryId, getVideoDetail, postReport, videoDetail } from "@/service/video";
+import { getInfoList, getRecommendByCategoryId, getVideoDetail, postReport, recommendCategoryVideos, videoDetail } from "@/service/video";
 import { appWindow } from "@tauri-apps/api/window";
 import { KeyboardArrowDownOutlined, KeyboardArrowUpOutlined } from "@vicons/material";
-import { NButton, NCollapseTransition, NDropdown, NIcon, NInput, useDialog } from "naive-ui";
+import { NButton, NCollapseTransition, NIcon, NInput, useDialog } from "naive-ui";
 import { computed, defineComponent, onMounted, PropType, ref } from "vue";
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from "vue-router";
 import Player, { IPlayerOptions } from "xgplayer";
@@ -48,6 +48,7 @@ export default defineComponent({
 
     const oldTheme = appConfig.value.themeType;
     const oldCollapsed = menuCollapsed.value;
+    const oldFullscreen = isFullscreen.value;
 
     // const playNextUrls = computed(() => {
     //   if (!videoDetail.value || !play.value?.id) {
@@ -162,7 +163,7 @@ export default defineComponent({
         themeType: ThemeTypes.DARK,
       });
       if (config.isMsi) {
-        await appWindow.setFullscreen(true);
+        await setFullscreen(true);
       }
       menuCollapsed.value = true;
       fetchData();
@@ -175,7 +176,7 @@ export default defineComponent({
         themeType: oldTheme,
       });
       if (config.isMsi) {
-        await appWindow.setFullscreen(false);
+        await setFullscreen(oldFullscreen);
       }
       menuCollapsed.value = oldCollapsed;
     });
@@ -326,9 +327,7 @@ export default defineComponent({
             router.replace({ name: "play", params: { videoId: props.videoId, playId } });
           }}
         />
-        <div class="mar-t-4">
-          <RecommendList />
-        </div>
+        <div class="mar-t-4">{recommendCategoryVideos.value.length ? <RecommendList /> : null}</div>
       </>
     );
   },

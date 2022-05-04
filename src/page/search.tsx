@@ -4,11 +4,11 @@ import { PageData } from "@/config/type";
 import { defaultPageData, isMobileWidth } from "@/service/common";
 import { getVideoSearch, IVideo } from "@/service/video";
 import { getSearchHistory, searchHistorys } from "@/service/history";
-import { NButton, NDropdown, NEmpty, NGrid, NGridItem, NH2, NIcon, NPagination, NSpace, NSpin, NText } from "naive-ui";
+import { NButton, NButtonGroup, NDropdown, NEmpty, NGrid, NGridItem, NH2, NIcon, NPagination, NSpace, NSpin, NText } from "naive-ui";
 import { defineComponent, onMounted, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
 import { pullDownRefresh } from "@/service/plus";
-import { KeyboardArrowDownOutlined } from "@vicons/material";
+import { ClearOutlined, KeyboardArrowDownOutlined } from "@vicons/material";
 import { categorys, ICategory } from "@/service/category";
 import { goTop } from "@/helper";
 
@@ -19,17 +19,18 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const refresh = pullDownRefresh(() => {
-      fetchData({ keywords: route.query.keywords }, 1);
+      fetchData({ ...route.query, page: 1 });
     });
 
     const videos = ref<PageData<IVideo>>(defaultPageData);
 
     const loading = ref(false);
 
-    function fetchData(
-      { keywords = route.query.keywords, category = Number(route.query.category) || undefined } = {},
-      page = Number(route.query.page)
-    ) {
+    function fetchData({
+      keywords = route.query.keywords,
+      category = Number(route.query.category) || undefined,
+      page = Number(route.query.page || 1),
+    } = {}) {
       if (!keywords) {
         return;
       }
@@ -46,10 +47,15 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      fetchData();
-      if (!route.query.keywords) {
+      if (route.query.keywords) {
+        fetchData();
+      } else {
         getSearchHistory();
       }
+    });
+
+    onBeforeRouteUpdate(to => {
+      fetchData(to.query);
     });
 
     return () => (
@@ -58,8 +64,7 @@ export default defineComponent({
           <SearchInput
             type="string"
             onSubmit={keywords => {
-              router.push({ name: "search", query: { ...route.query, keywords } });
-              fetchData({ keywords });
+              router.push({ name: "search", query: { ...route.query, page: 1, keywords } });
             }}
           />
         </div>
@@ -73,33 +78,48 @@ export default defineComponent({
                 <span class="font-gray">共找到</span>
                 <strong class="font-large mar-l-1 mar-r-1">{videos.value.count}</strong>
                 <span class="font-gray mar-r-3-item">条记录</span>
-                <NDropdown
-                  trigger="click"
-                  options={categorys.value.map((item: ICategory) => ({
-                    key: item.id,
-                    label: item.name,
-                  }))}
-                  value={Number(route.query.category) || null}
-                  onSelect={category => {
-                    router.push({ name: "search", query: { ...route.query, category } });
-                    fetchData({ category });
-                  }}
-                >
-                  <NButton type="tertiary" ghost icon-placement="right" size="tiny">
-                    {{
-                      default() {
-                        return <span>{categorys.value.find(v => v.id === Number(route.query.category))?.name || "筛选"}</span>;
-                      },
-                      icon() {
-                        return (
-                          <NIcon>
-                            <KeyboardArrowDownOutlined />
-                          </NIcon>
-                        );
-                      },
+                <NButtonGroup>
+                  <NDropdown
+                    trigger="click"
+                    options={categorys.value.map((item: ICategory) => ({
+                      key: item.id,
+                      label: item.name,
+                    }))}
+                    value={Number(route.query.category) || null}
+                    onSelect={category => {
+                      router.push({ name: "search", query: { ...route.query, page: 1, category } });
                     }}
-                  </NButton>
-                </NDropdown>
+                  >
+                    <NButton type="tertiary" ghost icon-placement="right" size="tiny">
+                      {{
+                        default() {
+                          return <span>{categorys.value.find(v => v.id === Number(route.query.category))?.name || "筛选分类"}</span>;
+                        },
+                        icon() {
+                          return (
+                            <NIcon>
+                              <KeyboardArrowDownOutlined />
+                            </NIcon>
+                          );
+                        },
+                      }}
+                    </NButton>
+                  </NDropdown>
+                  {route.query.category ? (
+                    <NButton
+                      size="tiny"
+                      onClick={() => {
+                        router.push({ name: "search", query: { ...route.query, page: 1, category: undefined } });
+                      }}
+                    >
+                      {{
+                        icon() {
+                          return <ClearOutlined />;
+                        },
+                      }}
+                    </NButton>
+                  ) : null}
+                </NButtonGroup>
               </div>
             </div>
             <NSpin show={loading.value}>
@@ -124,7 +144,6 @@ export default defineComponent({
                       pageSize={videos.value.pageSize}
                       onUpdatePage={page => {
                         router.push({ name: "search", query: { ...route.query, page } });
-                        fetchData({}, page);
                       }}
                     ></NPagination>
                   </div>
@@ -143,8 +162,7 @@ export default defineComponent({
                 key={keywords}
                 round
                 onClick={() => {
-                  router.push({ name: "search", query: { ...route.query, keywords } });
-                  fetchData({ keywords });
+                  router.push({ name: "search", query: { ...route.query, page: 1, keywords } });
                 }}
               >
                 {keywords}

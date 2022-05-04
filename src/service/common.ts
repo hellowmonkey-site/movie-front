@@ -6,10 +6,11 @@ import { computed, ref } from "vue";
 import { darkTheme, GlobalTheme, GlobalThemeOverrides, useOsTheme } from "naive-ui";
 import { IPlayerOptions } from "xgplayer";
 import { localStorage } from "@/helper/storage";
-import pwaInstallHandler from "pwa-install-handler";
+// import pwaInstallHandler from "pwa-install-handler";
 import router from "@/router";
 import { MessageApiInjection } from "naive-ui/lib/message/src/MessageProvider";
-import { plusSetStatusBar } from "./plus";
+import { appWindow } from "@tauri-apps/api/window";
+// import { plusSetStatusBar } from "./plus";
 
 const os = useOsTheme();
 
@@ -297,7 +298,15 @@ export const globalTheme = computed<GlobalTheme | null>(() => {
 });
 
 // 应用下载
-export const canInstall = ref<boolean>(false);
-pwaInstallHandler.addListener(can => {
-  canInstall.value = Boolean(can);
-});
+// export const canInstall = ref<boolean>(false);
+// pwaInstallHandler.addListener(can => {
+//   canInstall.value = Boolean(can);
+// });
+
+// 是不是全屏
+export const isFullscreen = ref(false);
+export function setFullscreen(v: boolean) {
+  return appWindow.setFullscreen(v).then(() => {
+    isFullscreen.value = v;
+  });
+}

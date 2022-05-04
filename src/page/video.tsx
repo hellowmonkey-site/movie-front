@@ -23,6 +23,7 @@ export default defineComponent({
       return getInfoList(video.value);
     });
     const loading = ref(false);
+    const recommendLoading = ref(false);
 
     const playId = computed(() => {
       const playlist = Array.from(video.value?.playlist || []);
@@ -37,11 +38,14 @@ export default defineComponent({
 
     function fetchData() {
       loading.value = true;
+      recommendLoading.value = true;
       getVideoDetail(videoId)
         .then(data => {
           video.value = data;
           // 推荐
-          getRecommendByCategoryId(data.category_id);
+          getRecommendByCategoryId(data.category_id)?.finally(() => {
+            recommendLoading.value = false;
+          });
         })
         .finally(() => {
           loading.value = false;
@@ -113,9 +117,7 @@ export default defineComponent({
             <NSkeleton height="50px" text class="mar-b-3-item"></NSkeleton>
           </div>
         )}
-        <div class="mar-t-4">
-          <RecommendList videoId={videoId} />
-        </div>
+        <div class="mar-t-4">{recommendLoading.value ? null : <RecommendList videoId={videoId} />}</div>
       </>
     );
   },

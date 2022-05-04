@@ -2,12 +2,14 @@ import { isIE } from "@/helper/validate";
 import { categorys, getCategoryList } from "@/service/category";
 import {
   appConfig,
-  canInstall,
+  // canInstall,
   fitVideoSizes,
+  isFullscreen,
   isMobileWidth,
   menuCollapsed,
   setAppConfig,
   setDialog,
+  setFullscreen,
   setMessage,
   setNotification,
   settingOpen,
@@ -48,13 +50,15 @@ import {
   ContentPasteSearchOutlined,
   FileDownloadFilled,
   FileDownloadOutlined,
+  FullscreenExitOutlined,
+  FullscreenOutlined,
   HistoryOutlined,
   HomeFilled,
   LogInOutlined,
   LogOutOutlined,
   MenuOutlined,
   MovieFilterFilled,
-  OpenInBrowserOutlined,
+  // OpenInBrowserOutlined,
   PersonFilled,
   PersonOutlineOutlined,
   ReplayOutlined,
@@ -68,7 +72,7 @@ import {
 } from "@vicons/material";
 import SearchInput from "@/component/SearchInput";
 import config from "@/config";
-import pwaInstallHandler from "pwa-install-handler";
+// import pwaInstallHandler from "pwa-install-handler";
 import { videoDetail } from "@/service/video";
 import { DropdownMixedOption } from "naive-ui/lib/dropdown/src/interface";
 import { clearUser, user } from "@/service/user";
@@ -245,19 +249,19 @@ export default defineComponent({
           },
         },
       ];
-      if (canInstall.value) {
-        list.push({
-          label: "极速版下载",
-          key: "browser",
-          icon() {
-            return (
-              <NIcon>
-                <OpenInBrowserOutlined />
-              </NIcon>
-            );
-          },
-        });
-      }
+      // if (canInstall.value) {
+      //   list.push({
+      //     label: "极速版下载",
+      //     key: "browser",
+      //     icon() {
+      //       return (
+      //         <NIcon>
+      //           <OpenInBrowserOutlined />
+      //         </NIcon>
+      //       );
+      //     },
+      //   });
+      // }
       return list;
     });
 
@@ -325,7 +329,7 @@ export default defineComponent({
               </NTooltip>
             ) : null}
             {config.isMsi ? (
-              <>
+              <div class="mar-r-4-item">
                 <NTooltip>
                   {{
                     default: () => <span>后退</span>,
@@ -381,7 +385,7 @@ export default defineComponent({
                     trigger: () => (
                       <NButton
                         size="tiny"
-                        class="mar-r-4-item"
+                        class="mar-r-2-item"
                         type="primary"
                         circle
                         onClick={() => {
@@ -399,7 +403,27 @@ export default defineComponent({
                     ),
                   }}
                 </NTooltip>
-              </>
+                <NTooltip>
+                  {{
+                    default: () => <span>{isFullscreen.value ? "退出全屏" : "全屏"}</span>,
+                    trigger: () => (
+                      <NButton
+                        size="tiny"
+                        class="mar-r-2-item"
+                        type="primary"
+                        circle
+                        onClick={() => {
+                          setFullscreen(!isFullscreen.value);
+                        }}
+                      >
+                        {{
+                          icon: () => <NIcon>{isFullscreen.value ? <FullscreenExitOutlined /> : <FullscreenOutlined />}</NIcon>,
+                        }}
+                      </NButton>
+                    ),
+                  }}
+                </NTooltip>
+              </div>
             ) : null}
             {isMobileWidth.value ? null : (
               <>
@@ -423,17 +447,17 @@ export default defineComponent({
                     options={downloadList.value}
                     trigger="click"
                     onSelect={suffix => {
-                      if (suffix === "browser") {
-                        pwaInstallHandler.install().then(installed => {
-                          if (installed) {
-                            message.success("恭喜您安装成功~");
-                          } else {
-                            message.error("真的不打算安装么？");
-                          }
-                        });
-                      } else {
-                        window.open(getFullUrl(config.baseURL, config.downloadUrl, `hellowmonkey.${suffix}`));
-                      }
+                      // if (suffix === "browser") {
+                      //   pwaInstallHandler.install().then(installed => {
+                      //     if (installed) {
+                      //       message.success("恭喜您安装成功~");
+                      //     } else {
+                      //       message.error("真的不打算安装么？");
+                      //     }
+                      //   });
+                      // } else {
+                      // }
+                      window.open(getFullUrl(config.baseURL, config.downloadUrl, `hellowmonkey.${suffix}`));
                     }}
                   >
                     <NTooltip placement={isMobileWidth.value ? "left" : undefined}>

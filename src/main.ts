@@ -5,12 +5,13 @@ import "@/static/style/app.scss";
 
 import "@/extend";
 import "@/plugin/ajax";
-import "@/plugin/service-worker";
+// import "@/plugin/service-worker";
 import config from "./config";
 import { initSecure } from "./helper/secure";
 import { appWindow } from "@tauri-apps/api/window";
 import { plusReady, plusSetStatusBar } from "./service/plus";
 import { getUserInfo } from "./service/user";
+import { isFullscreen } from "./service/common";
 
 const app = createApp(App);
 
@@ -42,6 +43,9 @@ router.isReady().then(async () => {
           appWindow.setFocus();
           appWindow.setResizable(true);
           appWindow.setDecorations(true);
+          appWindow.isFullscreen().then(v => {
+            isFullscreen.value = v;
+          });
         })
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         .catch(() => {}),
