@@ -6,6 +6,7 @@ import {
   fitVideoSizes,
   isFullscreen,
   isMobileWidth,
+  isShowBackTop,
   menuCollapsed,
   setAppConfig,
   setDialog,
@@ -48,6 +49,7 @@ import {
   ChevronLeftRound,
   ChevronRightRound,
   ContentPasteSearchOutlined,
+  FavoriteBorderOutlined,
   FileDownloadFilled,
   FileDownloadOutlined,
   FullscreenExitOutlined,
@@ -190,6 +192,21 @@ export default defineComponent({
             return (
               <NIcon>
                 <ContentPasteSearchOutlined />
+              </NIcon>
+            );
+          },
+        },
+        {
+          key: "",
+          type: "divider",
+        },
+        {
+          label: "我的收藏",
+          key: "collect",
+          icon() {
+            return (
+              <NIcon>
+                <FavoriteBorderOutlined />
               </NIcon>
             );
           },
@@ -609,7 +626,14 @@ export default defineComponent({
               <div class="pad-3">
                 <RouterView />
               </div>
-              <NBackTop visibilityHeight={10} />
+
+              {/* 返回顶部 */}
+              <NBackTop
+                visibilityHeight={10}
+                onUpdate:show={(show: boolean) => {
+                  isShowBackTop.value = show;
+                }}
+              />
             </NLayout>
           </NLayout>
         </NLayout>
@@ -727,6 +751,17 @@ export default defineComponent({
                 }}
               ></NSwitch>
             </div>
+            {config.isMsi ? (
+              <div class="d-flex justify-between align-items-center mar-b-6-item">
+                <span class="font-gray font-small mar-r-7 flex-item-extend">全屏播放</span>
+                <NSwitch
+                  value={appConfig.value.fullscreenPlay}
+                  onUpdateValue={fullscreenPlay => {
+                    setAppConfig({ fullscreenPlay });
+                  }}
+                ></NSwitch>
+              </div>
+            ) : null}
             <NDivider titlePlacement="left">推荐</NDivider>
             <div class="d-flex justify-between align-items-center mar-b-6-item">
               <span class="font-gray font-small mar-r-7 flex-item-extend">开启相关推荐</span>

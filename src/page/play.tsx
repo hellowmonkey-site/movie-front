@@ -7,12 +7,14 @@ import { appConfig, isFullscreen, isMobileWidth, menuCollapsed, setAppConfig, se
 import { ThemeTypes } from "@/service/common";
 import { postPlayLog } from "@/service/history";
 import { getInfoList, getRecommendByCategoryId, getVideoDetail, postReport, recommendCategoryVideos, videoDetail } from "@/service/video";
-import { KeyboardArrowDownOutlined, KeyboardArrowUpOutlined } from "@vicons/material";
-import { NButton, NCollapseTransition, NIcon, NInput, useDialog } from "naive-ui";
+import { FavoriteOutlined, FavoriteTwotone, KeyboardArrowDownOutlined, KeyboardArrowUpOutlined } from "@vicons/material";
+import { NButton, NCollapseTransition, NIcon, NInput, NTooltip, useDialog } from "naive-ui";
 import { computed, defineComponent, onMounted, PropType, ref } from "vue";
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from "vue-router";
 import Player, { IPlayerOptions } from "xgplayer";
 import HlsJsPlayer from "xgplayer-hls.js";
+import { user } from "@/service/user";
+import { collectVideoList, postCancelCollect, postCollect } from "@/service/collect";
 
 export default defineComponent({
   props: {
@@ -163,7 +165,7 @@ export default defineComponent({
       setAppConfig({
         themeType: ThemeTypes.DARK,
       });
-      if (config.isMsi) {
+      if (config.isMsi && appConfig.value.fullscreenPlay) {
         await setFullscreen(true);
       }
       menuCollapsed.value = true;
@@ -198,6 +200,35 @@ export default defineComponent({
                 </div>
               </div>
               <div class="d-flex align-items-center">
+                {user.value.id ? (
+                  collectVideoList.value.some(v => v.id === props.videoId) ? (
+                    <NTooltip>
+                      {{
+                        default: () => "取消收藏",
+                        trigger: () => (
+                          <NButton size="small" class="mar-r-2-item" onClick={() => postCancelCollect(props.videoId)}>
+                            {{
+                              icon: () => <FavoriteTwotone />,
+                            }}
+                          </NButton>
+                        ),
+                      }}
+                    </NTooltip>
+                  ) : (
+                    <NTooltip>
+                      {{
+                        default: () => "收藏",
+                        trigger: () => (
+                          <NButton size="small" class="mar-r-2-item" onClick={() => postCollect(props.videoId, playId.value)}>
+                            {{
+                              icon: () => <FavoriteOutlined />,
+                            }}
+                          </NButton>
+                        ),
+                      }}
+                    </NTooltip>
+                  )
+                ) : null}
                 <NButton
                   size="small"
                   class="mar-r-2-item"

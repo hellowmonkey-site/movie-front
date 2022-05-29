@@ -1,6 +1,7 @@
 import { sessionStorage } from "@/helper/storage";
 import fly from "flyio";
 import { ref } from "vue";
+import { collectVideoList, getCollectList } from "./collect";
 export interface IUserForm {
   username: string;
   password: string;
@@ -34,6 +35,7 @@ export function setUser(params: IUser) {
 export function clearUser() {
   sessionStorage.remove("user");
   user.value = defaultUser;
+  collectVideoList.value = [];
 }
 
 export function postLogin(params: IUserForm) {
@@ -42,6 +44,7 @@ export function postLogin(params: IUserForm) {
     .then(data => data.data)
     .then(data => {
       setUser(data);
+      getCollectList();
       return data;
     });
 }
@@ -55,6 +58,7 @@ export function getUserInfo() {
     .then(data => data.data)
     .then(data => {
       setUser(data);
+      getCollectList();
     })
     .catch(() => {
       clearUser();

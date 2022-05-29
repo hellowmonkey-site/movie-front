@@ -2,9 +2,12 @@ import Description from "@/component/Description";
 import Image from "@/component/Image";
 import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
+import { collectVideoList, postCancelCollect, postCollect } from "@/service/collect";
 import { setTitle } from "@/service/common";
 import { playHistoryIds } from "@/service/history";
+import { user } from "@/service/user";
 import { getInfoList, getRecommendByCategoryId, getVideoDetail, IVideoDetail } from "@/service/video";
+import { FavoriteOutlined, FavoriteTwotone } from "@vicons/material";
 import { NButton, NSkeleton } from "naive-ui";
 import { computed, defineComponent, onMounted, PropType, ref } from "vue";
 import { onBeforeRouteUpdate, useRouter } from "vue-router";
@@ -69,7 +72,32 @@ export default defineComponent({
         <div class="video-info d-flex mar-b-5-item">
           <div class="video-cover">{!loading.value ? <Image src={video.value?.cover} /> : <NSkeleton height="400px"></NSkeleton>}</div>
           <div class="flex-item-extend d-flex direction-column break-all">
-            <h1 class="font-xlg mar-b-5-item">{!loading.value ? video.value?.title : <NSkeleton height="30px"></NSkeleton>}</h1>
+            <div class="d-flex align-items-center justify-between mar-b-5-item">
+              {!loading.value ? (
+                <>
+                  <h1 class="font-xlg mar-r-3-item">{video.value?.title}</h1>
+                  {user.value.id ? (
+                    collectVideoList.value.some(v => v.id === props.videoId) ? (
+                      <NButton size="small" type="error" onClick={() => postCancelCollect(props.videoId)} ghost>
+                        {{
+                          default: () => "取消收藏",
+                          icon: () => <FavoriteTwotone />,
+                        }}
+                      </NButton>
+                    ) : (
+                      <NButton size="small" onClick={() => postCollect(props.videoId)}>
+                        {{
+                          default: () => "收藏",
+                          icon: () => <FavoriteOutlined />,
+                        }}
+                      </NButton>
+                    )
+                  ) : null}
+                </>
+              ) : (
+                <NSkeleton height="30px"></NSkeleton>
+              )}
+            </div>
             {!loading.value ? (
               <>
                 {infoList.value.map(info => (

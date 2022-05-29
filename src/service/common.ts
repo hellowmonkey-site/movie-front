@@ -28,6 +28,9 @@ export function setMessage(e: MessageApiInjection) {
   message = e;
 }
 
+// 返回顶部按钮
+export const isShowBackTop = ref(false);
+
 // 设置
 export const settingOpen = ref(false);
 
@@ -160,6 +163,8 @@ export interface IConfig {
   pip: boolean;
   // 小窗口
   miniplayer: boolean;
+  // 全屏播放
+  fullscreenPlay: boolean;
 
   // 自动播放下一集
   autoNext: boolean;
@@ -199,6 +204,7 @@ export const defaultConfig: IConfig = {
   searchLog: true,
   playLog: true,
   autoNext: true,
+  fullscreenPlay: true,
 };
 let localConfig = localStorage.get<IConfig>("appConfig") || defaultConfig;
 if (typeof localConfig === "string" || Array.isArray(localConfig)) {
@@ -244,6 +250,9 @@ export function setAppConfig(params: Partial<IConfig>) {
   }
   if (params.miniplayer !== undefined) {
     appConfig.value.miniplayer = Boolean(params.miniplayer);
+  }
+  if (params.fullscreenPlay !== undefined) {
+    appConfig.value.fullscreenPlay = Boolean(params.fullscreenPlay);
   }
   if (params.recommend !== undefined) {
     appConfig.value.recommend = Boolean(params.recommend);

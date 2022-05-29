@@ -1,9 +1,9 @@
 import VideoItem from "@/component/VideoItem";
 import { goTop } from "@/helper";
 import { categorys } from "@/service/category";
-import { videoLength } from "@/service/common";
+import { isShowBackTop, videoLength } from "@/service/common";
 import { pullDownRefresh } from "@/service/plus";
-import { getRandomVideoList, IVideo } from "@/service/video";
+import { getRandomVideoList, randomVideoList } from "@/service/video";
 import { RefreshOutlined } from "@vicons/material";
 import { NButton, NGrid, NGridItem, NH2, NIcon, NSpin, NText } from "naive-ui";
 import { computed, defineComponent, onMounted, ref } from "vue";
@@ -18,17 +18,16 @@ export default defineComponent({
     });
     const route = useRoute();
     const loading = ref(false);
-    const list = ref<IVideo[]>([]);
     const dataList = computed(() => {
-      return list.value.slice(0, videoLength.value);
+      return randomVideoList.value.slice(0, videoLength.value);
     });
+    const categoryId = computed(() => Number(route.query.category));
 
     function fetchData() {
       loading.value = true;
-      getRandomVideoList(Number(route.query.category))
-        .then(data => {
+      getRandomVideoList(categoryId.value)
+        .then(() => {
           goTop();
-          list.value = data;
         })
         .finally(() => {
           loading.value = false;
@@ -37,15 +36,24 @@ export default defineComponent({
     }
 
     onMounted(() => {
+      if (randomVideoList.value[0]?.category_id === categoryId.value) {
+        return;
+      }
       fetchData();
     });
 
     return () => (
       <>
         <NH2 prefix="bar" class="mar-0 mar-b-3-item">
-          <NText>{categorys.value.find(v => v.id === Number(route.query.category))?.name || "相关推荐"}</NText>
+          <NText>{categorys.value.find(v => v.id === categoryId.value)?.name || "相关推荐"}</NText>
         </NH2>
-        <NButton type="primary" circle onClick={fetchData} class="refresh-fixed" size="large">
+        <NButton
+          type="primary"
+          circle
+          onClick={fetchData}
+          class={["refresh-fixed ani", isShowBackTop.value ? "has-backtop" : null, loading.value ? "ani-loading" : null]}
+          size="large"
+        >
           <NIcon size={24}>
             <RefreshOutlined />
           </NIcon>

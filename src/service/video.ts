@@ -1,10 +1,10 @@
 import config from "@/config";
-import { PageData, ResponseData } from "@/config/type";
+import { PageData } from "@/config/type";
 import { addZero, getFullUrl } from "@/helper";
 import fly from "flyio";
 import { computed, ref } from "vue";
 import { categorys } from "./category";
-import { appConfig, message, videoLength, windowWidth } from "./common";
+import { appConfig, message, videoLength } from "./common";
 import { IPlay } from "./playlist";
 
 export interface IVideo {
@@ -132,6 +132,13 @@ export function postReport(remark: string, videoId: number, playId?: number) {
 }
 
 // 随机获取视频
+export const randomVideoList = ref<IVideo[]>([]);
 export function getRandomVideoList(categoryId?: number) {
-  return fly.get<IVideo[]>("video/random", { categoryId }).then(data => data.data);
+  return fly
+    .get<IVideo[]>("video/random", { categoryId })
+    .then(data => data.data)
+    .then(data => {
+      randomVideoList.value = data;
+      return data;
+    });
 }

@@ -144,8 +144,12 @@ a {
 .refresh-fixed {
   position: fixed;
   right: 40px;
-  bottom: 95px;
+  bottom: 40px;
   z-index: 9;
+
+  &.has-backtop {
+    bottom: 95px;
+  }
 }
 
 @media (min-width: 640px) {

@@ -2,7 +2,7 @@ import NProgress from "nprogress";
 import { createRouter, createWebHistory } from "vue-router";
 
 import Index from "@/layout/Index";
-import { goTop, putStyle } from "@/helper";
+import { filterParams, goTop, putStyle } from "@/helper";
 import { isMobileWidth, menuCollapsed, setTitle, themeOverrides, visitedPageNum } from "@/service/common";
 import { pullDownRefresh } from "@/service/plus";
 
@@ -96,6 +96,15 @@ const router = createRouter({
           },
           component: () => import("@/page/play-history"),
         },
+        {
+          path: "/collect",
+          name: "collect",
+          meta: {
+            pullDownRefresh: true,
+            title: "我的收藏",
+          },
+          component: () => import("@/page/collect"),
+        },
       ],
     },
     {
@@ -123,6 +132,10 @@ router.beforeEach(to => {
   // 设置body样式
   const style = putStyle({ "--primary-color": themeOverrides.value.common?.primaryColor });
   document.body.setAttribute("style", style);
+
+  // 参数过滤
+  filterParams(to.query);
+  filterParams(to.params);
 
   NProgress.start();
 

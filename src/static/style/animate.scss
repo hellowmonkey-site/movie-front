@@ -18,6 +18,16 @@
   }
 }
 
+@keyframes ani-loading {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: all $animate-time;
@@ -83,4 +93,20 @@
 .slider-top-leave-to {
   opacity: 0;
   transform: translate(0, 100%);
+}
+
+.ani-zoom {
+  animation: ani-zoom $animate-time ease-in-out;
+}
+
+.ani-fade {
+  animation: ani-fade $animate-time ease-in-out;
+}
+
+.ani {
+  transition: all ease-in-out $animate-time;
+}
+
+.ani-loading {
+  animation: ani-loading 0.5s linear infinite;
 }
