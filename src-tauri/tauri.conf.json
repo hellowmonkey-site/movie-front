@@ -7,20 +7,15 @@
     "distDir": "../dist",
     "devPath": "http://localhost:3030",
     "beforeDevCommand": "",
-    "beforeBuildCommand": ""
+    "beforeBuildCommand": "",
+    "withGlobalTauri": true
   },
   "tauri": {
     "bundle": {
       "active": true,
       "targets": "all",
       "identifier": "cc.hellowmonkey.movie",
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ],
+      "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"],
       "resources": [],
       "externalBin": [],
       "copyright": "",
@@ -46,7 +41,10 @@
       }
     },
     "updater": {
-      "active": false
+      "active": true,
+      "dialog": false,
+      "endpoints": ["https://movie.api.hellowmonkey.cc/windows-updater/{{target}}/{{current_version}}"],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEY1RkQ4MkNBMkIwRUNFRUQKUldUdHpnNHJ5b0w5OVRXV2VnMUVUaXhrMStVdDErTjMwM1F5cUZCSTdVd1RDMFNiaTl6WXZRMUsK"
     },
     "allowlist": {
       "all": true

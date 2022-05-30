@@ -9,6 +9,8 @@ import "@/plugin/ajax";
 import config from "./config";
 import { initSecure } from "./helper/secure";
 import { appWindow } from "@tauri-apps/api/window";
+import { checkUpdate, installUpdate } from "@tauri-apps/api/updater";
+import { relaunch } from "@tauri-apps/api/process";
 import { plusReady, plusSetStatusBar } from "./service/plus";
 import { getUserInfo } from "./service/user";
 import { isFullscreen } from "./service/common";
@@ -45,6 +47,13 @@ router.isReady().then(async () => {
           appWindow.setDecorations(true);
           appWindow.isFullscreen().then(v => {
             isFullscreen.value = v;
+          });
+
+          checkUpdate().then(({ shouldUpdate, manifest }) => {
+            console.log(manifest);
+            if (shouldUpdate) {
+              installUpdate().then(relaunch);
+            }
           });
         })
         // eslint-disable-next-line @typescript-eslint/no-empty-function

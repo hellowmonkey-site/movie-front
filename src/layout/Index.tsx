@@ -173,7 +173,7 @@ export default defineComponent({
     });
 
     const userMenus = computed<DropdownMixedOption[]>(() => {
-      return [
+      const userMenus = [
         {
           label: "观看历史",
           key: "play-history",
@@ -200,45 +200,50 @@ export default defineComponent({
           key: "",
           type: "divider",
         },
-        {
-          label: "我的收藏",
-          key: "collect",
+      ];
+      if (user.value.token) {
+        userMenus.push(
+          {
+            label: "我的收藏",
+            key: "collect",
+            icon() {
+              return (
+                <NIcon>
+                  <FavoriteBorderOutlined />
+                </NIcon>
+              );
+            },
+          },
+          {
+            key: "",
+            type: "divider",
+          },
+          {
+            label: "退出登录",
+            key: "logout",
+            icon() {
+              return (
+                <NIcon>
+                  <LogOutOutlined />
+                </NIcon>
+              );
+            },
+          }
+        );
+      } else {
+        userMenus.push({
+          label: "登录",
+          key: "login",
           icon() {
             return (
               <NIcon>
-                <FavoriteBorderOutlined />
+                <LogInOutlined />
               </NIcon>
             );
           },
-        },
-        {
-          key: "",
-          type: "divider",
-        },
-        user.value.token
-          ? {
-              label: "退出登录",
-              key: "logout",
-              icon() {
-                return (
-                  <NIcon>
-                    <LogOutOutlined />
-                  </NIcon>
-                );
-              },
-            }
-          : {
-              label: "登录",
-              key: "login",
-              icon() {
-                return (
-                  <NIcon>
-                    <LogInOutlined />
-                  </NIcon>
-                );
-              },
-            },
-      ];
+        });
+      }
+      return userMenus;
     });
 
     const downloadList = computed(() => {
