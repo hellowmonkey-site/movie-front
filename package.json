@@ -3,7 +3,7 @@
   "description": "有点好看，干干净净的视频在线播放应用",
   "author": "Parker",
   "private": true,
-  "version": "1.0.2",
+  "version": "1.0.3",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
