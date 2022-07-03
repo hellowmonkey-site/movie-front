@@ -3,7 +3,16 @@ import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
 import config from "@/config";
 import { createPlusVideoPlayer, PlusOpenTypes, plusPlayURL, plusVideoPlayer } from "@/service/plus";
-import { appConfig, isFullscreen, isMobileWidth, menuCollapsed, setAppConfig, setFullscreen, setTitle } from "@/service/common";
+import {
+  appConfig,
+  isFullscreen,
+  isMobileWidth,
+  menuCollapsed,
+  playbackRates,
+  setAppConfig,
+  setFullscreen,
+  setTitle,
+} from "@/service/common";
 import { ThemeTypes } from "@/service/common";
 import { postPlayLog } from "@/service/history";
 import { getInfoList, getRecommendByCategoryId, getVideoDetail, postReport, recommendCategoryVideos, videoDetail } from "@/service/video";
@@ -117,7 +126,7 @@ export default defineComponent({
             fitVideoSize: appConfig.value.fitVideoSize,
             // fluid: true,
             poster: videoDetail.value?.cover,
-            playbackRate: config.playbackRates,
+            playbackRate: playbackRates.value,
             defaultPlaybackRate: appConfig.value.playbackRate,
             pip: appConfig.value.pip,
             miniplayer: appConfig.value.miniplayer,
@@ -299,7 +308,7 @@ export default defineComponent({
                   ghost
                   icon-placement="right"
                   onClick={() => {
-                    const list = config.playbackRates.slice(0, -1);
+                    const list = playbackRates.value.slice(0, -1);
                     const buttons = list.map(v => ({
                       title: `${v} x`,
                     }));

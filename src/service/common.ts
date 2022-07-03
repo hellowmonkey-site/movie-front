@@ -34,6 +34,9 @@ export const isShowBackTop = ref(false);
 // 设置
 export const settingOpen = ref(false);
 
+// 视频播放倍速列表
+export const playbackRates = ref(config.playbackRates);
+
 // history页数
 export const visitedPageNum = ref(0);
 
@@ -232,7 +235,7 @@ export function setAppConfig(params: Partial<IConfig>) {
   }
   if (params.playbackRate !== undefined) {
     const value = Number(params.playbackRate);
-    if (config.playbackRates.includes(value)) {
+    if (playbackRates.value.includes(value)) {
       appConfig.value.playbackRate = value;
     }
   }

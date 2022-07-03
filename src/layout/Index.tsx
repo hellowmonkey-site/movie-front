@@ -8,6 +8,7 @@ import {
   isMobileWidth,
   isShowBackTop,
   menuCollapsed,
+  playbackRates,
   setAppConfig,
   setDialog,
   setFullscreen,
@@ -35,6 +36,7 @@ import {
   NMenu,
   NSelect,
   NSlider,
+  NSpin,
   NSwitch,
   NTooltip,
   useDialog,
@@ -42,7 +44,7 @@ import {
   useNotification,
   useOsTheme,
 } from "naive-ui";
-import { computed, defineComponent, onMounted } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import { RouterLink, RouterView, useRoute, useRouter } from "vue-router";
 import {
   AndroidOutlined,
@@ -95,6 +97,8 @@ export default defineComponent({
     setNotification(notification);
     setDialog(dialog);
     setMessage(message);
+
+    const menuLoading = ref(false);
 
     const selectedMenu = computed(() => {
       const { name } = route;
@@ -288,10 +292,10 @@ export default defineComponent({
     });
 
     const marks: Record<string, string> = {};
-    config.playbackRates
+    playbackRates.value
       .map(v => String(v))
       .forEach((v: string) => {
-        marks[String(v)] = String(v);
+        marks[v] = v;
       });
 
     // 默认打开菜单
@@ -305,7 +309,10 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      getCategoryList();
+      menuLoading.value = true;
+      getCategoryList().finally(() => {
+        menuLoading.value = false;
+      });
       getPlayHistory();
 
       // 判断是不是IE浏览器
@@ -620,12 +627,18 @@ export default defineComponent({
               collapseMode={isMobileWidth.value ? "transform" : "width"}
               collapsedWidth={isMobileWidth.value ? 0 : undefined}
             >
-              <NMenu
-                collapsed={menuCollapsed.value}
-                options={menus.value}
-                value={selectedMenu.value}
-                defaultExpandedKeys={defaultExpandedKeys.value}
-              ></NMenu>
+              {menuLoading.value ? (
+                <div class="d-flex align-items-center justify-center full-height-vh">
+                  <NSpin />
+                </div>
+              ) : (
+                <NMenu
+                  collapsed={menuCollapsed.value}
+                  options={menus.value}
+                  value={selectedMenu.value}
+                  defaultExpandedKeys={defaultExpandedKeys.value}
+                ></NMenu>
+              )}
             </NLayoutSider>
             <NLayout nativeScrollbar={isMobileWidth.value}>
               <div class="pad-3">
@@ -696,8 +709,8 @@ export default defineComponent({
               <span class="font-gray font-small mar-r-7 flex-item-extend">默认播放速度</span>
               <NSlider
                 style={{ width: "65%" }}
-                min={config.playbackRates[0]}
-                max={config.playbackRates[config.playbackRates.length - 1]}
+                min={playbackRates.value[0]}
+                max={playbackRates.value[playbackRates.value.length - 1]}
                 step="mark"
                 marks={marks}
                 value={appConfig.value.playbackRate}

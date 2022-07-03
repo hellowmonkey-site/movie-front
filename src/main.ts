@@ -13,7 +13,7 @@ import { checkUpdate, installUpdate } from "@tauri-apps/api/updater";
 import { relaunch } from "@tauri-apps/api/process";
 import { plusReady, plusSetStatusBar } from "./service/plus";
 import { getUserInfo } from "./service/user";
-import { isFullscreen } from "./service/common";
+import { isFullscreen, playbackRates } from "./service/common";
 
 const app = createApp(App);
 
@@ -26,6 +26,7 @@ router.isReady().then(async () => {
         .then(() => {
           config.isApp = true;
           config.isWeb = false;
+          playbackRates.value = config.appPlaybackRates;
           router.replace("/");
           setTimeout(() => {
             plusSetStatusBar();
@@ -50,7 +51,6 @@ router.isReady().then(async () => {
           });
 
           checkUpdate().then(({ shouldUpdate, manifest }) => {
-            console.log(manifest);
             if (shouldUpdate) {
               installUpdate().then(relaunch);
             }

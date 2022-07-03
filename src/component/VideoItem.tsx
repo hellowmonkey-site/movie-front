@@ -33,7 +33,9 @@ export default defineComponent({
             {props.tag ? <div class="tag font-small">{props.video[props.tag] || props.video.category}</div> : null}
           </div>
           <div class="content">
-            <h2 class="font-large text-elip mar-b-2-item">{props.video.title}</h2>
+            <h2 class="font-large text-elip mar-b-2-item" title={props.video.title}>
+              {props.video.title}
+            </h2>
             <div class="font-gray font-small text-elip">{props.video.actress}</div>
           </div>
         </div>
