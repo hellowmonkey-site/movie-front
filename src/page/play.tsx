@@ -209,6 +209,17 @@ export default defineComponent({
                 </div>
               </div>
               <div class="d-flex align-items-center">
+                {config.isWeb ? (
+                  <NButton
+                    class="mar-r-2-item"
+                    size="small"
+                    onClick={() => {
+                      window.open(`${config.m3u8DownloadUrl}?url=${play.value?.src}&name=${videoDetail.value?.title}-${play.value?.title}`);
+                    }}
+                  >
+                    下载视频
+                  </NButton>
+                ) : null}
                 {user.value.id ? (
                   collectVideoList.value.some(v => v.id === props.videoId) ? (
                     <NTooltip>
@@ -260,7 +271,10 @@ export default defineComponent({
                 >
                   纠错
                 </NButton>
-                <div class="d-flex align-items-center cursor-pointer" onClick={() => (toggleCollapse.value = !toggleCollapse.value)}>
+                <div
+                  class="d-flex align-items-center cursor-pointer mar-r-2-item"
+                  onClick={() => (toggleCollapse.value = !toggleCollapse.value)}
+                >
                   <span class="font-gray mar-r-1-item font-small">简介</span>
                   <NIcon size={20}>{toggleCollapse.value ? <KeyboardArrowUpOutlined /> : <KeyboardArrowDownOutlined />}</NIcon>
                 </div>
