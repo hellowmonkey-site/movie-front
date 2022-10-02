@@ -13,3 +13,5 @@ declare module "xgplayer-hls.js" {
 }
 
 declare let plus: any;
+
+declare module "custom-protocol-detection";

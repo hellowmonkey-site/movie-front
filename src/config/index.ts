@@ -23,7 +23,8 @@ export default {
   downloadUrl: "resource/app",
   imageUrl: "resource/image",
   videoId: "videoPlayer",
-  m3u8DownloadUrl: "https://tool.hellowmonkey.cc/video/m3u8",
+  toolBoxWebUrl: "https://tool.hellowmonkey.cc",
+  toolBoxSchemeUrl: "tool-box://",
 };
 
 export const Apps = {

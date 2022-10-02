@@ -24,6 +24,7 @@ import Player, { IPlayerOptions } from "xgplayer";
 import HlsJsPlayer from "xgplayer-hls.js";
 import { user } from "@/service/user";
 import { collectVideoList, postCancelCollect, postCollect } from "@/service/collect";
+import protocolDetection from "custom-protocol-detection";
 
 export default defineComponent({
   props: {
@@ -214,7 +215,11 @@ export default defineComponent({
                     class="mar-r-2-item"
                     size="small"
                     onClick={() => {
-                      window.open(`${config.m3u8DownloadUrl}?url=${play.value?.src}&name=${videoDetail.value?.title}-${play.value?.title}`);
+                      const webUrl = `${config.toolBoxWebUrl}/video/m3u8?url=${play.value?.src}&name=${videoDetail.value?.title}-${play.value?.title}`;
+                      const schemeUrl = webUrl.replace(config.toolBoxWebUrl + "/", config.toolBoxSchemeUrl);
+                      protocolDetection(schemeUrl, () => {
+                        window.open(webUrl, "_blank");
+                      });
                     }}
                   >
                     下载视频
