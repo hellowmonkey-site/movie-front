@@ -210,7 +210,7 @@ export default defineComponent({
                 </div>
               </div>
               <div class="d-flex align-items-center">
-                {config.isWeb ? (
+                {config.isWeb || config.isMsi ? (
                   <NButton
                     class="mar-r-2-item"
                     size="small"
