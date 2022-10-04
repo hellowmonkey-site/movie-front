@@ -40,12 +40,6 @@
         "timestampUrl": ""
       }
     },
-    // "updater": {
-    //   "active": true,
-    //   "dialog": false,
-    //   "endpoints": ["https://movie.api.hellowmonkey.cc/windows-updater/{{target}}/{{current_version}}"],
-    //   "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEY1RkQ4MkNBMkIwRUNFRUQKUldUdHpnNHJ5b0w5OVRXV2VnMUVUaXhrMStVdDErTjMwM1F5cUZCSTdVd1RDMFNiaTl6WXZRMUsK"
-    // },
     "allowlist": {
       "all": true
     },
