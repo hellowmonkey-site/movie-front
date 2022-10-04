@@ -1,24 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>   
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-    <meta name="renderer" content="webkit|ie-comp|ie-stand">
-    <link rel="icon" href="/favicon.ico" />
-    <link rel="manifest" href="/app.webmanifest">
-    <title>沃德影视</title>
-    <meta http-equiv="Expires" content="-1">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Cache-control" content="no-cache">
-    <meta http-equiv="Cache" content="no-cache">
-    <meta property="og:image" content="/launcher.png">
-    <meta name="description" content="有点好看，干干净净的视频在线播放应用">
-    <meta name="author" content="Parker">
-    <meta name="theme-color" content="#18a058">
-  </head>
-  <body>
-    <div id="app"><div style="text-align: center; padding: 40vh 0; color: #888; font-size: 14px">玩命加载中...</div></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>沃德影视</title>
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+
+    .loading {
+      box-sizing: border-box;
+      height: 100vh;
+      text-align: center;
+      padding: 40vh 0;
+      color: #888;
+      background-color: #fff;
+      font-size: 14px;
+    }
+
+    .loading.dark {
+      background-color: rgb(24, 24, 28);
+      color: rgba(255, 255, 255, 0.82);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="loading">玩命加载中...</div>
+  </div>
+  <script>
+    try {
+      let cls = 'light'
+      var appConfig = JSON.parse(localStorage.getItem('appConfig'))
+      if (appConfig.themeType === 'dark' || (appConfig.themeType === 'os' && appConfig.os === "dark")) {
+        cls = 'dark'
+      }
+      document.querySelector('.loading').classList.add(cls)
+    } catch (e) {
+      console.log(e)
+    }
+  </script>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
 </html>

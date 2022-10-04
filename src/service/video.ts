@@ -3,7 +3,6 @@ import { PageData } from "@/config/type";
 import { addZero, getFullUrl } from "@/helper";
 import fly from "flyio";
 import { computed, ref } from "vue";
-import { categorys } from "./category";
 import { appConfig, message, videoLength } from "./common";
 import { IPlay } from "./playlist";
 
@@ -25,6 +24,22 @@ export interface IVideo {
 
 export interface IVideoDetail extends IVideo {
   playlist: IPlay[];
+}
+
+export interface IVideoItem extends IVideo {
+  playlist?: IPlay[];
+}
+
+export const fullVideoList = ref<IVideoItem[]>([]);
+function setFullVideoList(arr: IVideoItem[]) {
+  arr.forEach(item => {
+    const index = fullVideoList.value.findIndex(v => v.id === item.id);
+    if (index === -1) {
+      fullVideoList.value.push(item);
+    } else if (item.playlist?.length) {
+      fullVideoList.value.splice(index, 1, item);
+    }
+  });
 }
 
 export function getInfoList(video?: IVideo) {
@@ -77,31 +92,33 @@ export function getRecommendVideos() {
     .then(data => data.data.data)
     .then(data => {
       recommendVideos.value = data;
+      setFullVideoList(data);
       return data;
     });
 }
 
 // 分类
 export function getCategoryVideos(category: string, page = 1) {
-  return fly.get<PageData<IVideo>>("video/category", { category, page }).then(data => data.data);
-}
-export const recommendCategoryVideos = ref<IVideo[]>([]);
-export function getRecommendByCategoryId(categoryId: number) {
-  if (!appConfig.value.recommend) {
-    return null;
-  }
-  const category = categorys.value.find(v => v.id === Number(categoryId));
-  if (category) {
-    return getCategoryVideos(category.url).then(data => {
-      recommendCategoryVideos.value = data.data;
+  return fly
+    .get<PageData<IVideo>>("video/category", { category, page })
+    .then(data => data.data)
+    .then(data => {
+      setFullVideoList(data.data);
       return data;
     });
+}
+export const recommendVideoList = ref<IVideo[]>([]);
+export function getRecommendVideoList(videoId: number) {
+  if (!appConfig.value.recommend) {
+    return Promise.resolve([]);
   }
-  return null;
+  return fly.get<IVideo[]>("video/recommend-list", { videoId }).then(data => {
+    recommendVideoList.value = data.data;
+    return data;
+  });
 }
 
 // 详情
-export const videoDetail = ref<IVideoDetail>();
 export function getVideoDetail(id: number) {
   return fly
     .get<IVideoDetail>(`video/${id}`)
@@ -113,14 +130,20 @@ export function getVideoDetail(id: number) {
       };
     })
     .then(data => {
-      videoDetail.value = data;
+      setFullVideoList([data]);
       return data;
     });
 }
 
 // 搜索
 export function getVideoSearch({ keywords, category }: { keywords: string; category?: number }, page = 1) {
-  return fly.get<PageData<IVideo>>("video/search", { keywords, category, page }).then(data => data.data);
+  return fly
+    .get<PageData<IVideo>>("video/search", { keywords, category, page })
+    .then(data => data.data)
+    .then(data => {
+      setFullVideoList(data.data);
+      return data;
+    });
 }
 
 // 提交纠错
@@ -139,6 +162,7 @@ export function getRandomVideoList(categoryId?: number) {
     .then(data => data.data)
     .then(data => {
       randomVideoList.value = data;
+      setFullVideoList(data);
       return data;
     });
 }

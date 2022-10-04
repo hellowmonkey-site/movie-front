@@ -15,7 +15,7 @@ import {
 } from "@/service/common";
 import { ThemeTypes } from "@/service/common";
 import { postPlayLog } from "@/service/history";
-import { getInfoList, getRecommendByCategoryId, getVideoDetail, postReport, recommendCategoryVideos, videoDetail } from "@/service/video";
+import { fullVideoList, getInfoList, getRecommendVideoList, getVideoDetail, postReport, recommendVideoList } from "@/service/video";
 import { FavoriteOutlined, FavoriteTwotone, KeyboardArrowDownOutlined, KeyboardArrowUpOutlined } from "@vicons/material";
 import { NButton, NCollapseTransition, NIcon, NInput, NTooltip, useDialog } from "naive-ui";
 import { computed, defineComponent, onMounted, PropType, ref } from "vue";
@@ -45,11 +45,14 @@ export default defineComponent({
     const el = ref<HTMLElement | undefined>();
     const router = useRouter();
     const playId = ref(props.playId);
+    const videoDetail = computed(() => {
+      return fullVideoList.value.find(v => v.id === props.videoId);
+    });
     const play = computed(() => {
       if (!videoDetail.value) {
         return null;
       }
-      return videoDetail.value.playlist.find(v => v.id === Number(playId.value));
+      return videoDetail.value.playlist?.find(v => v.id === Number(playId.value));
     });
     const infoList = computed(() => {
       return getInfoList(videoDetail.value);
@@ -80,7 +83,7 @@ export default defineComponent({
     function autoNextPlay() {
       // 自动进入下一集
       if (appConfig.value.autoNext && videoDetail.value && play.value?.circuit_id) {
-        const playlist = Array.from(videoDetail.value.playlist).filter(v => v.circuit_id === Number(play.value?.circuit_id));
+        const playlist = Array.from(videoDetail.value.playlist || []).filter(v => v.circuit_id === Number(play.value?.circuit_id));
         const index = playlist.findIndex(v => v.id === Number(play.value?.id));
         if (index < 0 || index >= playlist.length - 1) {
           return;
@@ -159,11 +162,10 @@ export default defineComponent({
       if (videoPlayer) {
         return;
       }
-      getVideoDetail(props.videoId).then(data => {
-        createPlayer();
-        // 推荐
-        getRecommendByCategoryId(data.category_id);
-      });
+      getVideoDetail(props.videoId);
+      createPlayer();
+      // 推荐
+      getRecommendVideoList(props.videoId);
     }
 
     onBeforeRouteUpdate(to => {
@@ -387,7 +389,7 @@ export default defineComponent({
             router.replace({ name: "play", params: { videoId: props.videoId, playId } });
           }}
         />
-        <div class="mar-t-4">{recommendCategoryVideos.value.length ? <RecommendList /> : null}</div>
+        <div class="mar-t-4">{recommendVideoList.value.length ? <RecommendList /> : null}</div>
       </>
     );
   },

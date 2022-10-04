@@ -1,4 +1,5 @@
 import { version } from "../../package.json";
+import { package as tauriPkg } from "../../src-tauri/tauri.conf.json";
 const isDev = import.meta.env.DEV;
 const isProd = import.meta.env.PROD;
 const isMsi = false;
@@ -7,6 +8,8 @@ const isWeb = true;
 
 const baseURL = isDev ? "http://127.0.0.1:7001" : "https://movie.api.hellowmonkey.cc";
 
+const { productName } = tauriPkg;
+
 export default {
   isDev,
   isProd,
@@ -14,6 +17,7 @@ export default {
   isMsi,
   isApp,
   version,
+  productName,
   baseURL,
   successCode: 200,
   breakpoints: { xs: 0, s: 640, m: 1024, l: 1280, xl: 1536, xxl: 1920 },

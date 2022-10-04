@@ -77,7 +77,7 @@ import {
 import SearchInput from "@/component/SearchInput";
 import config from "@/config";
 // import pwaInstallHandler from "pwa-install-handler";
-import { videoDetail } from "@/service/video";
+import { fullVideoList } from "@/service/video";
 import { DropdownMixedOption } from "naive-ui/lib/dropdown/src/interface";
 import { clearUser, user } from "@/service/user";
 import { getFullUrl, goTop } from "@/helper";
@@ -100,6 +100,9 @@ export default defineComponent({
 
     const menuLoading = ref(false);
 
+    const videoDetail = computed(() => {
+      return fullVideoList.value.find(v => v.id === Number(route.params.videoId));
+    });
     const selectedMenu = computed(() => {
       const { name } = route;
       if (name === "index") {
@@ -254,7 +257,7 @@ export default defineComponent({
       const list = [
         {
           label: "Windows版下载",
-          key: "msi",
+          key: `${config.productName}_${config.version}_x64_en-US.msi`,
           icon() {
             return (
               <NIcon>
@@ -265,7 +268,7 @@ export default defineComponent({
         },
         {
           label: "Android版下载",
-          key: "apk",
+          key: `${config.productName}_${config.version}.apk`,
           icon() {
             return (
               <NIcon>
@@ -475,7 +478,7 @@ export default defineComponent({
                   <NDropdown
                     options={downloadList.value}
                     trigger="click"
-                    onSelect={suffix => {
+                    onSelect={fileName => {
                       // if (suffix === "browser") {
                       //   pwaInstallHandler.install().then(installed => {
                       //     if (installed) {
@@ -486,7 +489,7 @@ export default defineComponent({
                       //   });
                       // } else {
                       // }
-                      window.open(getFullUrl(config.baseURL, config.downloadUrl, `hellowmonkey.${suffix}`));
+                      window.open(getFullUrl(config.baseURL, config.downloadUrl, fileName));
                     }}
                   >
                     <NTooltip placement={isMobileWidth.value ? "left" : undefined}>

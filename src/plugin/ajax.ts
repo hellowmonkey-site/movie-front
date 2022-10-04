@@ -5,15 +5,19 @@ import { isEmpty, isRealEmpty } from "@/helper/validate";
 import { KeyType, ResponseData } from "@/config/type";
 import { notification, dialog, appConfig } from "@/service/common";
 import { user } from "@/service/user";
+import { encrypto } from "@/helper/crypto";
+import { csrfToken } from "@/config/config";
 
 // request拦截器
 flyio.interceptors.request.use(conf => {
+  const nowStr = String(Date.now());
   conf.baseURL = config.baseURL;
   const headers: { [p: string]: string | number } = {
     "Content-Type": "application/json;charset=UTF-8",
     appid: config.isMsi ? Apps.MSI : config.isApp ? Apps.APP : Apps.WEB,
     searchlog: appConfig.value.searchLog ? 1 : 0,
     playlog: appConfig.value.playLog ? 1 : 0,
+    "x-csrf-token": encrypto(csrfToken + nowStr.substring(0, nowStr.length - 4)),
   };
   const { token } = user.value;
   if (token) {

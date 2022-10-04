@@ -152,6 +152,7 @@ export interface IConfig {
   // 主题
   themeType: ThemeTypes;
   themeColor: ThemeColors;
+  os: "dark" | "light" | null;
 
   // 视频
   // 音量
@@ -197,6 +198,7 @@ export const fitVideoSizes = [
 export const defaultConfig: IConfig = {
   themeType: ThemeTypes.OS,
   themeColor: ThemeColors.GREEN,
+  os: os.value,
   volume: 60,
   autoplay: true,
   pip: true,
