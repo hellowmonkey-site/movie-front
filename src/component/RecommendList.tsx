@@ -1,7 +1,7 @@
 import config from "@/config";
 import router from "@/router";
 import { windowWidth } from "@/service/common";
-import { recommendCategoryVideos } from "@/service/video";
+import { recommendVideoList } from "@/service/video";
 import { KeyboardArrowRightOutlined } from "@vicons/material";
 import { NButton, NGrid, NGridItem, NH2, NIcon, NText } from "naive-ui";
 import { computed } from "vue";
@@ -23,7 +23,7 @@ export default function RecommendList({ videoId }: IProp) {
     } else if (windowWidth.value >= config.breakpoints.s) {
       length = 3 * 3;
     }
-    return recommendCategoryVideos.value.filter(v => v.id !== Number(videoId)).slice(0, length);
+    return recommendVideoList.value.filter(v => v.id !== Number(videoId)).slice(0, length);
   });
   return list.value.length ? (
     <>
@@ -37,7 +37,7 @@ export default function RecommendList({ videoId }: IProp) {
           icon-placement="right"
           size="small"
           onClick={() => {
-            router.push({ name: "random", query: { category: recommendCategoryVideos.value[0].category_id } });
+            router.push({ name: "random", query: { category: recommendVideoList.value[0].category_id } });
           }}
         >
           {{

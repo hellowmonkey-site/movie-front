@@ -58,3 +58,14 @@ export default fn();
 
 export const sessionStorage = fn(s);
 export const localStorage = fn(l);
+
+export function getCookie(k: string) {
+  const arr = document.cookie.split(";");
+  for (let i = 0; i < arr.length; i++) {
+    const [key, val] = arr[i].split("=");
+    if (key === k) {
+      return val;
+    }
+  }
+  return "";
+}
