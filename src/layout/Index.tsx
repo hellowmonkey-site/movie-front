@@ -9,6 +9,7 @@ import {
   isShowBackTop,
   menuCollapsed,
   playbackRates,
+  searchIpt,
   setAppConfig,
   setDialog,
   setFullscreen,
@@ -331,6 +332,17 @@ export default defineComponent({
             return Promise.reject({ message: "" });
           },
         });
+      }
+
+      // 搜索快捷键
+      document.addEventListener("keydown", e => {
+        if (e.ctrlKey && e.key === "g") {
+          e.preventDefault();
+          searchIpt.value?.focus();
+        }
+      });
+      if (!isMobileWidth.value) {
+        searchIpt.value?.focus();
       }
     });
     return () => (

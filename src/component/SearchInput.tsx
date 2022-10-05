@@ -1,3 +1,4 @@
+import { isMobileWidth, searchIpt } from "@/service/common";
 import { SearchFilled } from "@vicons/material";
 import { NButton, NIcon, NInput, NInputGroup } from "naive-ui";
 import { defineComponent, PropType, ref } from "vue";
@@ -26,7 +27,13 @@ export default defineComponent({
         }}
       >
         <NInputGroup>
-          <NInput placeholder="搜索影视剧..." clearable size="large" v-model={[keywords.value, "value"]} />
+          <NInput
+            placeholder={"搜你想搜" + (isMobileWidth.value ? "" : "(ctrl+g)")}
+            clearable
+            size="large"
+            ref={searchIpt}
+            v-model={[keywords.value, "value"]}
+          />
           <NButton type="primary" size="large" attrType="submit">
             {props.type === "icon" ? (
               <NIcon size={22}>

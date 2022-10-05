@@ -28,6 +28,9 @@ export function setMessage(e: MessageApiInjection) {
   message = e;
 }
 
+// 搜索输入框
+export const searchIpt = ref<HTMLInputElement>();
+
 // 返回顶部按钮
 export const isShowBackTop = ref(false);
 
