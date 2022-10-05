@@ -3,7 +3,7 @@ import Image from "@/component/Image";
 import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
 import { collectVideoList, postCancelCollect, postCollect } from "@/service/collect";
-import { setTitle } from "@/service/common";
+import { isMobileWidth, setTitle } from "@/service/common";
 import { playHistoryIds } from "@/service/history";
 import { user } from "@/service/user";
 import { fullVideoList, getInfoList, getRecommendVideoList, getVideoDetail, IVideoItem } from "@/service/video";
@@ -72,9 +72,14 @@ export default defineComponent({
 
     return () => (
       <>
+        {isMobileWidth.value ? <div class="video-info-bg" style={{ backgroundImage: `url(${videoDetail.value?.cover})` }}></div> : null}
         <div class="video-info d-flex mar-b-5-item">
           <div class="video-cover">
-            {!loading.value || videoDetail.value?.cover ? <Image src={videoDetail.value?.cover} /> : <NSkeleton height="400px"></NSkeleton>}
+            {!loading.value || videoDetail.value?.cover ? (
+              <Image src={videoDetail.value?.cover} />
+            ) : (
+              <NSkeleton height={isMobileWidth.value ? "260px" : "400px"}></NSkeleton>
+            )}
           </div>
           <div class="flex-item-extend d-flex direction-column break-all">
             <div class="d-flex align-items-center justify-between mar-b-5-item">

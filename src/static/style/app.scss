@@ -100,8 +100,13 @@ a {
 }
 
 .video-cover {
+  line-height: 1;
   border-radius: 6px;
   overflow: hidden;
+
+  .image {
+    min-height: 100px;
+  }
 }
 
 .login-page {
@@ -171,10 +176,28 @@ a {
 @media (max-width: 640px) {
   .video-info {
     display: block;
+    position: relative;
+    z-index: 1;
+  }
+
+  .video-info-bg {
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    right: -50px;
+    height: 560px;
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: cover;
+    filter: blur(20px);
+    mask: linear-gradient(360deg, transparent, var(--n-color));
   }
 
   .video-cover {
-    margin-bottom: var(--offset-3);
+    width: 55vw;
+    margin: var(--offset-7) auto;
+    outline: 3px #fff solid;
+    box-shadow: 0 0 15px -3px rgba($color: #000, $alpha: 0.9);
   }
 
   .n-layout-sider {
