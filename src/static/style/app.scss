@@ -94,7 +94,8 @@ a {
 }
 
 .video-cover {
-  line-height: 1;
+  font-size: 0;
+  line-height: 0;
   min-height: 200px;
 
   & > img {
