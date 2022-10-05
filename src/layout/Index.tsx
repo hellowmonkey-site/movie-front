@@ -45,7 +45,7 @@ import {
   useNotification,
   useOsTheme,
 } from "naive-ui";
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, ref, Transition } from "vue";
 import { RouterLink, RouterView, useRoute, useRouter } from "vue-router";
 import {
   AndroidOutlined,
@@ -837,6 +837,17 @@ export default defineComponent({
             </div>
           </NDrawerContent>
         </NDrawer>
+
+        <Transition name="fade">
+          {isMobileWidth.value && !menuCollapsed.value ? (
+            <div
+              class="app-bg"
+              onClick={() => {
+                menuCollapsed.value = true;
+              }}
+            />
+          ) : null}
+        </Transition>
       </>
     );
   },
