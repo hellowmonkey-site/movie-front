@@ -124,17 +124,19 @@ export default defineComponent({
                     </span>
                   </div>
                 ) : null}
-                <div class="d-flex align-items-center justify-center">
-                  <NButton
-                    size="large"
-                    type="primary"
-                    onClick={() => {
-                      router.push({ name: "play", params: { videoId, playId: playId.value } });
-                    }}
-                  >
-                    立即播放
-                  </NButton>
-                </div>
+                {playId.value ? (
+                  <div class="d-flex align-items-center justify-center">
+                    <NButton
+                      size="large"
+                      type="primary"
+                      onClick={() => {
+                        router.push({ name: "play", params: { videoId, playId: playId.value } });
+                      }}
+                    >
+                      立即播放
+                    </NButton>
+                  </div>
+                ) : null}
               </>
             ) : (
               <>

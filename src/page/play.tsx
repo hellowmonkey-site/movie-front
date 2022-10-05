@@ -212,7 +212,7 @@ export default defineComponent({
                 </div>
               </div>
               <div class="d-flex align-items-center">
-                {config.isWeb || config.isMsi ? (
+                {(config.isWeb || config.isMsi) && play.value?.src.includes(".m3u8") ? (
                   <NButton
                     class="mar-r-2-item"
                     size="small"
