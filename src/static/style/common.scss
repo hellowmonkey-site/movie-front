@@ -507,6 +507,14 @@ a {
   background-color: var(--error-color);
 }
 
+.object-cover {
+  object-fit: cover;
+}
+
+.object-contain {
+  object-fit: contain;
+}
+
 .border {
   border: 1PX solid var(--border-color);
 }

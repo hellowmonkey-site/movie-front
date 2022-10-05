@@ -51,16 +51,19 @@ export default defineComponent({
       }
     }
 
-    watch(props, loadImage);
+    watch(props, () => {
+      src.value = "";
+      loadImage();
+    });
 
     onMounted(loadImage);
 
     return () => (
-      <div
-        class={["full-height full-width image", imgStatus.value === ImgStatus.LOADING ? "d-flex align-items-center justify-center" : ""]}
-      >
+      <>
         {imgStatus.value === ImgStatus.LOADING ? (
-          <NSpin />
+          <div class="d-flex align-items-center justify-center full-height">
+            <NSpin />
+          </div>
         ) : imgStatus.value === ImgStatus.LOADED ? (
           <img
             src={src.value}
@@ -74,12 +77,12 @@ export default defineComponent({
               }
             }}
             alt={props.preview ? "点击预览" : ""}
-            class={props.preview ? "cursor-pointer" : ""}
+            class={["full-width full-height object-cover", props.preview ? "cursor-pointer" : ""]}
           />
         ) : imgStatus.value === ImgStatus.ERROR ? (
           <img src={FailImg} data-origin-src={props.src} />
         ) : null}
-      </div>
+      </>
     );
   },
 });
