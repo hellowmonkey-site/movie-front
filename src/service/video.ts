@@ -112,10 +112,14 @@ export function getRecommendVideoList(videoId: number) {
   if (!appConfig.value.recommend) {
     return Promise.resolve([]);
   }
-  return fly.get<IVideo[]>("video/recommend-list", { videoId }).then(data => {
-    recommendVideoList.value = data.data;
-    return data;
-  });
+  return fly
+    .get<IVideo[]>("video/recommend-list", { videoId })
+    .then(data => data.data)
+    .then(data => {
+      recommendVideoList.value = data;
+      setFullVideoList(data);
+      return data;
+    });
 }
 
 // 详情
