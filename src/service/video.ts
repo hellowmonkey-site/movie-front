@@ -31,7 +31,7 @@ export interface IVideoItem extends IVideo {
 }
 
 export const fullVideoList = ref<IVideoItem[]>([]);
-function setFullVideoList(arr: IVideoItem[]) {
+export function setFullVideoList(arr: IVideoItem[]) {
   arr.forEach(item => {
     const index = fullVideoList.value.findIndex(v => v.id === item.id);
     if (index === -1) {

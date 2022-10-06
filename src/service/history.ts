@@ -1,7 +1,7 @@
 import fly from "flyio";
 import { computed, ref } from "vue";
 import { appConfig } from "./common";
-import { IVideo } from "./video";
+import { IVideo, setFullVideoList } from "./video";
 
 interface IPlayHistoryItem extends IVideo {
   play_id: number;
@@ -53,6 +53,9 @@ export function getPlayHistory() {
     .then(data => data.data)
     .then(data => {
       playHistorys.value = data;
+      data.forEach(item => {
+        setFullVideoList(item.list);
+      });
       return data;
     });
 }

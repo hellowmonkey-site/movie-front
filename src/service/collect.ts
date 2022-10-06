@@ -1,7 +1,7 @@
 import fly from "flyio";
 import { ref } from "vue";
 import { message } from "./common";
-import { IVideo } from "./video";
+import { IVideo, setFullVideoList } from "./video";
 
 // 获取收藏列表
 export const collectVideoList = ref<IVideo[]>([]);
@@ -11,6 +11,7 @@ export function getCollectList() {
     .then(data => data.data)
     .then(data => {
       collectVideoList.value = data;
+      setFullVideoList(data);
       return data;
     });
 }

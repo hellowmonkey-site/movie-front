@@ -2,6 +2,7 @@ import { isIE } from "@/helper/validate";
 import { categorys, getCategoryList } from "@/service/category";
 import {
   appConfig,
+  dialog,
   // canInstall,
   fitVideoSizes,
   isFullscreen,
@@ -11,10 +12,7 @@ import {
   playbackRates,
   searchIpt,
   setAppConfig,
-  setDialog,
   setFullscreen,
-  setMessage,
-  setNotification,
   settingOpen,
   themeColors,
   themeOverrides,
@@ -40,9 +38,6 @@ import {
   NSpin,
   NSwitch,
   NTooltip,
-  useDialog,
-  useMessage,
-  useNotification,
   useOsTheme,
 } from "naive-ui";
 import { computed, defineComponent, onMounted, ref, Transition } from "vue";
@@ -92,13 +87,6 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const os = useOsTheme();
-    const message = useMessage();
-    const notification = useNotification();
-    const dialog = useDialog();
-    setNotification(notification);
-    setDialog(dialog);
-    setMessage(message);
-
     const menuLoading = ref(false);
 
     const isVideoPage = computed(() => {

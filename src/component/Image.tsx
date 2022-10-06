@@ -60,11 +60,7 @@ export default defineComponent({
 
     return () => (
       <>
-        {imgStatus.value === ImgStatus.LOADING ? (
-          <div class="d-flex align-items-center justify-center full-height">
-            <NSpin />
-          </div>
-        ) : imgStatus.value === ImgStatus.LOADED ? (
+        {imgStatus.value === ImgStatus.LOADED ? (
           <img
             src={src.value}
             onClick={() => {
@@ -79,9 +75,15 @@ export default defineComponent({
             alt={props.preview ? "点击预览" : ""}
             class={["full-width full-height object-cover", props.preview ? "cursor-pointer" : ""]}
           />
-        ) : imgStatus.value === ImgStatus.ERROR ? (
-          <img src={FailImg} data-origin-src={props.src} />
-        ) : null}
+        ) : (
+          <div class="d-flex align-items-center justify-center full-height" style="min-height: 200px">
+            {imgStatus.value === ImgStatus.LOADING ? (
+              <NSpin />
+            ) : imgStatus.value === ImgStatus.ERROR ? (
+              <img src={FailImg} data-origin-src={props.src} />
+            ) : null}
+          </div>
+        )}
       </>
     );
   },

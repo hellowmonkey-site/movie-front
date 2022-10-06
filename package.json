@@ -20,7 +20,7 @@
     "@tauri-apps/api": "^1.0.0-rc.3",
     "custom-protocol-detection": "^1.0.1",
     "flyio": "^0.6.14",
-    "naive-ui": "^2.26.4",
+    "naive-ui": "^2.33.2",
     "normalize.css": "^8.0.1",
     "nprogress": "^0.2.0",
     "pwa-install-handler": "^2.1.6",

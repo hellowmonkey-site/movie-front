@@ -1,32 +1,15 @@
 import config from "@/config";
 import { PageData } from "@/config/type";
-import { DialogApiInjection } from "naive-ui/lib/dialog/src/DialogProvider";
-import { NotificationApiInjection } from "naive-ui/lib/notification/src/NotificationProvider";
 import { computed, ref } from "vue";
-import { darkTheme, GlobalTheme, GlobalThemeOverrides, useOsTheme } from "naive-ui";
+import { ConfigProviderProps, darkTheme, GlobalTheme, GlobalThemeOverrides, useOsTheme, createDiscreteApi } from "naive-ui";
 import { IPlayerOptions } from "xgplayer";
 import { localStorage } from "@/helper/storage";
 // import pwaInstallHandler from "pwa-install-handler";
 import router from "@/router";
-import { MessageApiInjection } from "naive-ui/lib/message/src/MessageProvider";
 import { appWindow } from "@tauri-apps/api/window";
 // import { plusSetStatusBar } from "./plus";
 
 const os = useOsTheme();
-
-export let notification: NotificationApiInjection;
-export function setNotification(e: NotificationApiInjection) {
-  notification = e;
-}
-export let dialog: DialogApiInjection;
-export function setDialog(e: DialogApiInjection) {
-  dialog = e;
-}
-
-export let message: MessageApiInjection;
-export function setMessage(e: MessageApiInjection) {
-  message = e;
-}
 
 // 搜索输入框
 export const searchIpt = ref<HTMLInputElement>();
@@ -308,7 +291,7 @@ window.addEventListener("resize", () => {
 //   themeType.value = type;
 // }
 export const globalTheme = computed<GlobalTheme | null>(() => {
-  if (appConfig.value.themeType === ThemeTypes.DARK || (appConfig.value.themeType === ThemeTypes.OS && os.value === "dark")) {
+  if (appConfig.value.themeType === ThemeTypes.DARK || (appConfig.value.themeType === ThemeTypes.OS && appConfig.value.os === "dark")) {
     return darkTheme;
   }
   return null;
@@ -327,6 +310,17 @@ export function setFullscreen(v: boolean) {
     isFullscreen.value = v;
   });
 }
+
+// 弹框
+const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+  theme: globalTheme.value,
+}));
+const discrete = createDiscreteApi(["message", "dialog", "notification"], {
+  configProviderProps: configProviderPropsRef,
+});
+export const message = discrete.message;
+export const notification = discrete.notification;
+export const dialog = discrete.dialog;
 
 // 设置标题
 export function setTitle(title?: string) {

@@ -8,7 +8,7 @@ import { playHistoryIds } from "@/service/history";
 import { user } from "@/service/user";
 import { fullVideoList, getInfoList, getRecommendVideoList, getVideoDetail, IVideoItem } from "@/service/video";
 import { FavoriteOutlined, FavoriteTwotone } from "@vicons/material";
-import { NButton, NSkeleton, NSpin } from "naive-ui";
+import { NButton, NSkeleton, NSpin, NTooltip } from "naive-ui";
 import { computed, defineComponent, onMounted, PropType, ref, Teleport } from "vue";
 import { onBeforeRouteUpdate, useRouter } from "vue-router";
 
@@ -87,19 +87,31 @@ export default defineComponent({
                   <h1 class="font-xlg mar-r-3-item">{videoDetail.value?.title}</h1>
                   {user.value.id ? (
                     collectVideoList.value.some(v => v.id === videoId) ? (
-                      <NButton size="small" type="error" onClick={() => postCancelCollect(videoId)} ghost>
+                      <NTooltip>
                         {{
                           default: () => "取消收藏",
-                          icon: () => <FavoriteTwotone />,
+                          trigger: () => (
+                            <NButton size="small" class="mar-r-2-item" onClick={() => postCancelCollect(videoId)}>
+                              {{
+                                icon: () => <FavoriteTwotone />,
+                              }}
+                            </NButton>
+                          ),
                         }}
-                      </NButton>
+                      </NTooltip>
                     ) : (
-                      <NButton size="small" onClick={() => postCollect(videoId)}>
+                      <NTooltip>
                         {{
                           default: () => "收藏",
-                          icon: () => <FavoriteOutlined />,
+                          trigger: () => (
+                            <NButton size="small" class="mar-r-2-item" onClick={() => postCollect(videoId)}>
+                              {{
+                                icon: () => <FavoriteOutlined />,
+                              }}
+                            </NButton>
+                          ),
                         }}
-                      </NButton>
+                      </NTooltip>
                     )
                   ) : null}
                 </>
