@@ -103,27 +103,41 @@ a {
   }
 }
 
-.login-page {
+.login-box {
   // background-color: #eee;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 
-  .logo {
+  .logo-box {
+    position: absolute;
+    padding: 10px 30px;
+    border-radius: 12px;
+    background-color: var(--n-color);
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 15px -5px rgba($color: #000, $alpha: 0.3);
+    box-sizing: content-box;
+  }
+
+  .logo-img {
+    width: 55px;
     height: 55px;
+    display: inline-block;
   }
 }
 
-.login-box {
+.login-card {
   width: 90vw;
   max-width: 500px;
 
   // border: 1px solid #ddd;
-  padding: 30px 20px;
+  padding: 60px 20px 30px;
 
   // background-color: #fff;
-  border-radius: 6px;
+  border-radius: 12px;
 
   .label {
     width: 80px;
@@ -151,6 +165,10 @@ a {
   }
 }
 
+.n-layout-header.transparent {
+  background: transparent;
+}
+
 @media (min-width: 640px) {
   .video-cover {
     width: 30vw;
@@ -176,25 +194,26 @@ a {
 
   .video-info-bg {
     position: absolute;
-    top: -50px;
-    left: -50px;
-    right: -50px;
-    height: 560px;
+    top: -150px;
+    left: -150px;
+    right: -150px;
+    height: 700px;
     background-repeat: no-repeat;
     background-position: top center;
     background-size: cover;
     filter: blur(20px);
     mask: linear-gradient(360deg, transparent, var(--n-color));
+    z-index: 1;
   }
 
   .video-cover {
     width: 55vw;
     margin: var(--offset-7) auto;
+    border-radius: 10px;
 
     & > img {
       border-radius: 10px;
-      box-shadow: 0 0 15px -3px rgba($color: #000, $alpha: 0.9);
-      border: 3px #fff solid;
+      box-shadow: 0 0 0 3px #fff, 0 0 18px -3px rgba($color: #000, $alpha: 0.9);
     }
   }
 
@@ -224,6 +243,30 @@ a {
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: rgba($color: #000, $alpha: 0.5);
+  background-color: rgba($color: #fff, $alpha: 0.5);
   z-index: 2;
+}
+
+.theme-dark {
+  .app-bg {
+    background-color: rgba($color: #000, $alpha: 0.5);
+  }
+
+  .logo-box {
+    box-shadow: 0 4px 15px -5px rgba($color: #000, $alpha: 0.9);
+  }
+}
+
+.theme-light {
+  .n-layout-header.transparent {
+    --n-border-color: rgb(255 255 255 / 0.2) !important;
+
+    .n-button {
+      --n-text-color: #fff !important;
+    }
+  }
+
+  .login-page {
+    background: var(--primary-color);
+  }
 }

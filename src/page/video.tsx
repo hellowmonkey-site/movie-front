@@ -9,7 +9,7 @@ import { user } from "@/service/user";
 import { fullVideoList, getInfoList, getRecommendVideoList, getVideoDetail, IVideoItem } from "@/service/video";
 import { FavoriteOutlined, FavoriteTwotone } from "@vicons/material";
 import { NButton, NSkeleton, NSpin } from "naive-ui";
-import { computed, defineComponent, onMounted, PropType, ref } from "vue";
+import { computed, defineComponent, onMounted, PropType, ref, Teleport } from "vue";
 import { onBeforeRouteUpdate, useRouter } from "vue-router";
 
 export default defineComponent({
@@ -72,7 +72,6 @@ export default defineComponent({
 
     return () => (
       <>
-        {isMobileWidth.value ? <div class="video-info-bg" style={{ backgroundImage: `url(${videoDetail.value?.cover})` }}></div> : null}
         <div class="video-info d-flex mar-b-5-item">
           <div class="video-cover">
             {!loading.value || videoDetail.value?.cover ? (

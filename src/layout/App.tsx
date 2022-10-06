@@ -11,7 +11,9 @@ export default defineComponent({
           <NNotificationProvider>
             <NConfigProvider theme={globalTheme.value} themeOverrides={themeOverrides.value}>
               <NGlobalStyle />
-              <RouterView />
+              <div class={globalTheme.value === null ? "theme-light" : "theme-dark"}>
+                <RouterView />
+              </div>
             </NConfigProvider>
           </NNotificationProvider>
         </NMessageProvider>

@@ -101,6 +101,10 @@ export default defineComponent({
 
     const menuLoading = ref(false);
 
+    const isVideoPage = computed(() => {
+      return route.name === "video";
+    });
+
     const videoDetail = computed(() => {
       return fullVideoList.value.find(v => v.id === Number(route.params.videoId));
     });
@@ -112,7 +116,7 @@ export default defineComponent({
       if (name === "category") {
         return String(route.params.category) || null;
       }
-      if ((name === "video" || name === "play") && videoDetail.value) {
+      if ((isVideoPage.value || name === "play") && videoDetail.value) {
         const category = categorys.value.find(v => v.id === videoDetail.value?.category_id);
         if (category) {
           return category.url;
@@ -347,8 +351,18 @@ export default defineComponent({
     });
     return () => (
       <>
-        <NLayout position={isMobileWidth.value ? "static" : "absolute"} class="app-layout">
-          <NLayoutHeader data-tauri-drag-region bordered class="d-flex align-items-center justify-between pad-3">
+        <NLayout position={isMobileWidth.value ? "static" : "absolute"} class={"app-layout"}>
+          {isMobileWidth.value && isVideoPage.value ? (
+            <div class="video-info-bg" style={{ backgroundImage: `url(${videoDetail.value?.cover})` }} />
+          ) : null}
+          <NLayoutHeader
+            data-tauri-drag-region
+            bordered
+            class={[
+              "d-flex align-items-center justify-between pad-3 ani",
+              { transparent: isMobileWidth.value && isVideoPage.value && menuCollapsed.value && !isShowBackTop.value },
+            ]}
+          >
             {isMobileWidth.value ? (
               <NTooltip>
                 {{
@@ -662,10 +676,11 @@ export default defineComponent({
 
               {/* 返回顶部 */}
               <NBackTop
-                visibilityHeight={10}
+                visibilityHeight={80}
                 onUpdate:show={(show: boolean) => {
                   isShowBackTop.value = show;
                 }}
+                listenTo={isMobileWidth.value ? document : undefined}
               />
             </NLayout>
           </NLayout>

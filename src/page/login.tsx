@@ -33,10 +33,12 @@ export default defineComponent({
     }
 
     return () => (
-      <NLayout class="d-flex align-items-center justify-center full-height-vh">
-        <div class="d-flex direction-column align-items-center justify-center login-page">
-          <img src={getFullUrl(config.baseURL, config.imageUrl, "logo.png")} class="logo mar-b-4-item" />
-          <NCard class="login-box">
+      <NLayout class="d-flex align-items-center justify-center full-height-vh login-page">
+        <div class="d-flex direction-column align-items-center justify-center login-box">
+          <NCard class="login-card">
+            <div class="logo-box">
+              <img src={getFullUrl(config.baseURL, config.imageUrl, "logo.png")} class="logo-img object-cover" />
+            </div>
             <div class="font-large text-center mar-b-6-item">
               <span>登录</span>
               <span class="font-large mar-l-3 mar-r-3 font-bold">·</span>
