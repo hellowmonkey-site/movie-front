@@ -5,7 +5,7 @@ import { isShowBackTop, videoLength } from "@/service/common";
 import { pullDownRefresh } from "@/service/plus";
 import { getRandomVideoList, randomVideoList } from "@/service/video";
 import { RefreshOutlined } from "@vicons/material";
-import { NButton, NGrid, NGridItem, NH2, NIcon, NSpin, NText } from "naive-ui";
+import { NButton, NEmpty, NGrid, NGridItem, NH2, NIcon, NSpin, NText } from "naive-ui";
 import { computed, defineComponent, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 
@@ -59,17 +59,23 @@ export default defineComponent({
           </NIcon>
         </NButton>
         <NSpin show={loading.value}>
-          <div class="video-list mar-b-3-item">
-            <NGrid cols="2 s:3 m:4 xl:6" xGap={10} yGap={10} responsive="screen">
-              {dataList.value.map(item => {
-                return (
-                  <NGridItem key={item.id}>
-                    <VideoItem video={item}></VideoItem>
-                  </NGridItem>
-                );
-              })}
-            </NGrid>
-          </div>
+          {dataList.value.length ? (
+            <div class="video-list mar-b-3-item">
+              <NGrid cols="2 s:3 m:4 xl:6" xGap={10} yGap={10} responsive="screen">
+                {dataList.value.map(item => {
+                  return (
+                    <NGridItem key={item.id}>
+                      <VideoItem video={item}></VideoItem>
+                    </NGridItem>
+                  );
+                })}
+              </NGrid>
+            </div>
+          ) : (
+            <div class="empty-box">
+              <NEmpty description="暂无数据"></NEmpty>
+            </div>
+          )}
         </NSpin>
       </>
     );

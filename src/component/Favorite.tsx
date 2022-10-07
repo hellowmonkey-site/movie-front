@@ -34,7 +34,7 @@ export default defineComponent({
               {{
                 default: () => "点击收藏",
                 trigger: () => (
-                  <NButton size="small" class="mar-r-2-item" onClick={() => postCollect(props.videoId)}>
+                  <NButton size="small" class="mar-r-2-item" ghost onClick={() => postCollect(props.videoId)}>
                     {{
                       icon: () => <FavoriteBorderOutlined />,
                     }}
