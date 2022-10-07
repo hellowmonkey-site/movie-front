@@ -2,14 +2,14 @@ import VideoItem from "@/component/VideoItem";
 import { pullDownRefresh } from "@/service/plus";
 import { deletePlayHistory, getPlayHistory, playHistorys } from "@/service/history";
 import { user } from "@/service/user";
-import { NButton, NEmpty, NGrid, NGridItem, NTimeline, NTimelineItem, useDialog } from "naive-ui";
+import { NButton, NEmpty, NGrid, NGridItem, NTimeline, NTimelineItem } from "naive-ui";
 import { defineComponent, onMounted } from "vue";
+import { dialog } from "@/service/common";
 
 export default defineComponent({
   props: {},
   emits: [],
   setup: (props, ctx) => {
-    const dialog = useDialog();
     const refresh = pullDownRefresh(fetchData);
 
     function fetchData() {

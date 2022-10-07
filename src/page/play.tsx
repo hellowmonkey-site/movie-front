@@ -5,6 +5,7 @@ import config from "@/config";
 import { createPlusVideoPlayer, PlusOpenTypes, plusPlayURL, plusVideoPlayer } from "@/service/plus";
 import {
   appConfig,
+  dialog,
   isFullscreen,
   isMobileWidth,
   menuCollapsed,
@@ -17,21 +18,12 @@ import {
 import { ThemeTypes } from "@/service/common";
 import { postPlayLog } from "@/service/history";
 import { fullVideoList, getInfoList, getRecommendVideoList, getVideoDetail, postReport, recommendVideoList } from "@/service/video";
-import {
-  DownloadOutlined,
-  ErrorOutlineOutlined,
-  FavoriteOutlined,
-  FavoriteTwotone,
-  KeyboardArrowDownOutlined,
-  KeyboardArrowUpOutlined,
-} from "@vicons/material";
-import { NButton, NCollapseTransition, NIcon, NInput, NTooltip, useDialog } from "naive-ui";
+import { DownloadOutlined, ErrorOutlineOutlined, KeyboardArrowDownOutlined, KeyboardArrowUpOutlined } from "@vicons/material";
+import { NButton, NCollapseTransition, NIcon, NInput, NTooltip } from "naive-ui";
 import { computed, defineComponent, onMounted, PropType, ref } from "vue";
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from "vue-router";
 import Player, { IPlayerOptions } from "xgplayer";
 import HlsJsPlayer from "xgplayer-hls.js";
-import { user } from "@/service/user";
-import { collectVideoList, postCancelCollect, postCollect } from "@/service/collect";
 import protocolDetection from "custom-protocol-detection";
 import Favorite from "@/component/Favorite";
 
@@ -48,7 +40,6 @@ export default defineComponent({
   },
   emits: [],
   setup: (props, ctx) => {
-    const dialog = useDialog();
     let videoPlayer: Player;
 
     const el = ref<HTMLElement | undefined>();

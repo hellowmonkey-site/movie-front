@@ -1,16 +1,16 @@
 import { pullDownRefresh } from "@/service/plus";
 import { deleteSearchHistory, getSearchHistory, searchHistorys } from "@/service/history";
 import { user } from "@/service/user";
-import { NButton, NEmpty, NSpace, useDialog } from "naive-ui";
+import { NButton, NEmpty, NSpace } from "naive-ui";
 import { defineComponent, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { dialog } from "@/service/common";
 
 export default defineComponent({
   props: {},
   emits: [],
   setup: (props, ctx) => {
     const router = useRouter();
-    const dialog = useDialog();
     const refresh = pullDownRefresh(fetchData);
 
     function fetchData() {
