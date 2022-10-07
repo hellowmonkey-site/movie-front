@@ -2,6 +2,7 @@ import { sessionStorage } from "@/helper/storage";
 import fly from "flyio";
 import { ref } from "vue";
 import { collectVideoList, getCollectList } from "./collect";
+import { message } from "./common";
 export interface IUserForm {
   username: string;
   password: string;
@@ -45,6 +46,7 @@ export function postLogin(params: IUserForm) {
     .then(data => {
       setUser(data);
       getCollectList();
+      message.success("登录成功");
       return data;
     });
 }

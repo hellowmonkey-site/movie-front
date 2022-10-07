@@ -1,15 +1,16 @@
 import config from "@/config";
 import { getFullUrl } from "@/helper";
+import { message } from "@/service/common";
 import { IUserForm, postLogin } from "@/service/user";
-import { NButton, NCard, NInput, NLayout, useMessage } from "naive-ui";
-import { defineComponent, reactive, ref } from "vue";
+import { NButton, NCard, NInput, NLayout } from "naive-ui";
+import { defineComponent, onMounted, reactive, ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 
 export default defineComponent({
   props: {},
   emits: [],
   setup: (props, ctx) => {
-    const message = useMessage();
+    const iptEl = ref<HTMLInputElement>();
     const form = reactive<IUserForm>({
       username: "",
       password: "",
@@ -32,6 +33,10 @@ export default defineComponent({
         });
     }
 
+    onMounted(() => {
+      iptEl.value?.focus();
+    });
+
     return () => (
       <NLayout class="d-flex align-items-center justify-center full-height-vh login-page">
         <div class="d-flex direction-column align-items-center justify-center login-box">
@@ -47,7 +52,7 @@ export default defineComponent({
             <form action="" onSubmit={handleSubmit}>
               <div class="d-flex align-items-center justify-between mar-b-5-item">
                 <div class="label">用户名</div>
-                <NInput placeholder="请输入用户名" v-model={[form.username, "value"]} class="flex-item-extend" />
+                <NInput placeholder="请输入用户名" ref={iptEl} v-model={[form.username, "value"]} class="flex-item-extend" />
               </div>
               <div class="d-flex align-items-center justify-between mar-b-5-item">
                 <div class="label">密码</div>

@@ -1,15 +1,13 @@
 import Description from "@/component/Description";
+import Favorite from "@/component/Favorite";
 import Image from "@/component/Image";
 import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
-import { collectVideoList, postCancelCollect, postCollect } from "@/service/collect";
 import { isMobileWidth, setTitle } from "@/service/common";
 import { playHistoryIds } from "@/service/history";
-import { user } from "@/service/user";
 import { fullVideoList, getInfoList, getRecommendVideoList, getVideoDetail, IVideoItem } from "@/service/video";
-import { FavoriteOutlined, FavoriteTwotone } from "@vicons/material";
-import { NButton, NSkeleton, NSpin, NTooltip } from "naive-ui";
-import { computed, defineComponent, onMounted, PropType, ref, Teleport } from "vue";
+import { NButton, NSkeleton, NSpin } from "naive-ui";
+import { computed, defineComponent, onMounted, PropType, ref } from "vue";
 import { onBeforeRouteUpdate, useRouter } from "vue-router";
 
 export default defineComponent({
@@ -21,7 +19,7 @@ export default defineComponent({
   },
   emits: [],
   setup: (props, ctx) => {
-    let videoId = Number(props.videoId);
+    const videoId = ref(props.videoId);
     const router = useRouter();
     const infoList = computed(() => {
       return getInfoList(videoDetail.value);
@@ -40,12 +38,12 @@ export default defineComponent({
     });
 
     function fetchData() {
-      videoDetail.value = fullVideoList.value.find(v => v.id === videoId);
+      videoDetail.value = fullVideoList.value.find(v => v.id === videoId.value);
       if (videoDetail.value) {
         setTitle(videoDetail.value!.title);
       }
       loading.value = true;
-      getVideoDetail(videoId)
+      getVideoDetail(videoId.value)
         .then(data => {
           videoDetail.value = data;
           setTitle(videoDetail.value!.title);
@@ -56,7 +54,7 @@ export default defineComponent({
 
       // 推荐
       recommendLoading.value = true;
-      getRecommendVideoList(videoId).finally(() => {
+      getRecommendVideoList(videoId.value).finally(() => {
         recommendLoading.value = false;
       });
     }
@@ -66,7 +64,7 @@ export default defineComponent({
     });
 
     onBeforeRouteUpdate(to => {
-      videoId = Number(to.params.videoId);
+      videoId.value = Number(to.params.videoId);
       fetchData();
     });
 
@@ -85,35 +83,7 @@ export default defineComponent({
               {!loading.value || videoDetail.value?.title ? (
                 <>
                   <h1 class="font-xlg mar-r-3-item">{videoDetail.value?.title}</h1>
-                  {user.value.id ? (
-                    collectVideoList.value.some(v => v.id === videoId) ? (
-                      <NTooltip>
-                        {{
-                          default: () => "取消收藏",
-                          trigger: () => (
-                            <NButton size="small" class="mar-r-2-item" onClick={() => postCancelCollect(videoId)}>
-                              {{
-                                icon: () => <FavoriteTwotone />,
-                              }}
-                            </NButton>
-                          ),
-                        }}
-                      </NTooltip>
-                    ) : (
-                      <NTooltip>
-                        {{
-                          default: () => "收藏",
-                          trigger: () => (
-                            <NButton size="small" class="mar-r-2-item" onClick={() => postCollect(videoId)}>
-                              {{
-                                icon: () => <FavoriteOutlined />,
-                              }}
-                            </NButton>
-                          ),
-                        }}
-                      </NTooltip>
-                    )
-                  ) : null}
+                  <Favorite videoId={videoId.value} />
                 </>
               ) : (
                 <NSkeleton height="30px"></NSkeleton>
@@ -135,19 +105,19 @@ export default defineComponent({
                     </span>
                   </div>
                 ) : null}
-                {playId.value ? (
-                  <div class="d-flex align-items-center justify-center">
+                <div class="d-flex align-items-center justify-center" style="min-height: 40px">
+                  {playId.value ? (
                     <NButton
                       size="large"
                       type="primary"
                       onClick={() => {
-                        router.push({ name: "play", params: { videoId, playId: playId.value } });
+                        router.push({ name: "play", params: { videoId: videoId.value, playId: playId.value } });
                       }}
                     >
                       立即播放
                     </NButton>
-                  </div>
-                ) : null}
+                  ) : null}
+                </div>
               </>
             ) : (
               <>
@@ -162,7 +132,7 @@ export default defineComponent({
         {!loading.value || videoDetail.value?.playlist ? (
           <PlayList
             playlist={videoDetail.value?.playlist}
-            onClick={({ id: playId }) => router.push({ name: "play", params: { videoId, playId } })}
+            onClick={({ id: playId }) => router.push({ name: "play", params: { videoId: videoId.value, playId } })}
           />
         ) : (
           <div class="mar-t-6">
@@ -177,7 +147,7 @@ export default defineComponent({
               <NSpin />
             </div>
           ) : (
-            <RecommendList videoId={videoId} />
+            <RecommendList videoId={videoId.value} />
           )}
         </div>
       </>

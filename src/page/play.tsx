@@ -8,6 +8,7 @@ import {
   isFullscreen,
   isMobileWidth,
   menuCollapsed,
+  message,
   playbackRates,
   setAppConfig,
   setFullscreen,
@@ -16,7 +17,14 @@ import {
 import { ThemeTypes } from "@/service/common";
 import { postPlayLog } from "@/service/history";
 import { fullVideoList, getInfoList, getRecommendVideoList, getVideoDetail, postReport, recommendVideoList } from "@/service/video";
-import { FavoriteOutlined, FavoriteTwotone, KeyboardArrowDownOutlined, KeyboardArrowUpOutlined } from "@vicons/material";
+import {
+  DownloadOutlined,
+  ErrorOutlineOutlined,
+  FavoriteOutlined,
+  FavoriteTwotone,
+  KeyboardArrowDownOutlined,
+  KeyboardArrowUpOutlined,
+} from "@vicons/material";
 import { NButton, NCollapseTransition, NIcon, NInput, NTooltip, useDialog } from "naive-ui";
 import { computed, defineComponent, onMounted, PropType, ref } from "vue";
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from "vue-router";
@@ -25,6 +33,7 @@ import HlsJsPlayer from "xgplayer-hls.js";
 import { user } from "@/service/user";
 import { collectVideoList, postCancelCollect, postCollect } from "@/service/collect";
 import protocolDetection from "custom-protocol-detection";
+import Favorite from "@/component/Favorite";
 
 export default defineComponent({
   props: {
@@ -162,7 +171,10 @@ export default defineComponent({
       if (videoPlayer) {
         return;
       }
-      getVideoDetail(props.videoId);
+      const d = message.loading("获取中...", { duration: 0 });
+      getVideoDetail(props.videoId).finally(() => {
+        d.destroy();
+      });
       createPlayer();
       // 推荐
       getRecommendVideoList(props.videoId);
@@ -213,71 +225,63 @@ export default defineComponent({
               </div>
               <div class="d-flex align-items-center">
                 {(config.isWeb || config.isMsi) && play.value?.src.includes(".m3u8") ? (
-                  <NButton
-                    class="mar-r-2-item"
-                    size="small"
-                    onClick={() => {
-                      const webUrl = `${config.toolBoxWebUrl}/video/m3u8?url=${play.value?.src}&name=${videoDetail.value?.title}-${play.value?.title}`;
-                      const schemeUrl = webUrl.replace(config.toolBoxWebUrl + "/", config.toolBoxSchemeUrl);
-                      protocolDetection(schemeUrl, () => {
-                        window.open(webUrl, "_blank");
-                      });
+                  <NTooltip>
+                    {{
+                      default: () => "下载视频",
+                      trigger: () => (
+                        <NButton
+                          size="small"
+                          class="mar-r-2-item"
+                          onClick={() => {
+                            const webUrl = `${config.toolBoxWebUrl}/video/m3u8?url=${play.value?.src}&name=${videoDetail.value?.title}-${play.value?.title}`;
+                            const schemeUrl = webUrl.replace(config.toolBoxWebUrl + "/", config.toolBoxSchemeUrl);
+                            protocolDetection(schemeUrl, () => {
+                              window.open(webUrl, "_blank");
+                            });
+                          }}
+                        >
+                          {{
+                            icon: () => <DownloadOutlined />,
+                          }}
+                        </NButton>
+                      ),
                     }}
-                  >
-                    下载视频
-                  </NButton>
+                  </NTooltip>
                 ) : null}
-                {user.value.id ? (
-                  collectVideoList.value.some(v => v.id === props.videoId) ? (
-                    <NTooltip>
-                      {{
-                        default: () => "取消收藏",
-                        trigger: () => (
-                          <NButton size="small" class="mar-r-2-item" onClick={() => postCancelCollect(props.videoId)}>
-                            {{
-                              icon: () => <FavoriteTwotone />,
-                            }}
-                          </NButton>
-                        ),
-                      }}
-                    </NTooltip>
-                  ) : (
-                    <NTooltip>
-                      {{
-                        default: () => "收藏",
-                        trigger: () => (
-                          <NButton size="small" class="mar-r-2-item" onClick={() => postCollect(props.videoId, playId.value)}>
-                            {{
-                              icon: () => <FavoriteOutlined />,
-                            }}
-                          </NButton>
-                        ),
-                      }}
-                    </NTooltip>
-                  )
-                ) : null}
-                <NButton
-                  size="small"
-                  class="mar-r-2-item"
-                  onClick={() => {
-                    let remark = "无法播放";
-                    dialog.warning({
-                      title: "提交错误",
-                      content() {
-                        return <NInput type="textarea" placeholder="请输入错误内容" defaultValue={remark} onInput={v => (remark = v)} />;
-                      },
-                      positiveText: "确认提交",
-                      onPositiveClick() {
-                        if (!videoDetail.value || !remark) {
-                          return;
-                        }
-                        return postReport(remark, videoDetail.value.id, play.value?.id);
-                      },
-                    });
+                <NTooltip>
+                  {{
+                    default: () => "纠错",
+                    trigger: () => (
+                      <NButton
+                        size="small"
+                        class="mar-r-2-item"
+                        onClick={() => {
+                          let remark = "无法播放";
+                          dialog.warning({
+                            title: "提交错误",
+                            content() {
+                              return (
+                                <NInput type="textarea" placeholder="请输入错误内容" defaultValue={remark} onInput={v => (remark = v)} />
+                              );
+                            },
+                            positiveText: "确认提交",
+                            onPositiveClick() {
+                              if (!videoDetail.value || !remark) {
+                                return;
+                              }
+                              return postReport(remark, videoDetail.value.id, play.value?.id);
+                            },
+                          });
+                        }}
+                      >
+                        {{
+                          icon: () => <ErrorOutlineOutlined />,
+                        }}
+                      </NButton>
+                    ),
                   }}
-                >
-                  纠错
-                </NButton>
+                </NTooltip>
+                <Favorite videoId={videoDetail.value?.id} />
                 <div
                   class="d-flex align-items-center cursor-pointer mar-r-2-item"
                   onClick={() => (toggleCollapse.value = !toggleCollapse.value)}
