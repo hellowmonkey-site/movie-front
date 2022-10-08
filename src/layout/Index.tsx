@@ -41,7 +41,7 @@ import {
   useOsTheme,
 } from "naive-ui";
 import { computed, defineComponent, onMounted, ref, Transition } from "vue";
-import { RouterLink, RouterView, useRoute, useRouter } from "vue-router";
+import { onBeforeRouteUpdate, RouterLink, RouterView, useRoute, useRouter } from "vue-router";
 import {
   AndroidOutlined,
   ChevronLeftRound,
@@ -88,6 +88,7 @@ export default defineComponent({
     const router = useRouter();
     const os = useOsTheme();
     const menuLoading = ref(false);
+    const routeTransitionName = ref("slider-left");
 
     const isVideoPage = computed(() => {
       return route.name === "video";
@@ -337,12 +338,23 @@ export default defineComponent({
         searchIpt.value?.focus();
       }
     });
+
+    onBeforeRouteUpdate((to, from) => {
+      if (Number(to.meta.level) < Number(from.meta.level)) {
+        routeTransitionName.value = "slider-right";
+      } else {
+        routeTransitionName.value = "slider-left";
+      }
+    });
+
     return () => (
       <>
         <NLayout position={isMobileWidth.value ? "static" : "absolute"} class={"app-layout"}>
-          {isMobileWidth.value && isVideoPage.value ? (
-            <div class="video-info-bg" style={{ backgroundImage: `url(${videoDetail.value?.cover})` }} />
-          ) : null}
+          <Transition name="fade">
+            {isMobileWidth.value && isVideoPage.value ? (
+              <div class="video-info-bg" style={{ backgroundImage: `url(${videoDetail.value?.cover})` }} />
+            ) : null}
+          </Transition>
           <NLayoutHeader
             data-tauri-drag-region
             bordered
@@ -659,7 +671,13 @@ export default defineComponent({
             </NLayoutSider>
             <NLayout nativeScrollbar={isMobileWidth.value}>
               <div class="pad-3">
-                <RouterView />
+                {isMobileWidth.value ? (
+                  <Transition name={routeTransitionName.value}>
+                    <RouterView />
+                  </Transition>
+                ) : (
+                  <RouterView />
+                )}
               </div>
 
               {/* 返回顶部 */}

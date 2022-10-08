@@ -29,7 +29,7 @@ export default defineComponent({
     });
 
     return () => (
-      <>
+      <div>
         <NH2 prefix="bar">
           <NText>最新推荐</NText>
         </NH2>
@@ -54,7 +54,7 @@ export default defineComponent({
             </div>
           )}
         </NSpin>
-      </>
+      </div>
     );
   },
 });

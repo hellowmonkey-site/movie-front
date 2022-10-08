@@ -54,7 +54,7 @@ export default defineComponent({
     });
 
     return () => (
-      <>
+      <div>
         <div class="d-flex align-items-center justify-between mar-b-3-item">
           <NH2 prefix="bar" class="mar-0">
             <NText>{title.value}</NText>
@@ -124,7 +124,7 @@ export default defineComponent({
             </div>
           )}
         </NSpin>
-      </>
+      </div>
     );
   },
 });

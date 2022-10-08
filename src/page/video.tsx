@@ -69,7 +69,7 @@ export default defineComponent({
     });
 
     return () => (
-      <>
+      <div>
         <div class="video-info d-flex mar-b-5-item">
           <div class="video-cover">
             {!loading.value || videoDetail.value?.cover ? (
@@ -150,7 +150,7 @@ export default defineComponent({
             <RecommendList videoId={videoId.value} />
           )}
         </div>
-      </>
+      </div>
     );
   },
 });

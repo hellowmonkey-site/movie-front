@@ -25,6 +25,7 @@ const router = createRouter({
           path: "/",
           name: "index",
           meta: {
+            level: 1,
             // pullDownRefresh: true,
             title: "首页",
           },
@@ -34,6 +35,7 @@ const router = createRouter({
           path: "/random",
           name: "random",
           meta: {
+            level: 1,
             // pullDownRefresh: true,
             title: "随机推荐",
           },
@@ -44,6 +46,7 @@ const router = createRouter({
           props: true,
           name: "category",
           meta: {
+            level: 1,
             // pullDownRefresh: true,
             title: "分类",
           },
@@ -54,6 +57,7 @@ const router = createRouter({
           props: true,
           name: "video",
           meta: {
+            level: 2,
             // pullDownRefresh: false,
             title: "视频详情",
           },
@@ -64,6 +68,7 @@ const router = createRouter({
           props: true,
           name: "play",
           meta: {
+            level: 3,
             // pullDownRefresh: false,
             title: "视频播放",
           },
@@ -73,6 +78,7 @@ const router = createRouter({
           path: "/search",
           name: "search",
           meta: {
+            level: 1,
             // pullDownRefresh: true,
             title: "搜索",
           },
@@ -82,6 +88,7 @@ const router = createRouter({
           path: "/search/history",
           name: "search-history",
           meta: {
+            level: 1,
             // pullDownRefresh: true,
             title: "搜索历史",
           },
@@ -91,6 +98,7 @@ const router = createRouter({
           path: "/play/history",
           name: "play-history",
           meta: {
+            level: 1,
             // pullDownRefresh: true,
             title: "播放历史",
           },
@@ -100,6 +108,7 @@ const router = createRouter({
           path: "/collect",
           name: "collect",
           meta: {
+            level: 1,
             // pullDownRefresh: true,
             title: "我的收藏",
           },

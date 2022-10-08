@@ -43,7 +43,7 @@ export default defineComponent({
     });
 
     return () => (
-      <>
+      <div>
         <NH2 prefix="bar" class="mar-0 mar-b-3-item">
           <NText>{categorys.value.find(v => v.id === categoryId.value)?.name || "相关推荐"}</NText>
         </NH2>
@@ -77,7 +77,7 @@ export default defineComponent({
             </div>
           )}
         </NSpin>
-      </>
+      </div>
     );
   },
 });

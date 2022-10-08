@@ -60,7 +60,7 @@ export default defineComponent({
     });
 
     return () => (
-      <>
+      <div>
         <div class="d-flex align-items-center justify-center mar-b-4-item">
           <SearchInput
             type="string"
@@ -171,7 +171,7 @@ export default defineComponent({
             ))}
           </NSpace>
         )}
-      </>
+      </div>
     );
   },
 });
