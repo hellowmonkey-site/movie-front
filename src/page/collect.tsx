@@ -16,7 +16,10 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const page = ref<number>(Number(route.query.page) || 1);
-    const refresh = pullDownRefresh(fetchData);
+    const refresh = pullDownRefresh(() => {
+      page.value = 1;
+      fetchData();
+    });
     const loading = ref(false);
 
     const pageData = computed<PageData<IVideo>>(() => {

@@ -19,7 +19,7 @@ import { ThemeTypes } from "@/service/common";
 import { postPlayLog } from "@/service/history";
 import { fullVideoList, getInfoList, getRecommendVideoList, getVideoDetail, postReport, recommendVideoList } from "@/service/video";
 import { DownloadOutlined, ErrorOutlineOutlined, KeyboardArrowDownOutlined, KeyboardArrowUpOutlined } from "@vicons/material";
-import { NButton, NCollapseTransition, NIcon, NInput, NTooltip } from "naive-ui";
+import { NButton, NCollapseTransition, NIcon, NInput, NSkeleton, NTooltip } from "naive-ui";
 import { computed, defineComponent, onMounted, PropType, ref } from "vue";
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from "vue-router";
 import Player, { IPlayerOptions } from "xgplayer";
@@ -163,10 +163,13 @@ export default defineComponent({
         return;
       }
       const d = message.loading("获取中...", { duration: 0 });
-      getVideoDetail(props.videoId).finally(() => {
-        d.destroy();
-      });
-      createPlayer();
+      getVideoDetail(props.videoId)
+        .then(() => {
+          createPlayer();
+        })
+        .finally(() => {
+          d.destroy();
+        });
       // 推荐
       getRecommendVideoList(props.videoId);
     }
@@ -206,82 +209,86 @@ export default defineComponent({
         </div>
         <div class="mar-b-5">
           <div class="d-flex direction-column mar-b-3-item">
-            <div class="d-flex justify-between align-items-start mar-b-3-item">
-              <div class="d-flex align-items-start flex-item-extend justify-start mar-r-4-item">
-                <h1 class="font-xlg mar-r-2-item">{videoDetail.value?.title}</h1>
-                <div class="d-flex align-items-center flex-item-extend pad-t-1">
-                  <span class="font-large font-bold mar-r-2-item font-gray">·</span>
-                  <span class="space-nowrap">{play.value?.title}</span>
+            {videoDetail.value ? (
+              <div class="d-flex justify-between align-items-start mar-b-3-item">
+                <div class="d-flex align-items-start flex-item-extend justify-start mar-r-4-item">
+                  <h1 class="font-xlg mar-r-2-item">{videoDetail.value.title}</h1>
+                  <div class="d-flex align-items-center flex-item-extend pad-t-1">
+                    <span class="font-large font-bold mar-r-2-item font-gray">·</span>
+                    <span class="space-nowrap">{play.value?.title}</span>
+                  </div>
                 </div>
-              </div>
-              <div class="d-flex align-items-center">
-                {(config.isWeb || config.isMsi) && play.value?.src.includes(".m3u8") ? (
+                <div class="d-flex align-items-center">
+                  {(config.isWeb || config.isMsi) && play.value?.src.includes(".m3u8") ? (
+                    <NTooltip>
+                      {{
+                        default: () => "下载视频",
+                        trigger: () => (
+                          <NButton
+                            size="small"
+                            class="mar-r-2-item"
+                            onClick={() => {
+                              const webUrl = `${config.toolBoxWebUrl}/video/m3u8?url=${play.value?.src}&name=${videoDetail.value?.title}-${play.value?.title}`;
+                              const schemeUrl = webUrl.replace(config.toolBoxWebUrl + "/", config.toolBoxSchemeUrl);
+                              protocolDetection(schemeUrl, () => {
+                                window.open(webUrl, "_blank");
+                              });
+                            }}
+                          >
+                            {{
+                              icon: () => <DownloadOutlined />,
+                            }}
+                          </NButton>
+                        ),
+                      }}
+                    </NTooltip>
+                  ) : null}
                   <NTooltip>
                     {{
-                      default: () => "下载视频",
+                      default: () => "纠错",
                       trigger: () => (
                         <NButton
                           size="small"
                           class="mar-r-2-item"
                           onClick={() => {
-                            const webUrl = `${config.toolBoxWebUrl}/video/m3u8?url=${play.value?.src}&name=${videoDetail.value?.title}-${play.value?.title}`;
-                            const schemeUrl = webUrl.replace(config.toolBoxWebUrl + "/", config.toolBoxSchemeUrl);
-                            protocolDetection(schemeUrl, () => {
-                              window.open(webUrl, "_blank");
+                            let remark = "无法播放";
+                            dialog.warning({
+                              title: "提交错误",
+                              content() {
+                                return (
+                                  <NInput type="textarea" placeholder="请输入错误内容" defaultValue={remark} onInput={v => (remark = v)} />
+                                );
+                              },
+                              positiveText: "确认提交",
+                              onPositiveClick() {
+                                if (!videoDetail.value || !remark) {
+                                  return;
+                                }
+                                return postReport(remark, videoDetail.value.id, play.value?.id);
+                              },
                             });
                           }}
                         >
                           {{
-                            icon: () => <DownloadOutlined />,
+                            icon: () => <ErrorOutlineOutlined />,
                           }}
                         </NButton>
                       ),
                     }}
                   </NTooltip>
-                ) : null}
-                <NTooltip>
-                  {{
-                    default: () => "纠错",
-                    trigger: () => (
-                      <NButton
-                        size="small"
-                        class="mar-r-2-item"
-                        onClick={() => {
-                          let remark = "无法播放";
-                          dialog.warning({
-                            title: "提交错误",
-                            content() {
-                              return (
-                                <NInput type="textarea" placeholder="请输入错误内容" defaultValue={remark} onInput={v => (remark = v)} />
-                              );
-                            },
-                            positiveText: "确认提交",
-                            onPositiveClick() {
-                              if (!videoDetail.value || !remark) {
-                                return;
-                              }
-                              return postReport(remark, videoDetail.value.id, play.value?.id);
-                            },
-                          });
-                        }}
-                      >
-                        {{
-                          icon: () => <ErrorOutlineOutlined />,
-                        }}
-                      </NButton>
-                    ),
-                  }}
-                </NTooltip>
-                <Favorite videoId={videoDetail.value?.id} />
-                <div
-                  class="d-flex align-items-center cursor-pointer mar-r-2-item"
-                  onClick={() => (toggleCollapse.value = !toggleCollapse.value)}
-                >
-                  <span class="font-gray mar-r-1-item font-small">简介</span>
-                  <NIcon size={20}>{toggleCollapse.value ? <KeyboardArrowUpOutlined /> : <KeyboardArrowDownOutlined />}</NIcon>
+                  <Favorite videoId={videoDetail.value?.id} />
+                  <div
+                    class="d-flex align-items-center cursor-pointer mar-r-2-item"
+                    onClick={() => (toggleCollapse.value = !toggleCollapse.value)}
+                  >
+                    <span class="font-gray mar-r-1-item font-small">简介</span>
+                    <NIcon size={20}>{toggleCollapse.value ? <KeyboardArrowUpOutlined /> : <KeyboardArrowDownOutlined />}</NIcon>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <NSkeleton height="30px"></NSkeleton>
+            )}
             {config.isApp && play.value?.src ? (
               <div class="d-flex justify-between align-items-center">
                 <NButton
