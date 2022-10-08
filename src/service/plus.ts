@@ -1,6 +1,8 @@
 import router from "@/router";
 import { dialog, globalTheme, menuCollapsed, settingOpen, themeOverrides, ThemeTypes } from "@/service/common";
 
+let webview: any;
+
 export const enum PlusOpenTypes {
   NATIVE = 1,
   BROWSER = 2,
@@ -58,7 +60,9 @@ export function plusBack() {
   if (typeof plus === "undefined") {
     return;
   }
-  const webview = plus.webview.currentWebview();
+  if (!webview) {
+    webview = plus.webview.currentWebview();
+  }
   const parent = webview.parent();
 
   if (parent) {
@@ -127,23 +131,14 @@ export function plusImagePreview(src: string | string[], current = 0) {
 }
 
 // 下拉刷新
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+let onRefresh: null | (() => void) = () => {};
 export function pullDownRefresh(cb: null | (() => void)) {
   if (typeof plus === "undefined") {
     return;
   }
-  const webview = plus.webview.currentWebview();
-  const support = cb !== null;
 
-  webview.setPullToRefresh(
-    {
-      support,
-      style: "circle",
-      color: themeOverrides.value.common?.primaryColor,
-      offset: "60px",
-      auto: false,
-    },
-    cb
-  );
+  onRefresh = cb;
 
   function begin() {
     webview.beginPullToRefresh();
@@ -151,6 +146,26 @@ export function pullDownRefresh(cb: null | (() => void)) {
 
   function end() {
     webview.endPullToRefresh();
+  }
+
+  if (!webview) {
+    webview = plus.webview.currentWebview();
+    webview.setPullToRefresh(
+      {
+        support: true,
+        style: "circle",
+        color: themeOverrides.value.common?.primaryColor,
+        offset: "60px",
+        auto: false,
+      },
+      () => {
+        if (onRefresh) {
+          onRefresh();
+        } else {
+          end();
+        }
+      }
+    );
   }
 
   return {

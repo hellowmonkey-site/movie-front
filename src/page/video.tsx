@@ -5,6 +5,7 @@ import PlayList from "@/component/PlayList";
 import RecommendList from "@/component/RecommendList";
 import { isMobileWidth, setTitle } from "@/service/common";
 import { playHistoryIds } from "@/service/history";
+import { pullDownRefresh } from "@/service/plus";
 import { fullVideoList, getInfoList, getRecommendVideoList, getVideoDetail, IVideoItem } from "@/service/video";
 import { NButton, NSkeleton, NSpin } from "naive-ui";
 import { computed, defineComponent, onMounted, PropType, ref } from "vue";
@@ -26,6 +27,8 @@ export default defineComponent({
     });
     const loading = ref(false);
     const recommendLoading = ref(false);
+
+    const refresh = pullDownRefresh(fetchData);
 
     const videoDetail = ref<IVideoItem>();
     const playId = computed(() => {
@@ -50,6 +53,7 @@ export default defineComponent({
         })
         .finally(() => {
           loading.value = false;
+          refresh?.end();
         });
 
       // 推荐
