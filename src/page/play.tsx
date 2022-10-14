@@ -209,17 +209,17 @@ export default defineComponent({
         </div>
         <div class="mar-b-5">
           <div class="d-flex direction-column mar-b-3-item">
-            {videoDetail.value ? (
+            {videoDetail.value && play.value ? (
               <div class="d-flex justify-between align-items-start mar-b-3-item">
                 <div class="d-flex align-items-start flex-item-extend justify-start mar-r-4-item">
                   <h1 class="font-xlg mar-r-2-item">{videoDetail.value.title}</h1>
                   <div class="d-flex align-items-center flex-item-extend pad-t-1">
                     <span class="font-large font-bold mar-r-2-item font-gray">·</span>
-                    <span class="space-nowrap">{play.value?.title}</span>
+                    <span class="space-nowrap">{play.value.title}</span>
                   </div>
                 </div>
                 <div class="d-flex align-items-center">
-                  {(config.isWeb || config.isMsi) && play.value?.src.includes(".m3u8") ? (
+                  {(config.isWeb || config.isMsi) && play.value.src.includes(".m3u8") ? (
                     <NTooltip>
                       {{
                         default: () => "下载视频",
