@@ -55,7 +55,7 @@ export default defineComponent({
     });
 
     return () => (
-      <div>
+      <div class="pad-3">
         <div class="d-flex direction-column mar-b-6-item">
           <div class="d-flex align-items-center justify-between mar-b-5-item">
             <span class="font-gray">{user.value.username}</span>

@@ -88,7 +88,8 @@ export default defineComponent({
     const router = useRouter();
     const os = useOsTheme();
     const menuLoading = ref(false);
-    const routeTransitionName = ref("slider-left");
+    const routeTransitionName = ref("page-shadow slider-left");
+    const routeHistorys = [route.path];
 
     const isVideoPage = computed(() => {
       return route.name === "video";
@@ -340,10 +341,13 @@ export default defineComponent({
     });
 
     onBeforeRouteUpdate((to, from) => {
-      if (Number(to.meta.level) < Number(from.meta.level)) {
-        routeTransitionName.value = "slider-right";
+      const [prevRouteName, prevRouteName2 = route.path] = routeHistorys.slice(routeHistorys.length - 2);
+      if (prevRouteName === to.path && prevRouteName2 === from.path) {
+        routeTransitionName.value = "page-shadow slider-right";
+        routeHistorys.pop();
       } else {
-        routeTransitionName.value = "slider-left";
+        routeTransitionName.value = "page-shadow slider-left";
+        routeHistorys.push(to.path);
       }
     });
 
@@ -670,15 +674,13 @@ export default defineComponent({
               )}
             </NLayoutSider>
             <NLayout nativeScrollbar={isMobileWidth.value}>
-              <div class="pad-3">
-                {isMobileWidth.value ? (
-                  <Transition name={routeTransitionName.value}>
-                    <RouterView />
-                  </Transition>
-                ) : (
+              {isMobileWidth.value ? (
+                <Transition name={routeTransitionName.value}>
                   <RouterView />
-                )}
-              </div>
+                </Transition>
+              ) : (
+                <RouterView />
+              )}
 
               {/* 返回顶部 */}
               <NBackTop

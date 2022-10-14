@@ -26,7 +26,7 @@ const router = createRouter({
           name: "index",
           meta: {
             level: 1,
-            // pullDownRefresh: true,
+            pullDownRefresh: true,
             title: "首页",
           },
           component: () => import("@/page/index"),
@@ -36,7 +36,7 @@ const router = createRouter({
           name: "random",
           meta: {
             level: 1,
-            // pullDownRefresh: true,
+            pullDownRefresh: true,
             title: "随机推荐",
           },
           component: () => import("@/page/random"),
@@ -47,7 +47,7 @@ const router = createRouter({
           name: "category",
           meta: {
             level: 1,
-            // pullDownRefresh: true,
+            pullDownRefresh: true,
             title: "分类",
           },
           component: () => import("@/page/category"),
@@ -58,7 +58,7 @@ const router = createRouter({
           name: "video",
           meta: {
             level: 2,
-            // pullDownRefresh: false,
+            pullDownRefresh: false,
             title: "视频详情",
           },
           component: () => import("@/page/video"),
@@ -69,7 +69,7 @@ const router = createRouter({
           name: "play",
           meta: {
             level: 3,
-            // pullDownRefresh: false,
+            pullDownRefresh: false,
             title: "视频播放",
           },
           component: () => import("@/page/play"),
@@ -79,7 +79,7 @@ const router = createRouter({
           name: "search",
           meta: {
             level: 1,
-            // pullDownRefresh: true,
+            pullDownRefresh: true,
             title: "搜索",
           },
           component: () => import("@/page/search"),
@@ -89,7 +89,7 @@ const router = createRouter({
           name: "search-history",
           meta: {
             level: 1,
-            // pullDownRefresh: true,
+            pullDownRefresh: true,
             title: "搜索历史",
           },
           component: () => import("@/page/search-history"),
@@ -99,7 +99,7 @@ const router = createRouter({
           name: "play-history",
           meta: {
             level: 1,
-            // pullDownRefresh: true,
+            pullDownRefresh: true,
             title: "播放历史",
           },
           component: () => import("@/page/play-history"),
@@ -109,7 +109,7 @@ const router = createRouter({
           name: "collect",
           meta: {
             level: 1,
-            // pullDownRefresh: true,
+            pullDownRefresh: true,
             title: "我的收藏",
           },
           component: () => import("@/page/collect"),
@@ -151,7 +151,9 @@ router.beforeEach(to => {
   // 返回顶部
   goTop();
 
-  pullDownRefresh(null);
+  if (!to.meta.pullDownRefresh) {
+    pullDownRefresh(null);
+  }
 
   setTitle(String(to.meta.title || ""));
 

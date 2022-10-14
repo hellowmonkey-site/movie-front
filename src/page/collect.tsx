@@ -53,7 +53,7 @@ export default defineComponent({
     });
 
     return () => (
-      <div>
+      <div class="pad-3">
         <NH2 prefix="bar" class="mar-0 mar-b-3-item">
           <NText>我的收藏</NText>
         </NH2>

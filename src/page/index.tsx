@@ -29,7 +29,7 @@ export default defineComponent({
     });
 
     return () => (
-      <div>
+      <div class="pad-3">
         <NH2 prefix="bar">
           <NText>最新推荐</NText>
         </NH2>

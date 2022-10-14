@@ -43,7 +43,7 @@ export default defineComponent({
     });
 
     return () => (
-      <div>
+      <div class="pad-3">
         <NH2 prefix="bar" class="mar-0 mar-b-3-item">
           <NText>{categorys.value.find(v => v.id === categoryId.value)?.name || "相关推荐"}</NText>
         </NH2>

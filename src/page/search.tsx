@@ -60,7 +60,7 @@ export default defineComponent({
     });
 
     return () => (
-      <div>
+      <div class="pad-3">
         <div class="d-flex align-items-center justify-center mar-b-4-item">
           <SearchInput
             type="string"

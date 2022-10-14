@@ -203,7 +203,7 @@ export default defineComponent({
     });
 
     return () => (
-      <div>
+      <div class="pad-3">
         <div class="video-player-container mar-b-5-item d-flex justify-center align-items-center">
           <div ref={el} class="video-player" id="player" />
         </div>

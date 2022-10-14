@@ -22,7 +22,7 @@ export default defineComponent({
     onMounted(getSearchHistory);
 
     return () => (
-      <div class="d-flex direction-column">
+      <div class="d-flex direction-column pad-3">
         <div class="d-flex align-items-center justify-between mar-b-5-item">
           <span class="font-gray">{user.value.username}</span>
           {searchHistorys.value.length ? (
